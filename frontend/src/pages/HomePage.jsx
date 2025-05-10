@@ -1,6 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import PlaylistTile from "../components/Tiles/PlaylistTile.jsx"
-import {ChevronRight} from "lucide-react";
+import MoveRight from "../components/Button/MoveRight.jsx";
+import MoveLeft from "../components/Button/MoveLeft.jsx";
+import ArtistTile from "../components/Tiles/ArtistTile.jsx";
+import AlbumTile from "../components/Tiles/AlbumTile.jsx";
 
 const HomePage = () => {
 
@@ -39,52 +42,87 @@ const HomePage = () => {
       createdBy: "Panche Baja",
       numberOfTracks: 50,
       imgSrc: '/assets/kumaSagar.jpeg'
-     }
+     },
   ]
-  const scrollRef = useRef(null);
-  const [ atEndScroll , setIsEndScroll ] = useState(false);
 
-  const checkScrollEnd = ()=>{
-    const element = scrollRef.current;
-    if( !element ) return;
-    const isAtEnd = element.scrollLeft + element.clientWidth >= element.scrollWidth - 100;
-    setIsEndScroll(isAtEnd);
-  }
+  const testArtist=[
+    { name: "The Elements",
+      imgSrc: '/assets/attiBhayo.jpeg'
+     },
+     {
+      name: "Bhartika Eam Rai",
+      imgSrc: '/assets/aadiiItyadii.jpg'
+     },
+     {
+      name: "Sajjan Raj Bhyaddya",
+      imgSrc: '/assets/sastoMutu.png'
+     },
+     {
+      name: "Narayan Gopal",
+      imgSrc: '/assets/narayanGopal.jpg'
+     },
+     {
+      name: "Kuma Sagar",
+      imgSrc: '/assets/kumaSagar.jpeg'
+     },
+     {
+      name: "Bhartika Eam Rai",
+      imgSrc: '/assets/aadiiItyadii.jpg'
+     },
+     {
+      name: "Sajjan Raj Bhyaddya",
+      imgSrc: '/assets/sastoMutu.png'
+     },
+     {
+      name: "Narayan Gopal",
+      imgSrc: '/assets/narayanGopal.jpg'
+     },
+     {
+      name: "Kuma Sagar",
+      imgSrc: '/assets/kumaSagar.jpeg'
+     },
+  ]
 
-  const scrollRight = () => {
-    const element = scrollRef.current;
-    if( !element ) return;
-    element.scrollBy({ left: 200, behavior: "smooth" });
-    checkScrollEnd();
-  };
-
-  useEffect( ()=>{
-    const element = scrollRef?.current;
-    if( !element ) return;
-    element.addEventListener( "scroll" , checkScrollEnd );
-    checkScrollEnd();
-    return () => element.removeEventListener( "scroll" , checkScrollEnd );
-  } , [] )
+  const topHits = useRef(null);
+  const topArtist = useRef(null);
+  const popularAlbum = useRef(null);
 
 
   return (
-    <div className="flex flex-col gap-8 w-full lg:w-auto" >
-      <section className="flex flex-col gap-2 px-5" >
-        <h2 className="text-lg md:text-xl lg:text-2xl font-extrabold" > Top Hits </h2>
-        <article ref={scrollRef} className=" relative h-auto flex gap-12 lg:gap-4 overflow-x-auto lg:overflow-x-hidden scrollbar-hide" >
-          {/* also set a definate height for tiles, to make it uniform */}
-          {
-            testData.map( (item , index) => <PlaylistTile item={item} key={index} /> )
-          }
+    <div className="flex flex-col gap-8 w-full lg:w-[70dvw]" >
+      {/* Top hits */}
+      <section className="flex flex-col px-5 " >
+        <h2 className="text-base md:text-lg lg:text-xl font-bold" > Top Hits </h2>
+        <article ref={topHits} className=" relative h-auto flex  gap-7 lg:gap-4 overflow-x-auto  scrollbar-hide" >
 
-          {/* Can use ref instead to toggle opacity instead to have a bit smoother transition when it goes hidden. */}
-          {
-            !atEndScroll &&(
-            <button onClick={scrollRight} className="sticky z-30 right-0 top-0 flex justify-end items-center h-40 lg:h-50 w-20 bg-gradient-to-l from-gray-900 to-transparent text-white-tersery cursor-pointer" >
-              <ChevronRight />
-            </button>
-            )
-          }
+          <MoveLeft scrollRef={topHits} />
+          { testData.map( (item , index) => <PlaylistTile item={item} key={index} /> ) }
+          <MoveRight scrollRef={topHits} />
+
+        </article>
+      </section>
+
+      {/* Top Artists */}
+      <section className="flex flex-col px-5 " >
+        <h2 className="text-base md:text-lg lg:text-xl font-bold" > Top Artist </h2>
+        <article ref={topArtist} className=" relative h-auto flex  gap-7 lg:gap-4 overflow-x-auto  scrollbar-hide" >
+          
+          <MoveLeft scrollRef={topArtist} />
+          { testArtist.map( (item , index) => <ArtistTile item={item} key={index} /> ) }
+          <MoveRight scrollRef={topArtist} />
+
+        </article>
+      </section>
+
+      {/* Popular Albums */}
+      <section className="flex flex-col px-5 " >
+        <h2 className="text-base md:text-lg lg:text-xl font-bold" > Popular Albums </h2>
+        <article ref={popularAlbum} className=" relative h-auto flex  gap-7 lg:gap-4 overflow-x-auto  scrollbar-hide" >
+          
+          <MoveLeft scrollRef={popularAlbum} />
+          { testArtist.map( (item , index) => <AlbumTile item={item} key={index} /> ) }
+          <MoveRight scrollRef={popularAlbum} />
+
         </article>
       </section>
     </div>

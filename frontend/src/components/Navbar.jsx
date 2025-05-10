@@ -1,48 +1,65 @@
-import { Link } from "react-router-dom"
-import { Menu } from "lucide-react"
-import { useState } from "react"
+import { Link, useLocation } from "react-router-dom";
+import Home from "./icons/Home";
+import Library from "./icons/Library";
+import Search from "./icons/Search";
+import Logo from "./icons/Logo"
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
 
-    const [ isOpen , setIsOpen ] = useState(false);
+    const [ currentPage , setCurrentPage ] = useState('home');
+    const location = useLocation();
 
-    const toggleMobileNavbar = ()=>{
-        setIsOpen(!isOpen);
-    }
+    useEffect( ()=>{
+        const path = location.pathname.substring(1) || "home";
+        setCurrentPage(path);
+    } , [location] )
 
   return (
-    <header className=" px-5 lg:px-16 py-4 flex items-center justify-between z-50" >
-        {/* icon and company name */}
-        <Link to={'/'} >
-            <div className="flex items-center justify-between gap-6" >
-                <img src="/assets/logo.svg" alt="panche baja logo" width={25} height={25} />
-                <h1 className="text-xl lg:text-2xl font-extrabold underline text-red-primary" >Panche Baja</h1>
+    <header className="sticky top-0 px-8 lg:px-48 py-4 z-50 bg-black-primary" >
+        <div className="flex items-end justify-between pb-1" >
+            {/* left */}
+            <div className="flex items-end gap-8" >
+                <Link to={'/'} className="flex items-end gap-3 px-2" >
+                    <Logo size={45} />
+                    <span className="md:hidden text-xl font-extrabold text-red-primary underline" > Panche Baja </span>
+                </Link>
+                <nav className=" hidden md:flex items-end gap-1" >
+                    <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "home" ? "bg-black-tersery text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >
+                        <Link to={'/'} >
+                            <div className="flex items-center gap-4" >
+                                <Home size={25} strokeWidth={6} />
+                                <span className="font-medium text-sm lg:text-md " > Home </span>
+                            </div>
+                        </Link>
+                    </li>
+                    <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "search" ? "bg-black-tersery text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >
+                        <Link to={'/search'} >
+                            <div className="flex items-center gap-4" >
+                                <Search size={25} strokeWidth={6} />
+                                <span className="font-medium text-sm lg:text-md" > Search </span>
+                            </div>
+                        </Link>
+                    </li>
+                    <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "library" ? "bg-black-tersery text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >
+                        <Link to={'/library'} >    
+                            <div className="flex items-center gap-4" >
+                                <Library size={25} strokeWidth={6} />
+                                <span className="font-medium text-sm lg:text-md" > Library </span>
+                            </div>
+                        </Link>
+                    </li>
+                </nav>
             </div>
-        </Link>
 
-        {/* navlinks for larger devices */}
-        <nav className="hidden lg:block" >
-            <ul className="flex gap-4 text-red-primary font-medium" >
-                <li className="cursor-pointer hover:text-red-secondary" >Home</li>
-                <li className="cursor-pointer hover:text-red-secondary" >Library</li>
-                <li className="cursor-pointer hover:text-red-secondary" >Upload</li>
-            </ul>
-        </nav>
-
-        {/* Hamburger to activate navbar for smaller devices */}
-        <button className="lg:hidden p-4 hover:bg-white/10 active:bg-white/20 transition-all duration-150 rounded-lg focus:outline-1 text-red-primary hover:text-white active:text-white cursor-pointer" onClick={toggleMobileNavbar} >
-            <Menu size={30} />
-        </button>
-
-        {/* navbar */}
-        {
-            isOpen&&(
-                <div className="absolute left-0 top-0 grid gap-4 min-h-screen w-full z-40" >
-
+            {/* pp */}
+            <div>
+                <div className="rounded-full cursor-pointer box-border px-1" >
+                    <img src="/assets/aadiiItyadii.jpg" alt="userIcon" className="rounded-full object-cover" width={45} height={45} />
                 </div>
-            )
-        }
-
+            </div>
+        </div>
+        <hr className="bg-red-primary rounded-xs h-0.5 border-none" />
     </header>
   )
 }
