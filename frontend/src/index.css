@@ -13,12 +13,13 @@
     --color-black-tersery: #1D1D1D;
     
     --color-hover-primary: #171717;
+    --color-hover-secondary: #1d1d1d;
 }
 
 body,html{
-    scroll-behavior: smooth;
-    @apply min-h-screen bg-black-primary text-white;
+    @apply min-h-screen bg-black-primary text-white scroll-smooth;
 }
+
 
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -31,4 +32,8 @@ body,html{
 .track-seeker::-webkit-slider-thumb{
     appearance: none;
     background-color: black;
+}
+
+.header{
+    @apply sticky top-0 px-4 md:px-14 lg:px-48 py-4 md:pt-8  z-50;
 }

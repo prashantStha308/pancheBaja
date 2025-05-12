@@ -1,8 +1,9 @@
+import { Link } from "react-router-dom";
 import StackedFrames from "./StackedFrames";
 
 const PlaylistTile = ({ item }) => {
   return (
-    <div className="flex flex-col items-start gap-4 w-52 lg:w-56 h-64 rounded-md cursor-pointer hover:bg-hover-primary active:bg-black-tersery transition-all duration-100 ease-in p-4  ">
+    <Link to={'/playlist'} className="flex flex-col items-start gap-4 w-52 lg:w-56 h-64 rounded-md cursor-pointer hover:bg-hover-primary active:bg-black-tersery transition-all duration-100 ease-in p-4  ">
       {/* Cover art */}
       <StackedFrames imageSrc={item.imgSrc} />
       
@@ -17,7 +18,7 @@ const PlaylistTile = ({ item }) => {
           {item.numberOfTracks} Tracks
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
 

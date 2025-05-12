@@ -2,7 +2,7 @@ import Player from "./Player"
 
 const BottomPlayer = () => {
   return (
-    <div className=" flex justify-between py-8 bg-black-secondary" >
+    <div className="z-40 flex justify-between py-8" >
         <div></div>
         
         <Player />

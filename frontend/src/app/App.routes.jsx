@@ -1,10 +1,22 @@
 import { Routes , Route } from "react-router-dom"
 import HomePage from "../pages/HomePage"
+import SearchPage from "../pages/SearchPage"
+import LibraryPage from "../pages/LibraryPage"
+import ProfilePage from '../pages/ProfilePage'
+import PlaylistPage from "../pages/playlist/PlaylistPage"
 
 const AppRoutes = () => {
   return (
     <Routes>
         <Route path="/" element={ <HomePage /> } />
+        <Route path="/search" element={ <SearchPage /> } />
+        <Route path="/library" element={ <LibraryPage /> } />
+
+        <Route path="/playlist" element={ <PlaylistPage /> } />
+        {/* Dynamic routes */}
+        <Route path="/profile/:slug" element={ <ProfilePage /> } />
+
+        
     </Routes>
   )
 }

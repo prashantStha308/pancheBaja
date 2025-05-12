@@ -1,4 +1,4 @@
-import TrackSeeker from "./Player/TrackSeeker"
+import TrackSeeker from "./TrackSeeker"
 
 const Player = () => {
   return (
