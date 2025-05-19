@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const UserScheme = mongoose.Schema({
+const artistSchema = mongoose.Schema({
     username: {
         type: String,
         required: true
@@ -17,28 +17,35 @@ const UserScheme = mongoose.Schema({
     gender:{
         type: String
     },
-    role: "user",
-    subscription:{
-        type: String,
-        enum: ['free','student','premium'],
-        required: true
-    },
+    role: "artist",
     imgLink: {
         type: String,
         default: "https://secure.gravatar.com/avatar/52168962f3d5dfc43a30c789f8fc03ef?s=96&d=mm&r=g",
         required: true
     },
-    likedTracks:[{
+    followers:{
+        type: Number,
+        default: 0
+    },
+    listeners:{
+        type: Number,
+        default: 0
+    },
+    tracks:[{
         type: mongoose.Types.ObjectId,
         ref: 'Track'
     }],
-    likedAlbums:[{
+    album:{
         type: mongoose.Types.ObjectId,
         ref: 'Album'
-    }],
+    },
     followedArtist:[{
         type: mongoose.Types.ObjectId,
         ref: 'Artist'
+    }],
+    likedTracks:[{
+        type: mongoose.Types.ObjectId,
+        ref: 'Track'
     }],
     savedPlaylist: [{
         type: mongoose.Types.ObjectId,
@@ -49,5 +56,5 @@ const UserScheme = mongoose.Schema({
     timestamps: true
 })
 
-const User = mongoose.model('User' , UserScheme);
-export default User;
+const Artist = mongoose.model( 'Artist' , artistSchema );
+export default Artist;

@@ -26,8 +26,6 @@ const MoveLeft = ({ scrollRef }) => {
         return () => element.removeEventListener( "scroll" , checkScrollEnd );
     } , [] )
 
-    console.log(atEndScroll);
-
     return (
         !atEndScroll &&(
             <button onClick={scrollRight} className="sticky -left-3 z-10 flex justify-end items-center w-20 text-white-tersery cursor-pointer p-3 opacity-70 hover:opacity-95 active:opacity-95 transition-all duration-100 ease-in isolate" style={{height: `${scrollRef.clientHeight}`}} >
