@@ -3,12 +3,15 @@ import mongoose from "mongoose";
 const UserScheme = mongoose.Schema({
     username: {
         type: String,
+        trim: true,
+        index: true,
         required: true
     },
     email:{
         type: String,
+        trim: true,
         unique: true,
-        required: true
+        required: true,
     },
     country: {
         type: String,
@@ -17,7 +20,12 @@ const UserScheme = mongoose.Schema({
     gender:{
         type: String
     },
-    role: "user",
+    role: {
+        type: String,
+        enum: ['user'],
+        default: 'user',
+        required: true
+    },
     subscription:{
         type: String,
         enum: ['free','student','premium'],
@@ -36,14 +44,34 @@ const UserScheme = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'Album'
     }],
-    followedArtist:[{
+    followed:{
+        artist:[{
+            type: mongoose.Types.ObjectId,
+            ref: 'Artist'
+        }],
+        user:[{
+            type: mongoose.Types.ObjectId,
+            ref: 'User'
+        }]
+    },
+    followersCount:{
+        type: Number,
+        default: 0,
+    },
+    followers:[{
         type: mongoose.Types.ObjectId,
-        ref: 'Artist'
+        ref: 'User'
     }],
-    savedPlaylist: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Playlist'
-    }]
+    playlist:{
+        saved:[{
+            type: mongoose.Types.ObjectId,
+            ref: 'Playlist'
+        }],
+        created:{
+            type: mongoose.Types.ObjectId,
+            ref: 'Playlist'
+        }
+    },
 },
 {
     timestamps: true

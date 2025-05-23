@@ -1,6 +1,6 @@
 import express from "express";
 import { trackUpload } from "../config/multer.config.js";
-import { createTrack } from "../controllers/track.controller.js";
+import { createTrack, getAllTracks } from "../controllers/track.controller.js";
 
 const trackRouter = express.Router();
 
@@ -9,8 +9,6 @@ trackRouter.post( '/' , trackUpload.fields([
     { name: 'coverArt' , maxCount: 1 }
 ]) , createTrack );
 
-trackRouter.get( '/' , ( req , res )=>{
-    res.status(200).json({success: true , message: "HEHEEH"});
-} );
+trackRouter.get( '/' , getAllTracks );
 
 export default trackRouter;

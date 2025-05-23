@@ -5,27 +5,25 @@ const albumSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    totalSongs:{
+    totalTracks:{
         type: Number,
         default: 0
     },
+    trackList: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Track'
+    }],
     totalDuration:{
         type: String,
-        default: '00:00:00'
-    },
-    lastUpdated:{
-        type: Date(),
-        default: Date.now()
+        default: '00:00:00',
+        required: true,
+        match: /^[0-9]+(:[0-5][0-9]){2}$/ //exactly matches HH:MM:SS format
     },
     artists: [{
         type: mongoose.Types.ObjectId,
         ref: 'Artist'
     }],
-    trackList: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Track'
-    }],
-    followers:{
+    saves:{
         type: Number,
         default: 0
     },

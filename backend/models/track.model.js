@@ -7,32 +7,41 @@ const trackSchema = mongoose.Schema({
         trim: true
     },
     artists: [{
-        type: String,
-        default: 'Unknown Artist',
-        trim: true
+        type: mongoose.Types.ObjectId,
+        ref: 'Artist'
     }],
     album: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Album'
+    },
+    duration:{
         type: String,
-        default: 'Unknown Album'
+        default: '00:00:00',
+        required: true,
+        match: /^[0-9]+(:[0-5][0-9]){2}$/
     },
     genre: [{
-        type: String
+        type: String,
     }],
-    audioUrl:{
-        type: String,
-        required: true
+    audio:{
+        src:{
+            type: String,
+            required: true
+        },
+        publicId: {
+            type: String,
+            required: true
+        }
     },
-    audioPublicId:{
-        type: String,
-        required: true
-    },
-    imageUrl:{
-        type: String,
-        default: null
-    },
-    imagePublicId:{
-        type: String,
-        default: null
+    image:{
+        src:{
+            type: String,
+            default: null
+        },
+        imagePublicId:{
+            type: String,
+            default: null
+        }
     },
     type:{
         type: String,

@@ -5,7 +5,6 @@ import Section from "../components/Section.jsx";
 
 const HomePage = () => {
 
-  // design a upload button on figma
 
   const testData = [
     {

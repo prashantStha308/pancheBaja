@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 
 const artistSchema = mongoose.Schema({
-    username: {
+    name: {
         type: String,
+        trim: true,
         required: true
     },
     email:{
         type: String,
+        trim: true,
         unique: true,
         required: true
     },
@@ -17,13 +19,17 @@ const artistSchema = mongoose.Schema({
     gender:{
         type: String
     },
-    role: "artist",
+    role: {
+        type: String,
+        enum: ['artist'],
+        default: 'artist',
+    },
     imgLink: {
         type: String,
         default: "https://secure.gravatar.com/avatar/52168962f3d5dfc43a30c789f8fc03ef?s=96&d=mm&r=g",
         required: true
     },
-    followers:{
+    followersCount:{
         type: Number,
         default: 0
     },
@@ -39,10 +45,16 @@ const artistSchema = mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: 'Album'
     },
-    followedArtist:[{
-        type: mongoose.Types.ObjectId,
-        ref: 'Artist'
-    }],
+    followed:{
+        artist:[{
+            type: mongoose.Types.ObjectId,
+            ref: 'Artist'
+        }],
+        user:{
+            type: mongoose.Types.ObjectId,
+            ref: 'User'
+        }
+    },
     likedTracks:[{
         type: mongoose.Types.ObjectId,
         ref: 'Track'
