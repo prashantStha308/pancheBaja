@@ -1,61 +1,74 @@
 import Track from "../models/track.model.js";
 import mongoose from "mongoose";
-import { getAllData, getDataById, setError } from "./generic.controller.js";
+import { getAllData, getDataById } from "./generic.controller.js";
+import { processTrackUpload, setError } from "./utils.controller.js";
 import { IMAGE_DEFAULT_URL } from "../constants.js";
-import { uploadToCloudinary } from "../services/cloudinary.services.js";
+import { deleteFromCloudinary, uploadToCloudinary } from "../services/cloudinary.services.js";
 
-export const createTrack = async( req , res ) =>{
+// POST
+export const createTrack = async (req, res) => {
+    console.log("createTask hit");
     try {
-        const body = res.body;
-        let coverArt = { secureUrl: IMAGE_DEFAULT_URL  }
-        let track = {};
-
-        if( !body.title || !req.files.track ){
-            return setError( res , 400 , "Required fields not set"  );
+        const body = req.body;
+        console.log(req.body);
+        // Validate request
+        if (!body.title || !req.files.track ) {
+            return res.status(400).json({
+                success: false,
+                message: "Required Fields not met"
+            });
         }
+        
+        // Upload audio file to Cloudinary
+        const trackRes = await processTrackUpload( req.files.track[0] , 'track' , 'video' );
+        
+        // initializing 
+        let imageUrl = IMAGE_DEFAULT_URL;
+        let imagePublicId = "";
+        if (req.files.coverArt && req.files.coverArt[0]) {
+            const imageFile = req.files.coverArt[0];
+            const imageRes = await uploadToCloudinary(
+                imageFile.buffer, 
+                "image", 
+                "image"
+            );
 
-        if( req.files.track[0] ){
-            const trackBuffer = Buffer.from(req.files.track[0]);
-            const res = await uploadToCloudinary( trackBuffer , 'video' , 'track' );
-            if( !res ){
-                throw new Error( res );
-            }
-            track = {
-                publicId: res.public_id,
-                secureUrl: res.secure_url,
-                displayName: res.display_name,
-                bytes: res.bytes
-            }
+            imageUrl = imageRes.secure_url;
+            imagePublicId = imageRes.public_id;
         }
-
-        if( req.files.coverArt[0]){
-            const imageBuffer = Buffer.from(req.files.coverArt[0]);
-            const res = await uploadToCloudinary( imageBuffer , 'image' , 'image' );
-            if( !res ){
-                throw new Error( res );
-            }
-            coverArt = {
-                publicId: res.public_id,
-                secureUrl: res.secure_url,
-                displayName: res.display_name,
-                bytes: res.bytes
-            };
-        }
-
-        const updatedBody = {
-            ...body,
-            ...track,
-            ...coverArt
-        }
-
-        const newTrack = new Track(updatedBody);
+        
+        // Create music document in MongoDB
+        const newTrack = new Track({
+            title: body.title,
+            // artists: [body.artist],
+            track:{
+                src: trackRes.secure_url,
+                publicId: trackRes.public_id
+            },
+            image:{
+                src: imageUrl,
+                publicId: imagePublicId
+            },
+        });
+        
+        // Save to database
         await newTrack.save();
-
+        console.log(newTrack);
+        
+        return res.status(201).json({
+            success: true,
+            data: newTrack,
+            message: "Music uploaded successfully"
+        });
+        
     } catch (error) {
-        return setError( res , 500 , error );
+        console.error("Error in createTrack:", error);
+        setError ( res , 500 , error );
     }
-}
+};
 
+
+// GET controllers
 export const getAllTracks = async ( req , res )=> {
     try {
         await getAllData( Track , req , res );
@@ -107,3 +120,44 @@ export const getTrackByArtist = async ( req , res ) => {
         return setError( res , 500 , error );
     }
 }
+
+// DELETE Controllers
+
+export const deleteTrack = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(404).json({ success: false, message: "Invalid ID" });
+        }
+
+        const target = await Track.findById(id);
+        if (!target) {
+            return res.status(404).json({ success: false, message: "Track not found" });
+        }
+
+        // Attempt to delete from Cloudinary
+        try {
+            await deleteFromCloudinary( target.track.public_id , 'video');
+        } catch (error) {
+            console.error("Cloudinary deletion failed:", error);
+        }
+
+        // Delete Track
+        await Track.findByIdAndDelete(id);
+
+        return res.status(200).json({ success: true, message: "Track deleted successfully." });
+
+    } catch (error) {
+        console.error("Deletion failed:", error);
+        setError( 500 , error );
+    }
+};
+
+// export const deleteAll = async ( req , res ) => {
+//     try {
+//         await Track.deleteMany();
+//         return { success: true , message: "Deleted all tracks" };
+//     } catch (error) {
+//         setError( 500 , error );
+//     }
+// }

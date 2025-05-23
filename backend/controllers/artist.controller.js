@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Artist from "../models/artist.model";
-import { getAllData, setError } from "./generic.controller";
+import { getAllData } from "./generic.controller";
+import { setError } from "./utils.controller";
 
 
 export const createArtist = async ( req , res )=>{

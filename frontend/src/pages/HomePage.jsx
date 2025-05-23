@@ -67,12 +67,12 @@ const HomePage = () => {
   ]
 
   return (
-    <div className="flex flex-col gap-8 w-full lg:w-[70dvw] " >
-      <div className="" >
+    <div className="flex flex-col gap-8 w-full lg:w-[70dvw] justify-center " >
+      {/* <div className=" flex flex-col gap-4 " > */}
         <Section data={testData} title={"Top Hits"} Tile={PlaylistTile} />
         <Section data={testArtist} title={"Top Artists on Panche Baja"} Tile={ArtistTile} />
         <Section data={testArtist} title={"Popular Ablums"} Tile={AlbumTile} />
-      </div>
+      {/* </div> */}
     </div>
   )
 }

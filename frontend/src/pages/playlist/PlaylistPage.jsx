@@ -1,27 +1,12 @@
 import { useParams } from "react-router-dom"
 import usePlaylistStore from "../../store/playlist.store";
-import { useQuery } from "@tanstack/react-query"
-import { getPlaylist } from "../../queries/playlist.queries";
-import Loader from "../../components/Loader";
 import ProfilePicture from "../../components/icons/ProfilePicture";
 import PlayBtn from "../../components/Button/PlayBtn";
 
 const PlaylistPage = () => {
 	
-	const { slug } = useParams();
+	const { id } = useParams();
 	const { setPlaylistPage } = usePlaylistStore();
-	// const { data , isLoading , isError } = useQuery({
-	// 	queryFn:()=>getPlaylist(slug),
-	// 	queryKey: [slug]
-	// })
-
-	// if( isLoading ){
-	// 	return <Loader />
-	// }
-
-	// if( data.success ){
-	// 	setPlaylistPage(data.data || "");
-	// }
 
 	return (
 		<section className="flex flex-col gap-8 items-start mt-14 w-full lg:w-[70dvw]" >

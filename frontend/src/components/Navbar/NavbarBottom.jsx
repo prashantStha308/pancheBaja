@@ -31,7 +31,7 @@ const NavbarBottom = () => {
             </div>
         </Link>
 
-        <Link className="px-3 py-1 rounded-md active:bg-black-tersery " >
+        <Link className="px-3 py-1 rounded-md active:bg-black-tersery" to={'/upload/track'} >
             <div>
                 <Add size={35} strokeWidth={5} />
             </div>

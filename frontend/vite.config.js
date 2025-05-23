@@ -9,6 +9,11 @@ export default defineConfig({
     tailwindcss(),
   ],
   server:{
-    allowedHosts:['6532-2400-1a00-bd11-761a-559f-959b-99ce-e818.ngrok-free.app']
+    proxy:{
+      '/api':{
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      }
+    },
   }
 })

@@ -26,7 +26,7 @@ const AppContent = () => {
 			<div className="sticky bottom-0 left-0 right-0 bg-black-secondary z-40" >
 				<BottomPlayer />
 				<div className="block md:hidden" >
-				<NavbarBottom />
+					<NavbarBottom />
 				</div>
 			</div>
 		</main>

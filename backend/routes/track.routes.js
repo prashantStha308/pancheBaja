@@ -1,6 +1,6 @@
 import express from "express";
 import { trackUpload } from "../config/multer.config.js";
-import { createTrack, getAllTracks } from "../controllers/track.controller.js";
+import { createTrack, deleteTrack, getAllTracks } from "../controllers/track.controller.js";
 
 const trackRouter = express.Router();
 
@@ -10,5 +10,7 @@ trackRouter.post( '/' , trackUpload.fields([
 ]) , createTrack );
 
 trackRouter.get( '/' , getAllTracks );
+
+trackRouter.delete( '/:id' , deleteTrack );
 
 export default trackRouter;

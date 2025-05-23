@@ -2,19 +2,19 @@ import { create } from "zustand";
 
 const PlaylistStore = create( ( set ) => ({
     // states
-    playlist: [],
-    playlistPage: {},
+    currentPlaylist: {},
+    visitingPlaylist: {},
 
     // setters
-    setPlaylist: (playlist)=>{set({playlist: playlist})},
-    setPlaylistPage: ( playlistPage )=>{ set({playlistPage: playlistPage}) },
+    setCurrentPlaylist: (playlist)=>{set({currentPlaylist: playlist})},
+    setVisitingPlaylist: ( playlist )=>{ set({visitingPlaylist: playlist}) },
 
     // services
     addTrack: ( track ) =>{
 
-        set((state)=>{ state.playlist.some( item => item._id === track._id ) ? [ ...state.playlist.filter(item=> item._id !== track._id), track ]  : [...state.playlist , track] });
+        set((state)=>{ state.currentPlaylist.some( item => item._id === track._id ) ? [ ...state.currentPlaylist.filter(item=> item._id !== track._id), track ]  : [...state.currentPlaylist , track] });
     },
-    removeTrack: (id)=>{ set( state=>{ state.playlist.filter( item => item._id !== id ) } ) },
+    removeTrack: (id)=>{ set( state=>{ state.currentPlaylist.filter( item => item._id !== id ) } ) },
 
 
 }) );

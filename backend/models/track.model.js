@@ -23,7 +23,7 @@ const trackSchema = mongoose.Schema({
     genre: [{
         type: String,
     }],
-    audio:{
+    track:{
         src:{
             type: String,
             required: true
@@ -38,7 +38,7 @@ const trackSchema = mongoose.Schema({
             type: String,
             default: null
         },
-        imagePublicId:{
+        publicId:{
             type: String,
             default: null
         }

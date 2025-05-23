@@ -1,18 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllTracks, getTrackById } from "../services/music.services";
+import { getAllTracks, getTrackById } from "../services/track.services.js";
 
 export const useAllTrackQuery = ( page = 1 , limit = 10 ) => {
     return useQuery({
         queryFn: () => getAllTracks( page , limit ),
-        queryKey: [ 'tracks' , { page , limit } ],
-        enabled: false
+        queryKey: [ 'tracks' , { page , limit } ]
     });
 }
 
 export const useTrackByIdQuery = (id) => {
     return useQuery({
         queryFn: () => getTrackById(id),
-        queryKey: [ 'track' , {id} ],
-        enabled: false
+        queryKey: [ 'track' , {id} ]
     })
 }

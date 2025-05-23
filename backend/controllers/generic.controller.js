@@ -1,11 +1,5 @@
 import mongoose from "mongoose";
-
-export const setError = ( res , status = 500, error ) => {
-
-    const message = typeof(error) == 'string' ? error : error instanceof Error ? error.message || "Unexpected Error Occured" : "Unknown Error Occured";
-
-    res.status( status ).json({ success: false , message: message});
-}
+import { setError } from "./utils.controller.js";
 
 export const getAllData = async ( model , req , res )=> {
 console.log(model);
@@ -35,6 +29,6 @@ export const getDataById = async( model , req , res ) => {
         }
         res.status(200).json({ success: true , data: response , message: "Data found" });
     } catch (error) {
-        return setError( 500 , error );
+        return setError ( 500 , error );
     }
 }

@@ -5,6 +5,10 @@ const albumSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    slug:{
+        type: String,
+        required: true
+    },
     totalTracks:{
         type: Number,
         default: 0

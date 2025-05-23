@@ -1,19 +1,29 @@
 import { Readable } from "stream";
 import cloudinary from "../config/cloudinary.config.js";
 
-export const uploadToCloudinary = async ( fileBuffer , resourceType = 'auto' , folder = 'track') => {
-    return new Promise( ( resolve , reject ) => {
+export const uploadToCloudinary = (fileBuffer, folder, resourceType = 'auto') => {
+    return new Promise((resolve, reject) => {
+        // Create a stream from the buffer
         const stream = Readable.from(fileBuffer);
-        const upload = cloudinary.uploader.upload_stream({
-            folder,
-            resource_type: resourceType
-        }, ( error , res )=> {
-            if( error ) { reject(error) }
-            resolve(res);
-        })
-        stream.pipe(upload);
-    } )
-}
+
+        // Create upload stream to Cloudinary
+        const uploadStream = cloudinary.uploader.upload_stream(
+            {
+                folder: folder,
+                resource_type: resourceType
+            },
+            (error, result) => {
+                if (error) {
+                    return reject(error);
+                }
+                resolve(result);
+            }
+        );
+
+        // Pipe the file buffer to the upload stream
+        stream.pipe(uploadStream);
+  });
+};
 
 export const deleteFromCloudinary = async ( publicId , resourceType ) => {
     try {

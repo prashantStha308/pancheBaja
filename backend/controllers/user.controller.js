@@ -1,5 +1,6 @@
 import User from "../models/user.model.js"
-import { getAllData, getDataById, setError } from "./generic.controller.js";
+import { getAllData, getDataById } from "./generic.controller.js";
+import { setError } from "./utils.controller.js";
 
 export const createUser = async( req , res )=>{
     try {
