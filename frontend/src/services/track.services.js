@@ -50,3 +50,33 @@ export const getTrackById = async( id ) => {
     }
 }
 
+
+// backend ma configure garnu xa, can't use this rn
+export const getTrackByQuery = async ( queryObj = {} , page = 1 , limit = 10 ) => {
+    try {
+        let queries = "?" ;
+        /* queryObj = { query: key, query:key , query: key } */
+        for( const query in queryObj ){
+            queries += `${encodeURIComponent(query)}=${encodeURIComponent(queryObj[query])}&`;
+        }
+        if (page > 0) {
+            queries += `page=${page}&`;
+        }
+
+        if (limit > 0) {
+            queries += `limit=${limit}&`;
+        }
+
+        // Remove & at end
+        queries = queries.replace(/&$/, "");
+
+        const res = await axios.get(`/api/track${queries}`);
+        if( !res.data.success ){
+            throw new Error(res.data.message);
+        }
+        return setSuccess(res.data);
+
+    } catch (error) {
+        return setError(error);
+    }
+}

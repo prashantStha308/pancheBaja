@@ -1,26 +1,26 @@
 import Track from "../models/track.model.js";
 import mongoose from "mongoose";
+import {parseBuffer} from "music-metadata";
 import { getAllData, getDataById } from "./generic.controller.js";
-import { processTrackUpload, setError } from "./utils.controller.js";
+import { processTrackUpload, setError, updateAffiliatedPlaylists } from "./utils.controller.js";
 import { IMAGE_DEFAULT_URL } from "../constants.js";
 import { deleteFromCloudinary, uploadToCloudinary } from "../services/cloudinary.services.js";
+import Playlist from "../models/playlist.model.js";
 
 // POST
 export const createTrack = async (req, res) => {
-    console.log("createTask hit");
     try {
         const body = req.body;
         console.log(req.body);
         // Validate request
         if (!body.title || !req.files.track ) {
-            return res.status(400).json({
-                success: false,
-                message: "Required Fields not met"
-            });
+            return setError( res , 400 , "Required Fields not met" );
         }
         
         // Upload audio file to Cloudinary
         const trackRes = await processTrackUpload( req.files.track[0] , 'track' , 'video' );
+        const metadata = await parseBuffer( req.files.track[0].buffer , 'audio/mpeg' );
+        const duration = metadata.format.duration;
         
         // initializing 
         let imageUrl = IMAGE_DEFAULT_URL;
@@ -49,11 +49,11 @@ export const createTrack = async (req, res) => {
                 src: imageUrl,
                 publicId: imagePublicId
             },
+            duration
         });
         
         // Save to database
         await newTrack.save();
-        console.log(newTrack);
         
         return res.status(201).json({
             success: true,
@@ -62,27 +62,18 @@ export const createTrack = async (req, res) => {
         });
         
     } catch (error) {
-        console.error("Error in createTrack:", error);
-        setError ( res , 500 , error );
+        return setError ( res , 500 , error );
     }
 };
 
 
 // GET controllers
 export const getAllTracks = async ( req , res )=> {
-    try {
-        await getAllData( Track , req , res );
-    } catch (error) {
-        return setError( res , 500 , error );
-    }
+    await getAllData( Track , req , res );
 }
 
 export const getTrackById = async ( req , res )=>{
-    try {
-        await getDataById( Track , req , res );
-    } catch (error) {
-        return setError( res , 500 , error );
-    }
+    await getDataById( Track , req , res );
 }
 
 export const getTrackByName = async ( req , res ) => {
@@ -123,33 +114,32 @@ export const getTrackByArtist = async ( req , res ) => {
 
 // DELETE Controllers
 
-export const deleteTrack = async (req, res) => {
+export const deleteTrackById = async (req, res) => {
     try {
         const { id } = req.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(404).json({ success: false, message: "Invalid ID" });
+            return setError( res , 404 , "Invalid ID" );
         }
 
         const target = await Track.findById(id);
         if (!target) {
-            return res.status(404).json({ success: false, message: "Track not found" });
+            return setError( res , 404 , "Track not found" );
         }
 
-        // Attempt to delete from Cloudinary
-        try {
-            await deleteFromCloudinary( target.track.public_id , 'video');
-        } catch (error) {
-            console.error("Cloudinary deletion failed:", error);
-        }
+        // TOO SLOWW
 
+        // Delete image from cloudinary
+        await deleteFromCloudinary( target.track.public_id , 'video');
         // Delete Track
         await Track.findByIdAndDelete(id);
+        // update playlists that has this track
+        await updateAffiliatedPlaylists();
 
         return res.status(200).json({ success: true, message: "Track deleted successfully." });
 
     } catch (error) {
         console.error("Deletion failed:", error);
-        setError( 500 , error );
+        return setError( 500 , error );
     }
 };
 
@@ -158,6 +148,6 @@ export const deleteTrack = async (req, res) => {
 //         await Track.deleteMany();
 //         return { success: true , message: "Deleted all tracks" };
 //     } catch (error) {
-//         setError( 500 , error );
+//         return setError( 500 , error );
 //     }
 // }

@@ -9,36 +9,36 @@ const HomePage = () => {
   const testData = [
     {
       title: "Top Hits",
-      createdBy: "Panche Baja",
+      createdBy: "",
       numberOfTracks: 50,
       imgSrc: '/assets/laijauMalai.webp'
     },
     { title: "Rock Hits",
-      createdBy: "Panche Baja",
+      createdBy: "",
       numberOfTracks: 50,
       imgSrc: '/assets/attiBhayo.jpeg'
      },
      {
       title: "Tender Lifts",
-      createdBy: "Panche Baja",
+      createdBy: "",
       numberOfTracks: 50,
       imgSrc: '/assets/aadiiItyadii.jpg'
      },
      {
       title: "Lovely Upbeats",
-      createdBy: "Panche Baja",
+      createdBy: "",
       numberOfTracks: 50,
       imgSrc: '/assets/sastoMutu.png'
      },
      {
       title: "Timeless hits",
-      createdBy: "Panche Baja",
+      createdBy: "",
       numberOfTracks: 50,
       imgSrc: '/assets/narayanGopal.jpg'
      },
      {
       title: "Newari Expendition",
-      createdBy: "Panche Baja",
+      createdBy: "",
       numberOfTracks: 50,
       imgSrc: '/assets/kumaSagar.jpeg'
      },

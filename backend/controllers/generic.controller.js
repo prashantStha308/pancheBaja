@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import { setError } from "./utils.controller.js";
 
 export const getAllData = async ( model , req , res )=> {
-console.log(model);
     try {
         let { page= 1 , limit= 10 } = req.query;
         page = Math.max( 1 , parseInt(page) ) ;
@@ -12,7 +11,7 @@ console.log(model);
         res.status(200).json({ success: true , data: response , message: "Successfully fetched user's datas" });
 
     } catch (error) {
-        return setError( 500 , error );
+        return setError( res , 500 , error );
     }
 }
 
@@ -20,15 +19,15 @@ export const getDataById = async( model , req , res ) => {
     try {
         const { id } = req.params;
         if( !mongoose.Types.ObjectId.isValid(id) ){
-            return setError( 404 , "Invalid Id" );
+            return setError( res , 404 , "Invalid Id" );
         }
 
         const response = await model.findById(id).limit(1);
         if( !response ){
-            return setError( 404 , "Data of that Id not found" );
+            return setError( res , 404 , "Data of that Id not found" );
         }
         res.status(200).json({ success: true , data: response , message: "Data found" });
     } catch (error) {
-        return setError ( 500 , error );
+        return setError ( res , 500 , error );
     }
 }

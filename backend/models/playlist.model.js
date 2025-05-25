@@ -4,41 +4,42 @@ const playlistSchema = mongoose.Schema({
     visibility:{
         type: String,
         enum: [ 'public' , 'private' , 'unlisted' ],
-        default: 'public'
+        default: 'public',
+        required: true
     },
     title: {
         type: String,
         required: true
     },
     artists: [{
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Artist'
     }],
+    createdBy:{
+        type: String,
+        required: true,
+        default: "Unknown User"
+    },
     totalTracks:{
         type: Number,
         default: 0
     },
     trackList: [{
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Track'
     }],
     image:{
         type: String,
-        required: true
-    },
-    totalDuration:{
-        type: String,
-        default: '00:00:00',
         required: true,
-        match: /^[0-9]+(:[0-5][0-9]){2}$/ //exactly matches HH:MM:SS format
+    },
+    duration:{
+        type: Number,
+        default: 0 ,
+        required: true,
     },
     saves:{
         type: Number,
         default: 0
-    }
-    ,lastUpdated:{
-        type: Date,
-        default: Date.now
     },
 },
 {

@@ -7,18 +7,17 @@ const trackSchema = mongoose.Schema({
         trim: true
     },
     artists: [{
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Artist'
     }],
     album: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Album'
     },
     duration:{
-        type: String,
-        default: '00:00:00',
+        type: Number,
         required: true,
-        match: /^[0-9]+(:[0-5][0-9]){2}$/
+        default: 0
     },
     genre: [{
         type: String,

@@ -1,10 +1,11 @@
-import { useAllTrackQuery } from '../queries/track.queries';
+// import { useAllTrackQuery } from '../queries/track.queries.js';
+import { useAllPlaylistQuery } from "../queries/playlist.queries.js";
 import Loader from "../components/Loader.jsx";
 import PlaylistTile from "../components/Tiles/PlaylistTile.jsx"
 
 const Test = () => {
 
-	const { data  = {} , isPending , isError , error } = useAllTrackQuery();
+	const { data  = {} , isPending , isError , error } = useAllPlaylistQuery();
 
 	if( isPending ){
 		return <Loader />

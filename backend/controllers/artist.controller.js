@@ -21,6 +21,15 @@ export const createArtist = async ( req , res )=>{
     }
 }
 
+// incomplete
+export const switchToArtist = async(req , res) => {
+    try {
+        const body = req.body;
+    } catch (error) {
+        return setError( res , 500 , error );
+    }
+}
+
 // comment out later
 export const getAllArtists = async( req , res ) => {
     try {
@@ -37,7 +46,11 @@ export const getArtistById = async( req , res ) => {
             return setError( res , 404 , "Invalid Artist" );
         }
 // populate garda, later make it more specific on which data to populate with, currently sabai data aauxa which is not performance friendly
-        const artist = await Artist.findById(id).populate('track').populate('album');
+        const populateOptions = {
+            select: "title _id dateCreated",
+            options: { limit: 5 }
+        };
+        const artist = await Artist.findById(id).populate({ path:'track', ...populateOptions }).populate({ path:'playlist', ...populateOptions });
         if( !artist ){
             return setError( res , 404 , "Artist not Found" );
         }

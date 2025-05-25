@@ -4,7 +4,6 @@ import NavbarPlaylist from "../components/Navbar/NavbarPlaylist"
 import Navbar from "../components/Navbar/NavbarPrimary"
 import AppRoutes from "./App.routes"
 import { useLocation } from "react-router-dom"
-import PlaylistBackground from "../pages/playlist/PlaylistBackground.jsx"
 
 const AppContent = () => {
 	const location = useLocation();
@@ -21,7 +20,6 @@ const AppContent = () => {
 				<AppRoutes />
 			</div>
 
-			{ isPlaylistPage && <PlaylistBackground /> }
 
 			<div className="sticky bottom-0 left-0 right-0 bg-black-secondary z-40" >
 				<BottomPlayer />

@@ -12,7 +12,7 @@ const NavbarPlaylist = () => {
     const location = useLocation();
 
     useEffect( ()=>{
-        const path = location.pathname.substring(1) || "home";
+        const path = location.pathname.substring(1).split('/')[0] || "home";
         setCurrentPage(path);
     } , [location] )
 
@@ -28,25 +28,25 @@ const NavbarPlaylist = () => {
                 <nav className=" hidden md:flex items-end gap-1" >
                     <Link to={'/'} >
                         <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "home" ? "bg-black-tersery/50 text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >
-                            <div className="flex items-center gap-4" >
-                                <Home size={25} strokeWidth={6} />
-                                <span className="font-medium text-sm lg:text-md " > Home </span>
+                            <div className="header-items" >
+                                <Home size={20} strokeWidth={6} />
+                                <span className="header-links " > Home </span>
                             </div>
                         </li>
                     </Link>
                     <Link to={'/search'} >
                         <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "search" ? "bg-black-tersery/50 text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >
-                            <div className="flex items-center gap-4" >
-                                <Search size={25} strokeWidth={6} />
-                                <span className="font-medium text-sm lg:text-md" > Search </span>
+                            <div className="header-items" >
+                                <Search size={20} strokeWidth={6} />
+                                <span className="header-links" > Search </span>
                             </div>
                         </li>
                     </Link>
                     <Link to={'/library'} >  
-                        <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "library" ? "bg-black-tersery/50 text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >  
-                            <div className="flex items-center gap-4" >
-                                <Library size={25} strokeWidth={6} />
-                                <span className="font-medium text-sm lg:text-md" > Library </span>
+                        <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "library" || currentPage === "playlist" ? "bg-black-tersery/50 text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >  
+                            <div className="header-items" >
+                                <Library size={20} strokeWidth={6} />
+                                <span className="header-links" > Library </span>
                             </div>
                         </li>
                     </Link>
@@ -55,7 +55,7 @@ const NavbarPlaylist = () => {
 
             {/* pp */}
             <div className="hidden md:block" >
-                <ProfilePicture src={"/assets/aadiiItyadii.jpg"} altText="aadiiItyadi" />
+                <ProfilePicture src={"/assets/aadiiItyadii.jpg"} altText="aadiiItyadi" size={35} />
             </div>
         </div>
         <hr className="bg-red-primary rounded-xs h-0.5 border-none" />

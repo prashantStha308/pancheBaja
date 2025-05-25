@@ -35,5 +35,17 @@ body,html{
 }
 
 .header{
-    @apply sticky top-0 px-4 md:px-14 lg:px-48 py-4 md:pt-8  z-50;
+    @apply sticky top-0 px-4 md:px-14 lg:px-48 py-4 md:pt-3 z-50;
+}
+
+.header-title{
+    @apply md:hidden text-xl font-extrabold text-red-primary underline;
+}
+
+.header-items{
+    @apply flex items-center gap-4
+}
+
+.header-links{
+    @apply font-medium text-xs;
 }

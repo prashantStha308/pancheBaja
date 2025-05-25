@@ -1,9 +1,9 @@
 import axios from "axios"
 import {setError , setSuccess} from "./utils.services.js"
 
-export const getAllPlaylist = async ( page = 1 , limit = 8 )=>{
+export const getAllPlaylist = async ( page = 1 , limit = 10 )=>{
     try {
-        const res = await axios.get(`/api/music?page=${page}&limit=${limit}`);
+        const res = await axios.get(`/api/playlist?page=${page}&limit=${limit}`);
         if( res.data?.success ){
             return setSuccess(res?.data);
         }else{
@@ -14,9 +14,9 @@ export const getAllPlaylist = async ( page = 1 , limit = 8 )=>{
     }
 }
 
-export const getPlaylistBySlug = async ( slug ) =>{
+export const getPlaylistByid = async ( id ) =>{
     try {
-        const res = await axios.get(`/api/music/${slug}`);
+        const res = await axios.get(`/api/playlist/${id}`);
         if( res.data?.success ){
             return setSuccess(res?.data);
         }else{
