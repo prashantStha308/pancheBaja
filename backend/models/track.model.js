@@ -44,6 +44,7 @@ const trackSchema = mongoose.Schema({
     },
     type:{
         type: String,
+        enum: ['track'],
         default: 'track'
     },
     likes:{

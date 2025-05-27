@@ -1,9 +1,9 @@
 import { Routes , Route } from "react-router-dom"
-import HomePage from "../pages/HomePage"
-import SearchPage from "../pages/SearchPage"
-import LibraryPage from "../pages/LibraryPage"
-import ProfilePage from '../pages/ProfilePage'
-import PlaylistPage from "../pages/playlist/PlaylistPage"
+import HomeLayout from "../pages/HomeLayout"
+import SearchLayout from "../pages/SearchLayout"
+import LibraryLayout from "../pages/LibraryLayout"
+import ProfileLayout from '../pages/ProfileLayout'
+import PlaylistLayout from "../pages/playlist/PlaylistLayout"
 import UploadTrack from "../pages/create/UploadTrack"
 import Test from "../pages/Test"
 
@@ -13,18 +13,17 @@ const AppRoutes = () => {
       {/* for test */}
       <Route path="/test" element={ <Test /> } />
 
+        <Route path="/" element={ <HomeLayout /> } />
+        <Route path="/search" element={ <SearchLayout /> } />
+        <Route path="/library" element={ <LibraryLayout /> } />
 
-        <Route path="/" element={ <HomePage /> } />
-        <Route path="/search" element={ <SearchPage /> } />
-        <Route path="/library" element={ <LibraryPage /> } />
-
-        <Route path="/playlist/:id" element={ <PlaylistPage /> } />
+        <Route path="/playlist/:id" element={ <PlaylistLayout /> } />
         
         {/* UPLOAD ROUTES */}
         <Route path="/upload/track" element={ <UploadTrack /> } />
 
         {/* DYNAMIC ROUTES */}
-        <Route path="/profile/:slug" element={ <ProfilePage /> } />
+        <Route path="/profile/:slug" element={ <ProfileLayout /> } />
 
         
     </Routes>

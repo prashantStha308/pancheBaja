@@ -6,13 +6,13 @@ export default function StackedFrames({ imageSrc, altText = "Album cover" }) {
   return (
     <div className="relative w-40 h-40 ">
       {/* Background rectangle */}
-      <div className="absolute top-2 left-2 w-full h-full rounded-sm aspect-square bg-neutral-800 shadow-md" />
+      <div className="absolute top-1  w-full h-full rounded-sm aspect-square bg-neutral-800 shadow-md" />
       
       {/* Middle rectangle */}
-      <div className="absolute top-1 left-1 w-full h-full rounded-sm aspect-square bg-neutral-700 shadow-md" />
+      <div className="absolute top-0.5 w-full h-full rounded-sm aspect-square bg-neutral-700 shadow-md" />
       
       {/* Front rectangle with image */}
-      <div className="absolute top-0 left-0 w-full h-full rounded-sm aspect-square bg-[#696969] overflow-hidden shadow-lg">
+      <div className="absolute top-0  w-full h-full rounded-sm aspect-square bg-[#696969] overflow-hidden shadow-lg">
         {imageSrc && (
           <img 
             src={imageSrc} 

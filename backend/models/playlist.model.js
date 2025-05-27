@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+// add an "type" field as well
+
 const playlistSchema = mongoose.Schema({
     visibility:{
         type: String,
@@ -16,9 +18,9 @@ const playlistSchema = mongoose.Schema({
         ref: 'Artist'
     }],
     createdBy:{
-        type: String,
-        required: true,
-        default: "Unknown User"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        // required: true
     },
     totalTracks:{
         type: Number,
@@ -40,6 +42,11 @@ const playlistSchema = mongoose.Schema({
     saves:{
         type: Number,
         default: 0
+    },
+    type:{
+        type: String,
+        enum: ['playlist'],
+        default: 'playlist'
     },
 },
 {

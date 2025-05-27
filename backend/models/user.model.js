@@ -31,10 +31,15 @@ const UserScheme = mongoose.Schema({
         enum: ['free','student','premium'],
         required: true
     },
-    imgLink: {
-        type: String,
-        default: "https://secure.gravatar.com/avatar/52168962f3d5dfc43a30c789f8fc03ef?s=96&d=mm&r=g",
-        required: true
+    image:{
+        src:{
+            type: String,
+            required: true
+        },
+        publicId: {
+            type: String,
+            required: true
+        }
     },
     likedTracks:[{
         type: mongoose.Types.ObjectId,

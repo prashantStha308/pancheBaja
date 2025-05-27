@@ -5,15 +5,15 @@ const AlbumTile = ({ item }) => {
     const [isLoaded, setIsLoaded] = useState(false);
 
     return (
-        <div className="flex flex-col items-center gap-4 w-52 lg:w-56 h-72 rounded-md cursor-pointer hover:bg-hover-primary active:bg-black-tersery transition-all duration-100 ease-in p-4 flex-shrink-0">
+        <div className="flex flex-col items-center gap-4 w-fit h-72 rounded-md cursor-pointer hover:bg-hover-primary active:bg-black-tersery transition-all duration-100 ease-in p-4 flex-shrink-0">
             {/* Cover art */}
-            <div className="rounded-full w-48">
+            <div className="rounded-full w-40">
                 {
                     item.imgSrc || isLoaded ? (
                         <img 
                             src={item.imgSrc} 
                             alt={item.name} 
-                            className={`w-48 h-48 object-cover transition-opacity duration-300 rounded-full ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+                            className={`w-40 h-40 object-cover transition-opacity duration-300 rounded-full ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
                             onLoad={() => setIsLoaded(true)}
                             onError={() => setIsLoaded(false)}
                         />

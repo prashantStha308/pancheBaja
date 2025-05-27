@@ -17,12 +17,12 @@ const NavbarPlaylist = () => {
     } , [location] )
 
   return (
-    <header className="header bg-black-secondary/50 backdrop-blur-md" >
+    <header className="header bg-black-secondary/70 backdrop-blur-md" >
         <div className="flex items-end justify-between pb-1" >
             {/* left */}
-            <div className="flex items-end gap-8" >
+            <div className="flex items-end gap-4" >
                 <Link to={'/'} className="flex items-end gap-3 px-2" >
-                    <Logo size={45} />
+                    <Logo size={40} />
                     <span className="md:hidden text-xl font-extrabold text-red-primary underline" > Panche Baja </span>
                 </Link>
                 <nav className=" hidden md:flex items-end gap-1" >

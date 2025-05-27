@@ -3,7 +3,7 @@ import ArtistTile from "../components/Tiles/ArtistTile.jsx";
 import AlbumTile from "../components/Tiles/AlbumTile.jsx";
 import Section from "../components/Section.jsx";
 
-const HomePage = () => {
+const HomeLayout = () => {
 
 
   const testData = [
@@ -77,4 +77,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default HomeLayout

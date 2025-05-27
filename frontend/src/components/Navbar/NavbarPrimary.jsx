@@ -20,7 +20,7 @@ const Navbar = () => {
     <header className="header bg-black-primary" >
         <div className="flex items-end justify-between pb-1" >
             {/* left */}
-            <div className="flex items-end gap-8" >
+            <div className="flex items-end gap-4" >
                 <Link to={'/'} className="flex items-end gap-3 px-2" >
                     <Logo size={40} />
                     <span className="md:hidden text-xl font-extrabold text-red-primary underline" > Panche Baja </span>

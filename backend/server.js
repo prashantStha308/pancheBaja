@@ -6,6 +6,12 @@ import userRouter from "./routes/users.route.js"
 import trackRouter from "./routes/track.routes.js";
 import playlistRouter from "./routes/playlist.routes.js";
 
+// models
+import Artist from "./models/artist.model.js";
+import User from "./models/user.model.js";
+import Playlist from "./models/playlist.model.js";
+import Album from "./models/album.model.js";
+
 config();
 const app = express();
 
