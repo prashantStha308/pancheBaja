@@ -12,11 +12,12 @@ export const uploadToCloudinary = (fileBuffer, folder, resourceType = 'auto') =>
                 folder: folder,
                 resource_type: resourceType
             },
-            (error, result) => {
+            (error, res) => {
                 if (error) {
                     return reject(error);
                 }
-                resolve(result);
+                console.log(res);
+                resolve(res);
             }
         );
 

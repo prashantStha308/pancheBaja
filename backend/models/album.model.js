@@ -7,6 +7,7 @@ const albumSchema = mongoose.Schema({
     },
     totalTracks:{
         type: Number,
+        required: true,
         default: 0
     },
     trackList: [{
@@ -14,10 +15,9 @@ const albumSchema = mongoose.Schema({
         ref: 'Track'
     }],
     totalDuration:{
-        type: String,
-        default: '00:00:00',
+        type: Number,
+        default: 0,
         required: true,
-        match: /^[0-9]+(:[0-5][0-9]){2}$/ //exactly matches HH:MM:SS format
     },
     artists: [{
         type: mongoose.Schema.Types.ObjectId,

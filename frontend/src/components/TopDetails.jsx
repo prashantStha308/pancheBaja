@@ -24,9 +24,9 @@ const TopDetails = ({ visitingPage }) => {
                 <div className="flex items-center gap-4 md:gap-16" >
                     <div>
                         {/* for medium to larger sclae */}
-                        <img src={visitingPage.image} alt={""} width={190} height={190} className=" rounded-xs hidden md:block aspect-square object-cover " />
+                        <img src={visitingPage.image.src} alt={""} width={190} height={190} className=" rounded-xs hidden md:block aspect-square object-cover " />
                         {/* for smaller scale */}
-                        <img src={visitingPage.image} alt={""} width={140} height={140} className=" rounded-xs md:hidden aspect-square object-cover " />
+                        <img src={visitingPage.image.src} alt={""} width={140} height={140} className=" rounded-xs md:hidden aspect-square object-cover " />
                     </div>
                     <article className="w-fit flex flex-col gap-2">
                         <p className=" capitalize font-medium text-sm md:text-lg" > { visitingPage?.type } </p>

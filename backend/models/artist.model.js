@@ -34,21 +34,25 @@ const artistSchema = mongoose.Schema({
             required: true
         }
     },
-    followersCount:{
-        type: Number,
-        default: 0
-    },
-    monthlyListeners:{
-        type: Number,
-        default: 0
-    },
     tracks:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Track'
     }],
-    album:{
+    albums:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Album'
+    }],
+    followersCount:{
+        type: Number,
+        default: 0
+    },
+    followers:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    monthlyListeners:{
+        type: Number,
+        default: 0
     },
     followed:{
         artist:[{

@@ -5,7 +5,6 @@ import { getAllData, getDataById } from "./generic.controller.js";
 import { processTrackUpload, setError, updateAffiliatedPlaylists } from "./utils.controller.js";
 import { IMAGE_DEFAULT_URL } from "../constants.js";
 import { deleteFromCloudinary, uploadToCloudinary } from "../services/cloudinary.services.js";
-import Playlist from "../models/playlist.model.js";
 
 // POST
 export const createTrack = async (req, res) => {
@@ -121,25 +120,33 @@ export const deleteTrackById = async (req, res) => {
             return setError( res , 404 , "Invalid ID" );
         }
 
-        const target = await Track.findById(id);
+        const target = await Track.findByIdAndDelete(id);
         if (!target) {
             return setError( res , 404 , "Track not found" );
         }
+        
+        res.status(200).json({ success: true, message: "Track deleted successfully." });
 
-        // TOO SLOWW
+        // need to fix
+        setImmediate( async()=>{
+            try {
+                if( target?.track?.public_id ){
+                    await deleteFromCloudinary( target.track.public_id , 'video');
+                }
 
-        // Delete image from cloudinary
-        await deleteFromCloudinary( target.track.public_id , 'video');
-        // Delete Track
-        await Track.findByIdAndDelete(id);
-        // update playlists that has this track
-        await updateAffiliatedPlaylists();
+                if( target?.image?.public_id === "" ){
+                    await deleteFromCloudinary( target.image.public_id , 'image' );
+                }
+                await updateAffiliatedPlaylists(id);
+            } catch (error) {
+                console.error("Failed to delete track or image information, or update playlists:", error);
+            }
+        } )
 
-        return res.status(200).json({ success: true, message: "Track deleted successfully." });
 
     } catch (error) {
         console.error("Deletion failed:", error);
-        return setError( 500 , error );
+        return setError( res , 500 , error );
     }
 };
 

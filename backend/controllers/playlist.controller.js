@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
 import Playlist from "../models/playlist.model.js";
 import { setError } from "./utils.controller.js";
-import { getAllData  } from "./generic.controller.js";
 import { IMAGE_DEFAULT_URL } from "../constants.js";
 import Track from "../models/track.model.js";
-import { uploadToCloudinary } from "../services/cloudinary.services.js";
+import { deleteFromCloudinary, uploadToCloudinary } from "../services/cloudinary.services.js";
 
 export const getAllPlaylist = async( req , res ) => {
         try {
@@ -14,7 +13,7 @@ export const getAllPlaylist = async( req , res ) => {
 
         const response = await Playlist.find({}).skip( ( page - 1 ) * limit ).limit(limit).populate({
             path: 'trackList',
-            select: '_id title artist duration image',
+            select: '_id title artist duration track image',
             populate:{
                 path: 'artists',
                 select: '_id name'
@@ -39,7 +38,7 @@ export const getPlaylistById = async( req , res ) => {
 
             const response = await Playlist.findById(id).populate({
                 path: 'trackList',
-                select: '_id title artist duration image',
+                select: '_id title artist duration track image',
                 populate: {
                     path: 'artists',
                     select: '_id name'
@@ -58,7 +57,7 @@ export const getPlaylistById = async( req , res ) => {
 export const createPlaylist = async ( req , res ) => {
     try {
         const body = req.body;
-        let image = IMAGE_DEFAULT_URL;
+        let image = { src:IMAGE_DEFAULT_URL , publicId: "" };
 
         if( !body.title || !body.visibility ){
             return setError( res , 400 , "Required Fields not met" );
@@ -79,10 +78,13 @@ export const createPlaylist = async ( req , res ) => {
 
         // manage image upload
         if( !req.file ){
-            image = reorderedTrackList[0].image.src;
+            image.src = reorderedTrackList[0].image.src;
         }else{
             const imgRes = await uploadToCloudinary( req.file.buffer , 'image' , 'image' );
-            image = imgRes.secure_url
+            image = {
+                src: imgRes.secure_url,
+                publicId: imgRes.public_id
+            }
         }
 
         // calculate total duration
@@ -132,5 +134,31 @@ export const updatePlaylist = async( req , res ) => {
 
     } catch (error) {
         
+    }
+}
+
+export const deletePlaylistById = async( req , res ) =>{
+    try {
+        const {id} = req.params;
+        if( !mongoose.Types.ObjectId.isValid(id) ){
+            return setError( res , 404 , "Invalid Id" );
+        }
+
+        const target = await Playlist.findByIdAndDelete(id);
+        res.status(200).json({ success: true , message: "Playlist Deleted Successfully" });
+
+        // need to fix
+        if( target?.image?.publicId !== "" ){
+            setInterval( async()=>{
+                try {
+                    await deleteFromCloudinary( target?.image?.publicId , 'image' );
+                } catch (error) {
+                    console.error("Error deleting playlist's coverArt from Cloudinary: ",error);
+                }
+            } )
+        }
+
+    } catch (error) {
+        return setError( res , 500 , error );
     }
 }
