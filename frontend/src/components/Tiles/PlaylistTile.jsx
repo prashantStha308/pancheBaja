@@ -3,7 +3,7 @@ import StackedFrames from "./StackedFrames";
 import usePlaylistStore from "../../store/playlist.store";
 
 const PlaylistTile = ({ item }) => {
-	console.log(item);
+	// console.log(item);
 
 	const navigator = useNavigate();
 	const { setVisitingPlaylist } = usePlaylistStore();
@@ -14,18 +14,18 @@ const PlaylistTile = ({ item }) => {
 	}
 
 	return (
-		<div onClick={handleLink} className="flex flex-col items-start gap-4 w-fit h-64 rounded-md cursor-pointer group hover:bg-hover-primary active:bg-black-tersery transition-all duration-100 ease-in p-4">
+		<div onClick={handleLink} className="flex flex-col items-center gap-2 w-40 h-60 rounded-md cursor-pointer hover:bg-hover-primary active:bg-black-tersery transition-all duration-100 ease-in p-2 md:p-4 flex-shrink-0 font-text">
 			{/* Cover art */}
 			<StackedFrames imageSrc={ item.image.src} />
 			
-			<div className="flex flex-col gap-0.5 px-3 py-2 rounded-b-sm w-full ">
-				<h3 className="text-left font-bold text-sm lg:text-base text-white line-clamp-1 leading-tight whitespace-normal break-words">
+			<div className="flex flex-col gap-0.5 mt-2 w-full ">
+				<h3 className="text-left font-bold text-sm text-white line-clamp-1 leading-tight whitespace-normal break-words">
 					{item.title}
 				</h3>
-				<p className="text-xs  font-medium text-gray-300 line-clamp-1 leading-tight whitespace-normal break-words">
+				<p className="text-[0.65rem] font-medium text-gray-300 line-clamp-1 leading-tight whitespace-normal break-words">
 					Created by {item.createdBy || "Popsicle "}
 				</p>
-				<p className="text-xs text-gray-400">
+				<p className="text-[0.65rem] text-gray-400">
 					{item.totalTracks || ""} Tracks
 				</p>
 			</div>

@@ -1,12 +1,13 @@
 import { create } from "zustand";
 
-const MusicStore = create( ( set , get )=>({
+const TrackStore = create( ( set , get )=>({
     // states
     currentTrack:{},
     currentIndex: 0,
     currentTime: "00:00",
     totalDuration: "00:00",
     seekPosition: 0,
+    volume: 100,
     isPlaying: false,
     // refs
     seekSliderRefs: [],
@@ -19,8 +20,9 @@ const MusicStore = create( ( set , get )=>({
     setCurrentTrack: ( track ) => { set({currentTrack: track}) },
     setCurrentTime: (curr_time)=>{set({currentTime: curr_time})},
     setTotalDuration: (duration)=>{set({totalDuration: duration})},
-    setIsPlaying: (bool)=>{set({isPlaying: bool})},
     setSeekPosition: (position) => set({ seekPosition: position }),
+    setVolume: (vol)=>{ set({volume: vol}) },
+    setIsPlaying: (bool)=>{set({isPlaying: bool})},
     
     // ref setters
     setSeekSliderRefs: (ref) => set(state => {
@@ -49,5 +51,5 @@ const MusicStore = create( ( set , get )=>({
     
 }) );
 
-const useMusicStore = ()=> MusicStore();
-export default useMusicStore;
+const useTrackStore = ()=> TrackStore();
+export default useTrackStore;

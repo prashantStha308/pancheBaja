@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom"
 import Heart from "./icons/Heart"
-import React from "react"
+import React, { useState } from "react"
+import Play from "./icons/Play"
 
 const List = ({ tracks = [] }) => {
+    const [ isDemo , setIsDemo ] = useState(false);
+
   return (
     <section>
         <table className="w-full table-auto border-spacing-y-2" >
@@ -24,15 +27,18 @@ const List = ({ tracks = [] }) => {
                 </tr>
             </thead>
 
-            <tbody className="text-xs md:text-sm text-white-secondary" >
+            <tbody className="text-xs md:text-xs text-white-secondary" >
                 {
                     tracks.map( (track , index)=>{
                         return(
-                            <tr key={index} className="text-xs hover:text-white-primary cursor-pointer hover:bg-hover-primary transition-all duration-50 ease-in-out rounded-md p-4" >
+                            <tr key={index} className="text-xs hover:text-white-primary active:text-white-primary cursor-pointer hover:bg-hover-primary active:bg-hover-primary transition-all duration-50 ease-in-out rounded-md p-4" >
                                 <td className="p-2 rounded-l-sm ">
-                                    <div className="flex gap-3">
-                                        <span> {index + 1} </span>
-                                        <span className="hover:underline active:underline" > <Link> {track.title} </Link> </span>
+                                    <div className="relative flex items-center gap-3">
+                                        <span >
+                                            <div className={`${isDemo? "hidden" : "absolute left-0 top-[50%] bottom-[50%] flex items-center" }`} > {index + 1}. </div>
+                                            <div className={`${isDemo? "absolute left-0 top-[50%] bottom-[50%] flex items-center" : "hidden" }`} > <Play size={10} /> </div>
+                                        </span>
+                                        <span className=" cursor-pointer hover:underline active:underline" onClick={()=>setIsDemo(prev=> !prev)} > {track.title} </span>
                                     </div>
                                 </td>
                                 <td className="p-2">
@@ -42,7 +48,7 @@ const List = ({ tracks = [] }) => {
                                     : track.artists.map((item, index) => (
                                         <React.Fragment key={index}>
                                             <Link className="hover:underline active:underline">
-                                            {item.name}
+                                                {item.name || "Unknown Artists" }
                                             </Link>
                                             {index < track.artists.length - 1 && ', '}
                                         </React.Fragment>

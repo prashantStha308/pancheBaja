@@ -1,6 +1,8 @@
 const BottomPlayerMobile = () => {
   return (
-    <div>BottomPlayerMobile</div>
+    <section className="flex md:hidden" >
+
+    </section>
   )
 }
 

@@ -1,11 +1,13 @@
+import TrackController from "./TrackController"
 import TrackSeeker from "./TrackSeeker"
 
 const Player = () => {
-  return (
-    <div>
-        <TrackSeeker />
-    </div>
-  )
+	return (
+		<div className="flex flex-col gap-2 items-center justify-center" >
+			<TrackController />
+			<TrackSeeker />
+		</div>
+	)
 }
 
 export default Player

@@ -3,7 +3,6 @@ import Artist from "../models/artist.model";
 import { setError } from "./utils.controller";
 import { IMAGE_DEFAULT_URL } from "../constants";
 import { deleteFromCloudinary, uploadToCloudinary } from "../services/cloudinary.services";
-import Playlist from "../models/playlist.model";
 
 
 export const createArtist = async ( req , res )=>{

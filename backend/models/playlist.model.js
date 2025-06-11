@@ -37,7 +37,6 @@ const playlistSchema = mongoose.Schema({
         },
         publicId:{
             type: String,
-            required: true,
         }
     },
     duration:{

@@ -1,6 +1,20 @@
 @import "tailwindcss";
 
+@font-face {
+    font-family: 'Nutino';
+    src: url('/fonts/Nunito-VariableFont.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Nutino Sans';
+    src: url('/fonts/NunitoSans-VariableFont.ttf') format('truetype');
+}
+
 @theme{
+
+    --font-header: 'Nutino', 'Satoshi', system-ui, sans-serif;
+    --font-text: 'Nutino Sans', 'Satoshi', system-ui, sans-serif;
+
     --color-red-primary: #FD4B4E;
     --color-red-secondary: #EA3222;
 
@@ -35,7 +49,7 @@ body,html{
 }
 
 .header{
-    @apply sticky top-0 px-4 md:px-8 lg:px-48 pt-2 md:pt-3 z-50;
+    @apply sticky top-0 px-4 md:px-18 pt-2 md:pt-3 z-50;
 }
 
 .header-title{

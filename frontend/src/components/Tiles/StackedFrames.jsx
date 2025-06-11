@@ -4,7 +4,7 @@ export default function StackedFrames({ imageSrc, altText = "Album cover" }) {
   const [isLoaded, setIsLoaded] = useState(false);
   
   return (
-    <div className="relative w-40 h-40 ">
+    <div className="relative w-36 h-36 flex justify-center ">
       {/* Background rectangle */}
       <div className="absolute top-1  w-full h-full rounded-sm aspect-square bg-neutral-800 shadow-md" />
       
@@ -17,7 +17,7 @@ export default function StackedFrames({ imageSrc, altText = "Album cover" }) {
           <img 
             src={imageSrc} 
             alt={altText}
-            className={`w-full h-full object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`w-36 h-36 object-cover transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setIsLoaded(true)}
           />
         )}

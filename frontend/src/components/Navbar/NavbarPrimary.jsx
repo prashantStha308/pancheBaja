@@ -27,7 +27,7 @@ const Navbar = () => {
                 </Link>
                 <nav className=" hidden md:flex items-end gap-1" >
                     <Link to={'/'} >
-                        <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "home" ? "bg-black-tersery text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >
+                        <li className={`list-none group p-2 px-8 rounded-sm font-text ${currentPage === "home" ? "bg-black-tersery text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >
                             <div className="header-items" >
                                 <Home size={20} strokeWidth={6} />
                                 <span className="header-links" > Home </span>
@@ -35,7 +35,7 @@ const Navbar = () => {
                         </li>
                     </Link>
                     <Link to={'/search'} >
-                        <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "search" ? "bg-black-tersery text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >
+                        <li className={`list-none group p-2 px-8 rounded-sm font-text ${currentPage === "search" ? "bg-black-tersery text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >
                             <div className="header-items" >
                                 <Search size={20} strokeWidth={6} />
                                 <span className="header-links" > Search </span>
@@ -43,7 +43,7 @@ const Navbar = () => {
                         </li>
                     </Link>
                     <Link to={'/library'} >  
-                        <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "library" || currentPage === "playlist" ? "bg-black-tersery text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >  
+                        <li className={`list-none group p-2 px-8 rounded-sm font-text ${currentPage === "library" || currentPage === "playlist" ? "bg-black-tersery text-white-primary" : "text-red-primary hover:bg-hover-primary hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >  
                             <div className="header-items" >
                                 <Library size={20} strokeWidth={6} />
                                 <span className="header-links" > Library </span>

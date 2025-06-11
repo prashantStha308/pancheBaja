@@ -5,7 +5,9 @@ import LibraryLayout from "../pages/LibraryLayout"
 import ProfileLayout from '../pages/ProfileLayout'
 import PlaylistLayout from "../pages/playlist/PlaylistLayout"
 import UploadTrack from "../pages/create/UploadTrack"
+import Login from "../pages/user/Login.jsx";
 import Test from "../pages/Test"
+import Signup from "../pages/user/Signup.jsx"
 
 const AppRoutes = () => {
   return (
@@ -17,12 +19,15 @@ const AppRoutes = () => {
         <Route path="/search" element={ <SearchLayout /> } />
         <Route path="/library" element={ <LibraryLayout /> } />
 
-        <Route path="/playlist/:id" element={ <PlaylistLayout /> } />
+        <Route path="/login" element={ <Login /> } />
+        <Route path="/signup" element={ <Signup /> } />
+
         
         {/* UPLOAD ROUTES */}
         <Route path="/upload/track" element={ <UploadTrack /> } />
 
         {/* DYNAMIC ROUTES */}
+        <Route path="/playlist/:id" element={ <PlaylistLayout /> } />
         <Route path="/profile/:slug" element={ <ProfileLayout /> } />
 
         
