@@ -2,6 +2,8 @@ import PlaylistTile from "../components/Tiles/PlaylistTile.jsx"
 import ArtistTile from "../components/Tiles/ArtistTile.jsx";
 import AlbumTile from "../components/Tiles/AlbumTile.jsx";
 import Section from "../components/Section.jsx";
+import Test from "./Test.jsx";
+import transition from "../utils/transition.jsx";
 
 const HomeLayout = () => {
 
@@ -37,16 +39,17 @@ const HomeLayout = () => {
       imgSrc: '/assets/sastoMutu.png'
     },
   ]
-
   return (
     <div className="flex flex-col mt-8 gap-8 w-full justify-start md:items-center" >
       {/* <div className=" flex flex-col gap-4 " > */}
-        {/* <Section data={testData} title={"Top Hits"} Tile={PlaylistTile} /> */}
         <Section data={testArtist} title={"Top Artists on Panche Baja"} Tile={ArtistTile} />
         <Section data={testArtist} title={"Popular Ablums"} Tile={AlbumTile} />
+        <Test />
       {/* </div> */}
     </div>
   )
 }
 
-export default HomeLayout
+const PageTransition = transition(HomeLayout);
+
+export default PageTransition;

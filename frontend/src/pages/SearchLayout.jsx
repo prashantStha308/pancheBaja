@@ -1,7 +1,10 @@
+import transition from "../utils/transition";
+
 const SearchLayout = () => {
   return (
     <div>SearchLayout</div>
   )
 }
 
-export default SearchLayout
+const PageTransition = transition(SearchLayout);
+export default PageTransition;

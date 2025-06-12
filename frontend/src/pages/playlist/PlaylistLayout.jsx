@@ -8,6 +8,7 @@ import { getPlaylistByid } from "../../services/playlist.services";
 import List from "../../components/List";
 import TopDetails from "../../components/TopDetails";
 import Background from "../../components/Background";
+import transition from "../../utils/transition";
 
 const PlaylistLayout = () => {
 	
@@ -62,4 +63,5 @@ const PlaylistLayout = () => {
 	)
 }
 
-export default PlaylistLayout
+const PageTransition = transition(PlaylistLayout);
+export default PageTransition;

@@ -28,6 +28,7 @@
     
     --color-hover-primary: #171717;
     --color-hover-secondary: #1d1d1d;
+
 }
 
 body,html{
@@ -41,11 +42,6 @@ body,html{
 .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
-}
-
-.track-seeker::-webkit-slider-thumb{
-    appearance: none;
-    background-color: black;
 }
 
 .header{
@@ -70,4 +66,51 @@ tbody:before {
     display:block;
     line-height:0.2rem;
     text-indent:-99999px;
+}
+
+/* Player Styles */
+.track-seeker {
+  -webkit-appearance: none; 
+  appearance: none;
+  @apply bg-white-secondary h-[3px] rounded-full;
+}
+
+/* WebKit (Chrome, Safari) */
+.track-seeker::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    @apply rounded-full bg-red-primary w-3 h-3 cursor-pointer border-none ;
+}
+
+/* Firefox */
+.track-seeker::-moz-range-thumb {
+    @apply rounded-full bg-red-primary w-3 h-3 cursor-pointer border-none ;
+}
+
+/* volume slider */
+.volume-seeker {
+  -webkit-appearance: none; 
+  appearance: none;
+  @apply bg-red-primary h-[3px] rounded-full;
+}
+
+/* WebKit (Chrome, Safari) */
+.volume-seeker::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    @apply rounded-full bg-red-primary w-3 h-3 cursor-pointer border-none ;
+}
+
+/* Firefox */
+.volume-seeker::-moz-range-thumb {
+    @apply rounded-full bg-red-primary w-3 h-3 cursor-pointer border-none ;
+}
+
+/* transition styles */
+.slide-in{
+    @apply fixed top-0 left-0 w-full min-h-screen bg-black origin-bottom;
+}
+
+.slide-out{
+    @apply fixed top-0 left-0 w-full min-h-screen bg-black origin-top;
 }

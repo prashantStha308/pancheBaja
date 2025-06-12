@@ -23,9 +23,9 @@ const Test = () => {
 	console.log(data);
 
 	return (
-		<section className="h-full w-full flex justify-center mt-4" >
+		// <section className="h-full w-full flex justify-center mt-4" >
 			<Section data={data?.data} title={"Playlists"} Tile={PlaylistTile} />
-		</section>
+		// </section>
 	)
 }
 

@@ -6,7 +6,7 @@ const TrackController = () => {
     <div className="flex gap-2 items-center" >
 
       <button className="cursor-pointer p-1 hover:text-red-primary bg-transparent rounded-full hover:bg-hover-primary transition duration-150 ease-in-out" >
-        <SkipBack size={20} />
+        <SkipBack size={15} />
       </button>
 
       <button className="bg-white-secondary rounded-full p-1 text-black-secondary hover:bg-red-primary hover:text-white-secondary cursor-pointer transition duration-150 ease-in-out " >
@@ -14,7 +14,7 @@ const TrackController = () => {
       </button>
 
       <button className="cursor-pointer p-1 hover:text-red-primary bg-transparent rounded-full hover:bg-hover-primary transition duration-150 ease-in-out" >
-        <SkipForward size={20} />
+        <SkipForward size={15} />
       </button>
 
     </div>

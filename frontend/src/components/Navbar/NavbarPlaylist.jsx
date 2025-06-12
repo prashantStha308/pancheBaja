@@ -1,15 +1,24 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Home from "../icons/Home";
 import Library from "../icons/Library";
 import Search from "../icons/Search";
 import Logo from "../icons/Logo"
 import ProfilePicture from "../icons/ProfilePicture"
 import { useEffect, useState } from "react";
+import useUserStore from "../../store/user.store";
 
 const NavbarPlaylist = () => {
 
     const [ currentPage , setCurrentPage ] = useState('home');
     const location = useLocation();
+    const navigate = useNavigate();
+    const {isLoggedIn} = useUserStore()
+
+    const  handleUserRedirect = ()=>{
+        if( !isLoggedIn ){
+            navigate('/signup');
+        }
+    }
 
     useEffect( ()=>{
         const path = location.pathname.substring(1).split('/')[0] || "home";
@@ -20,11 +29,15 @@ const NavbarPlaylist = () => {
     <header className="header bg-black-secondary/70 backdrop-blur-md" >
         <div className="flex items-end justify-between pb-1" >
             {/* left */}
-            <div className="flex items-end gap-4" >
-                <Link to={'/'} className="flex items-end gap-3 px-2" >
-                    <Logo size={40} />
-                    <span className="md:hidden text-xl font-extrabold text-red-primary underline" > Panche Baja </span>
-                </Link>
+            <div className="flex items-end gap-4 w-full" >
+
+                <div className="flex w-full md:w-auto justify-end md:justify-start " >
+                    <Link to={'/'} className="flex flex-row-reverse md:flex-row md:justify-start items-end gap-3 px-2" >
+                        <Logo size={40} />
+                        <span className="md:hidden text-xl font-extrabold text-red-primary underline" > Panche Baja </span>
+                    </Link>
+                </div>
+
                 <nav className=" hidden md:flex items-end gap-1" >
                     <Link to={'/'} >
                         <li className={`list-none group p-2 px-8 rounded-sm ${currentPage === "home" ? "bg-black-tersery/50  text-white-primary" : "text-red-primary hover:bg-hover-primary/55 hover:backdrop-blur-lg hover:text-white-secondary "} transition-all duration-100 ease-in cursor-pointer`} >
@@ -54,7 +67,7 @@ const NavbarPlaylist = () => {
             </div>
 
             {/* pp */}
-            <div className="hidden md:block" >
+            <div className="hidden md:block" onClick={handleUserRedirect} >
                 <ProfilePicture src={"/assets/aadiiItyadii.jpg"} altText="aadiiItyadi" size={35} />
             </div>
         </div>

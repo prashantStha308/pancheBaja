@@ -8,7 +8,7 @@ import { useLocation } from "react-router-dom"
 const AppContent = () => {
 	const location = useLocation();
 	// display background image on page only if path has elements of this array
-	const playerPages=[ '/playlist', '/album' , '/signup' ];
+	const playerPages=[ '/playlist', '/album' , '/signup' , '/login' ];
 	const isPlaylistPage = playerPages.some( path => location.pathname.startsWith(path) );
 
 	const noBottomPlayerPages = [ '/player' , '/login' , '/signup' ];
@@ -17,14 +17,15 @@ const AppContent = () => {
 	return (
 		<main className=" min-h-screen flex flex-col gap-2 justify-between" >
 
-			{ isPlaylistPage ? <NavbarPlaylist /> : <Navbar /> }
+			{/* { isPlaylistPage ? <NavbarPlaylist /> : <Navbar /> } */}
+			<NavbarPlaylist />
 
 			<div className="flex px-5 min-h-screen max-w-screen z-10 md:px-18 " >
 				<AppRoutes />
 			</div>
 
 
-			<div className="sticky bottom-0 left-0 right-0 bg-black-secondary z-40" >
+			<div className="sticky bottom-0 left-0 right-0 bg-black-secondary/55 backdrop-blur-3xl z-40" >
 				
 				{ !dontShowPlayer && <BottomPlayer /> }
 				<div className="block md:hidden" >
