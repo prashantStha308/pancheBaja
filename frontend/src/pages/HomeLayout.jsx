@@ -1,51 +1,25 @@
 import PlaylistTile from "../components/Tiles/PlaylistTile.jsx"
 import ArtistTile from "../components/Tiles/ArtistTile.jsx";
-import AlbumTile from "../components/Tiles/AlbumTile.jsx";
 import Section from "../components/Section.jsx";
 import Test from "./Test.jsx";
 import transition from "../utils/transition.jsx";
+import { useAllPlaylistQuery } from "../queries/playlist.queries.js";
+import { useAllTrackQuery } from "../queries/track.queries.js";
+import { useEffect } from "react";
 
 const HomeLayout = () => {
+  const playlistQuery = useAllPlaylistQuery();
+  const trackQuery = useAllTrackQuery();
 
-  const testArtist=[
-    { name: "Albatross",
-      imgSrc: '/assets/attiBhayo.jpeg'
-    },
-    {
-      name: "Bhartika Eam Rai",
-      imgSrc: '/assets/aadiiItyadii.jpg'
-    },
-    {
-      name: "Sajjan Raj Bhyaddya",
-      imgSrc: '/assets/sastoMutu.png'
-    },
-    {
-      name: "Narayan Gopal",
-      imgSrc: '/assets/narayanGopal.jpg'
-    },
-    {
-      name: "Kuma Sagar",
-      imgSrc: '/assets/kumaSagar.jpeg'
-    },
-    { name: "Albatross",
-      imgSrc: '/assets/attiBhayo.jpeg'
-    },
-    {
-      name: "Bhartika Eam Rai",
-      imgSrc: '/assets/aadiiItyadii.jpg'
-    },
-    {
-      name: "Sajjan Raj Bhyaddya dkjfhsdjf skdjfkjsdhf sdkjfhksjdfh sdkjfhksdfjh skdjhfskdfjh",
-      imgSrc: '/assets/sastoMutu.png'
-    },
-  ]
+  useEffect(()=>{
+    document.title = "Home | Panche Baja";
+    return( ()=> document.title = "Panche Baja")
+  },[])
+
   return (
     <div className="flex flex-col mt-8 gap-8 w-full justify-start md:items-center" >
-      {/* <div className=" flex flex-col gap-4 " > */}
-        <Section data={testArtist} title={"Top Artists on Panche Baja"} Tile={ArtistTile} />
-        <Section data={testArtist} title={"Popular Ablums"} Tile={AlbumTile} />
-        <Test />
-      {/* </div> */}
+        <Section query ={trackQuery} title={"Trending Songs"} Tile={PlaylistTile} />
+        <Section query={playlistQuery} title={"Playlists"} Tile={PlaylistTile} />
     </div>
   )
 }

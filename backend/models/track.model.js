@@ -1,64 +1,82 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { emptyError, enumError, maxCharError, requiredError, urlError } from "../utils/errors.js";
+import validator from "validator";
 
-const trackSchema = mongoose.Schema({
-    title: {
+const visibilityType = ['public', 'private', 'unlisted'];
+
+const TrackSchema = new Schema({
+    name: {
         type: String,
-        required: true,
-        trim: true
+        required: [true, requiredError('track.name')],
+        lowercase: true,
+        trim: true,
+        minlength: [1, emptyError('track.name')],
+        maxlength: [50 , maxCharError('track.name' , 50)]
+    },
+    primaryArtist: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: [true ,requiredError('track.primaryArtist')]
     },
     artists: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Artist'
+        type: Schema.Types.ObjectId,
+        ref: 'User',
     }],
-    album: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Album'
-    },
-    duration:{
-        type: Number,
-        required: true,
-        default: 0
-    },
-    genre: [{
-        type: String,
-    }],
-    track:{
-        src:{
-            type: String,
-            required: true
-        },
-        publicId: {
-            type: String,
-            required: true
-        }
-    },
-    image:{
-        src:{
-            type: String,
-            default: null
-        },
-        publicId:{
-            type: String,
-            default: null
-        }
-    },
-    type:{
+    type: {
         type: String,
         enum: ['track'],
         default: 'track'
     },
-    likes:{
+    coverArt: {
+        src: {
+            type: String,
+            required: [true , requiredError('coverArt.src')],
+            validate: {
+                validator: validator.isURL,
+                message: urlError('playlist.coverArt.src')
+            }
+        },
+        publicId: {
+            type: String,
+            default: ""
+        }
+    },
+    audio: {
+        streamUrl: {
+            type: String,
+            required: [true, requiredError('track.audio.src')],
+        },
+        publicId: {
+            type: String,
+            required: [true, requiredError('track.audio.publicId')],
+        }
+    },
+    totalDuration: {
+        type: Number,
+        required: true
+    },
+    visibility: {
+        type: String,
+        enum: {
+            values: visibilityType,
+            message:  enumError('track.visibility' , visibilityType)
+        },
+        default: 'public'
+    },
+    genre: [{
+        type: String,
+    }],
+    playCount: {
         type: Number,
         default: 0
     },
-    plays:{
+    durationPlayed: {
         type: Number,
         default: 0
-    }
-},
-{
+    },
+}, {
     timestamps: true
-});
+})
 
-const Track = mongoose.model('Track', trackSchema);
+const Track = mongoose.model('Track', TrackSchema);
 export default Track;

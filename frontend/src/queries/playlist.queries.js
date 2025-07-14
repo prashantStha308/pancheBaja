@@ -4,7 +4,7 @@ import { getAllPlaylist , getPlaylistByid } from "../services/playlist.services.
 export const useAllPlaylistQuery = ( page = 1 , limit = 10 ) => {
     return useQuery({
         queryFn: ()=> getAllPlaylist(page , limit),
-        queryKey: ['playlist' , { page  , limit }]
+        queryKey: ['playlist', { page, limit }],
     })
 }
 

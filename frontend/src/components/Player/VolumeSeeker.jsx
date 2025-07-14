@@ -26,7 +26,7 @@ const VolumeSeeker = () => {
 
   return (
     <div className="flex gap-4 items-center w-fit" >
-        <Volume2 />
+        <Volume2 size={20} />
         <input ref={seekerRef} type="range" name="volume" id="volume" min={0} max={100} value={volume} onChange={handleVolumeChange} className="volume-seeker w-24" />
     </div>
   )

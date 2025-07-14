@@ -6,6 +6,7 @@ import Logo from "../icons/Logo"
 import ProfilePicture from "../icons/ProfilePicture"
 import { useEffect, useState } from "react";
 import useUserStore from "../../store/user.store";
+import TransitionLink from "../Wrappers/TransitionLink";
 
 const NavbarPlaylist = () => {
 

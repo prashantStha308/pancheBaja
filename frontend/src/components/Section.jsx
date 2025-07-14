@@ -3,11 +3,13 @@ import { motion, spring } from "motion/react";
 import MoveLeft from "./Button/MoveLeft";
 import MoveRight from "./Button/MoveRight";
 import useIsMobile from "../utils/useIsMobile.jsx";
+import Loader from "./Loader.jsx";
 
 
-const Section = ({ data = [] , title , Tile }) => {
+const Section = ({ query, title, Tile }) => {
   const sectRef = useRef(null);
   const isMobile = useIsMobile(760)
+  const { data, isPending, isError, error } = query;
 
   const containerVarient = {
     hidden: {
@@ -29,6 +31,17 @@ const Section = ({ data = [] , title , Tile }) => {
     visible: { opacity: 1, y: 0 },
   };
 
+  if(isPending){
+    return <Loader />
+  }
+
+  if (isError) {
+    return (
+      <>
+        Error occured : {error}
+      </>
+    )
+  }
   
   return (
     <motion.div initial="hidden" whileInView="visible" variants={containerVarient} viewport={{ amount: isMobile ? 0.5 : 0.1}} className="flex flex-col isolate w-full justify-center" >
@@ -36,7 +49,7 @@ const Section = ({ data = [] , title , Tile }) => {
         <article ref={sectRef} className=" relative h-auto flex gap-2 md:gap-4 overflow-x-auto scrollbar-hide" >
 
             <MoveLeft scrollRef={sectRef} />
-            { data.map( (item , index) => (
+            { data?.data?.map( (item , index) => (
                 <motion.div key={index} variants={childVarient} >
                   <Tile item={item} />
                 </motion.div>
@@ -48,4 +61,6 @@ const Section = ({ data = [] , title , Tile }) => {
   )
 }
 
-export default Section
+export default Section;
+
+

@@ -22,7 +22,6 @@ const PlaylistLayout = () => {
 	}, [visitingPlaylist?.title]);
 
 	useEffect( ()=>{
-		console.log("Inside useEffect")
 		const fetchPlaylist = async()=>{
 			try {
 				setLoading(true);
@@ -47,18 +46,16 @@ const PlaylistLayout = () => {
 	if( loading || !(visitingPlaylist?._id) ){
 		return <Loader />;
 	}
-
-	console.log("Inside Playlerlayout: ", visitingPlaylist );
 	
 	return (
 		<>
 			<section className="flex flex-col min-h-screen w-full md:mt-8  gap-2 z-40" >
 				{/* Top */}
 				<TopDetails visitingPage={visitingPlaylist} />
-				<List tracks={visitingPlaylist?.trackList} />
+				<List tracks={visitingPlaylist?.type === 'track' ? [visitingPlaylist] : visitingPlaylist?.trackList } />
 			</section>
 
-			<Background src={visitingPlaylist?.image?.src} />
+			<Background src={visitingPlaylist?.coverArt?.src} />
 		</>
 	)
 }

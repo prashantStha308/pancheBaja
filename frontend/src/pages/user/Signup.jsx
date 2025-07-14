@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import SignupForm from "../../components/Forms/SignupForm"
+import SignupForm from "../../components/Forms/SignupForm.jsx"
 import transition from "../../utils/transition.jsx";
 
 
@@ -7,6 +7,7 @@ const Signup = () => {
 
    useEffect(() => {
     document.title = "Sign Up | Panche Baja";
+    return( ()=> document.title = "Panche Baja")
   }, []);
 
   return (

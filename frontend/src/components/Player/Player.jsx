@@ -1,6 +1,5 @@
 import TrackController from "./TrackController"
 import TrackSeeker from "./TrackSeeker"
-import "./player.css";
 
 const Player = () => {
 	return (

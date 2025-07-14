@@ -1,61 +1,281 @@
-import { IMAGE_DEFAULT_URL } from "../constants.js";
-import User from "../models/user.model.js"
-import { uploadToCloudinary } from "../services/cloudinary.services.js";
-import { getAllData, getDataById } from "./generic.controller.js";
-import { setError } from "./utils.controller.js";
+// Necessaries
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { JWT_SECRET } from "../config/env.config.js";
+// Models
+import User from "../models/user.model.js";
+// Cloudinary services
+import {
+    deleteFromCloudinary,
+    uploadToCloudinary
+} from "../services/cloudinary.services.js";
+// Helper functions
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import {
+    handleImageUploads,
+    getFollowers,
+    getFollowings,
+    getSavedTracks,
+    getSavedPlaylist,
+    getCreatedPlaylist,
+    getCreatedTracks
+} from "../utils/helper.js";
+import { validateMongoose, validatorMiddlewareError } from "../utils/validator.js";
 
-export const createUser = async( req , res )=>{
+
+export const createUser = async (req, res, next) => {
+    let profilePictureId , coverArtId;
     try {
-        const body = req.body;
-        const image = {src: IMAGE_DEFAULT_URL , publicId: ""};
-
-        if( !body.username || !body.email ){
-            return setError( res , 400 , "Required Fields not filled" );
-        }
-
-        if( req.file ){
-            const imageRes = await uploadToCloudinary(req.file.buffer , 'image' , 'image');
-            image.src = imageRes.secure_url;
-            image.publicId = imageRes.public_id;
-        }
-
-        const newUser = new User({
-            ...body,
-            image
-        });
-        await newUser.save();
-
-        return res.status(201).json({ success: true , message: "User Creation Successfull " });
-
-    } catch (error) {
-        return setError( res , 500 , error );
-    }
-}
-
-export const getAllUsers = async( req , res ) => {
-    try {
-        await getAllData( User , req , res );
-    }
-    catch (error) {
-        return setError( res , 500 , error );
-    }
-}
-
-export const getUserById = async( req , res ) =>{
-    try {
-        await getDataById( User , req , res );
-    } catch (error) {
-        return setError( res , 500 , error );
-    }
-}
-
-export const deleteUser = async( req , res ) => {
-    try {
-        const {id} = req.params;
-
+        validatorMiddlewareError(req);
         
+        const body = req.body;
+        const files = req.files;
+
+        if (!body.username || !body.email || !body.password || !body.role || !body.location ) {
+            throw new ApiError(400, 'Required Feilds not filled');
+        }
+        // Check if the user already exists
+        const existingUser = await User.findOne({ email: body.email });
+        if (existingUser) {
+            return next(new ApiError(400, 'User with this email already exists'));
+        }
+
+        const hashedPassword = await bcrypt.hash(body.password, 10);
+
+        let profilePicture = {
+            src: "https://res.cloudinary.com/dww0antkw/image/upload/v1747984790/deafultImg_woxk8f.png",
+            publicId: ""
+        }
+
+        let coverArt = { ...profilePicture };
+
+        if (files.profilePicture) {
+            profilePicture = await handleImageUploads(files.profilePicture);
+            profilePictureId = profilePicture.publicId;
+        }
+
+        if (files.coverArt) {
+            coverArt = await handleImageUploads(files.coverArt);
+            coverArtId = coverArt.publicId;
+        }
+        
+        const user = await User.create({
+            ...body,
+            password: hashedPassword,
+            profilePicture,
+            coverArt,
+        })
+
+        if (!user) {
+            throw new ApiError(500, "Something went wrong while registering a user");
+        }
+
+        return res.status(201).json(new ApiResponse(200, 'User Created Successfully', { id: user._id }));
 
     } catch (error) {
-        return setError( res , 500 , error );
+        if (profilePictureId) {
+            await deleteFromCloudinary(profilePictureId, 'image', 'image');
+        }
+        if (coverArtId) {
+            await deleteFromCloudinary(coverArtId, 'image', 'image');
+        }
+
+        return next(new ApiError(500, error.message || 'Unexpected error occured'));
+    }
+}
+
+export const loginUser = async (req, res, next) => {
+    validatorMiddlewareError(req);
+
+    const body = req.body;
+    const email = body.email;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new ApiError(404, 'Unregistered Email');
+    }
+
+    const isMatch = await bcrypt.compare(body.password, user.password);
+    if (!isMatch) {
+        throw new ApiError('400', "Invalid Password");
+    }
+
+    const token = jwt.sign({ id: user._id , role: user.role }, JWT_SECRET, {
+        expiresIn: '30d',
+    });
+
+    return res.status(200).json(new ApiResponse(200, 'Logged In Successfully', { token }));
+
+}
+
+// get details of logged in user
+export const getUserDetails = async (req, res, next) => {
+    const userId = req.user.id;
+
+    validateMongoose(userId);
+
+    const user = await User.findById(userId).select('-password').lean();
+    if (!user) {
+        throw new ApiError(400, "User not found");
+    }
+
+    const [followers, followings, savedTracks, savedPlaylist, createdPlaylists] = await Promise.all([
+        getFollowers(userId),
+        getFollowings(userId),
+        getSavedTracks(userId),
+        getSavedPlaylist(userId),
+        getCreatedPlaylist(userId)
+    ]);
+    
+    let createdTracks
+    if (user.role === 'artist') createdTracks = await getCreatedTracks(userId);
+
+    res.status(200).json(new ApiResponse(200, "User Fetched Succesfully", {
+        ...user,
+        followersCount: followers.length ,
+        followers,
+        followingsCount: followings.length,
+        followings,
+        savedTracks,
+        savedPlaylist,
+        createdPlaylists,
+        createdTracks
+    }));
+
+}
+// user detail by ID
+export const userDetailsById = async (req, res, next) => {
+    validatorMiddlewareError(req);
+    const { userId } = req.params;
+
+    validateMongoose(userId);
+
+    const user = await User.findById(userId).select('-password -email -location -dob -subscription').lean();
+
+    if (!user) {
+        throw new ApiError(404, 'User not found');
+    }
+
+    const followers = await getFollowers(userId);
+    const followings = await getFollowings(userId);
+
+    res.status(200).json(new ApiResponse(200, 'User found', {
+        ...user,
+        followersCount: followers.length ,
+        followers,
+        followingsCount: followings.length,
+    }))
+
+}
+
+export const getAllUsers = async (req, res, next) => {
+    validatorMiddlewareError(req);
+    let { limit = 10, page = 1 , city , country , search } = req.query;
+
+    const queryObj = { role: 'user' };
+    if (city) {
+        queryObj['location.city'] = city;
+    }
+    if (country) {
+        queryObj['location.country'] = country;
+    }
+    if (search) {
+        queryObj['username'] = search;
+    }
+
+    const users = await User.find(queryObj).select('-password -location -dob -subscription -trackList -playLists').skip((page - 1) * limit).limit(limit);
+
+    res.status(200).json(new ApiResponse(200, "Fetched Users successfully", users));
+}
+
+export const deleteUser = async (req, res, next) => {
+    const userId = req.user.id;
+
+    validateMongoose(userId , "userId");
+    
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, 'User not found');
+    }
+
+    if (user.profilePicture.publicId) {
+        await deleteFromCloudinary(user.profilePicture.publicId, 'image', 'image');
+    }
+
+    if (user.coverPicture.publicId) {
+        await deleteFromCloudinary(user.coverPicture.publicId, 'image', 'image');
+    }
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    res.status(200).json(new ApiResponse(200 , "User Deleted Successfully" , {id: deletedUser._id}))
+
+}
+
+export const updateUser = async (req, res, next) => {
+    let profilePictureId, coverArtId;
+    try {
+        validatorMiddlewareError(req);
+
+        const userId = req.user.id;
+        const {
+            username,
+            email,
+            role,
+            password
+        } = req.body;
+        const files = req.files;
+
+        if (!validateMongoose(userId)) {
+            throw new ApiError(400, "Invalid User ID");
+        }
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+
+        if (username) user.username = username;
+        if (email) user.email = email;
+        if (role) user.role = role;
+        if (password) user.password = await bcrypt.hash(password, 10);
+
+        // update profilePicture if available
+        if (files?.profilePicture) {
+            const imgRes = await uploadToCloudinary(files.profilePicture[0].buffer, 'image', 'image');
+            if (user.profilePicture.publicId) {
+                await deleteFromCloudinary(user.profilePicture.publicId, 'image');
+            }
+            profilePictureId = imgRes.public_id;
+            user.profilePicture.src = imgRes.secure_url;
+            user.profilePicture.publicId = imgRes.public_id;
+        }
+
+        // update coverArt if available
+        if (files?.coverArt) {
+            const imgRes = await uploadToCloudinary(files.coverArt[0].buffer, 'image', 'image');
+            if (user.coverArt.publicId) {
+                await deleteFromCloudinary(user.coverArt.publicId, 'image');
+            }
+            coverArtId = imgRes.public_id;
+            user.coverArt.src = imgRes.secure_url;
+            user.coverArt.publicId = imgRes.public_id;
+        }
+
+        await user.save();
+        
+        res.status(200).json(new ApiResponse(200, "User updated successfully", { id: userId }));
+
+    } catch (error) {
+        if (profilePictureId) {
+            await deleteFromCloudinary(profilePictureId, 'image');
+        }
+
+        if (coverArtId) {
+            await deleteFromCloudinary(coverArtId, 'image');
+        }
+        next(error);
     }
 }

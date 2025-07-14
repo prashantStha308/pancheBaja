@@ -4,6 +4,10 @@ const PlayerServices = ()=>{
         console.log("hi");
     }
 
+    const loadTrack = ((trackIndex)=>{
+        
+    })
+
 
 
     return{

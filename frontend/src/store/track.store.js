@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 const TrackStore = create( ( set , get )=>({
     // states
-    currentTrack:{},
+    currentTrack:{}, 
     currentIndex: 0,
     currentTime: "00:00",
     totalDuration: "00:00",
@@ -11,13 +11,14 @@ const TrackStore = create( ( set , get )=>({
     isPlaying: false,
     // refs
     seekSliderRefs: [],
-    seekVolumeRef: null, //volume controle garna lai
+    seekVolumeRef: null, //volume control garna lai
     audioElementRef: null,
     // misc
-    updateTimer: null, //setInterval ko lagi
+    updateTimer: null, //setInterval ID ko lagi
     
     // setters
     setCurrentTrack: ( track ) => { set({currentTrack: track}) },
+    setCurrentIndex: (index)=> set({currentIndex: index}),
     setCurrentTime: (curr_time)=>{set({currentTime: curr_time})},
     setTotalDuration: (duration)=>{set({totalDuration: duration})},
     setSeekPosition: (position) => set({ seekPosition: position }),

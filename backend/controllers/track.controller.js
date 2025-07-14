@@ -1,160 +1,196 @@
-import Track from "../models/track.model.js";
 import mongoose from "mongoose";
-import {parseBuffer} from "music-metadata";
-import { getAllData, getDataById } from "./generic.controller.js";
-import { processTrackUpload, setError, updateAffiliatedPlaylists } from "./utils.controller.js";
-import { IMAGE_DEFAULT_URL } from "../constants.js";
+import Track from "../models/track.model.js";
 import { deleteFromCloudinary, uploadToCloudinary } from "../services/cloudinary.services.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { allTracks, cleanAffilicatedTrackData, getAudioDuration, getTrackSaves, handleFilesUploads , sortTracks } from "../utils/helper.js";
+import { validatorMiddlewareError , validateMongoose } from "../utils/validator.js";
 
-// POST
-export const createTrack = async (req, res) => {
+
+export const createTrack = async (req, res, next) => {
+    let audioId, coverId;
     try {
-        const body = req.body;
-        console.log(req.body);
-        // Validate request
-        if (!body.title || !req.files.track ) {
-            return setError( res , 400 , "Required Fields not met" );
-        }
-        
-        // Upload audio file to Cloudinary
-        const trackRes = await processTrackUpload( req.files.track[0] , 'track' , 'video' );
-        const metadata = await parseBuffer( req.files.track[0].buffer , 'audio/mpeg' );
-        const duration = metadata.format.duration;
-        
-        // initializing 
-        let imageUrl = IMAGE_DEFAULT_URL;
-        let imagePublicId = "";
-        if (req.files.coverArt && req.files.coverArt[0]) {
-            const imageFile = req.files.coverArt[0];
-            const imageRes = await uploadToCloudinary(
-                imageFile.buffer, 
-                "image", 
-                "image"
-            );
+        const userId = req.user.id;
+        const userRole = req.user.role;
+        validatorMiddlewareError(req);
 
-            imageUrl = imageRes.secure_url;
-            imagePublicId = imageRes.public_id;
+        if (userRole !== "artist") {
+            throw new ApiError(401, "Must be a valid artist to create a track");
         }
-        
-        // Create music document in MongoDB
-        const newTrack = new Track({
-            title: body.title,
-            // artists: [body.artist],
-            track:{
-                src: trackRes.secure_url,
-                publicId: trackRes.public_id
+
+        let { name, visibility, artists = [], genre = [] } = req.body;
+
+        if (!name || !visibility) {
+            throw new ApiError(400, 'Required fields not submitted');
+        }
+
+        if (!Array.isArray(artists) || artists.length === 0) {
+            artists = [userId];
+        }
+
+        const { audioRes, coverArt } = await handleFilesUploads(req.files);
+        audioId = audioRes.publicId;
+        coverId = coverArt.publicId;
+
+        const totalDuration = await getAudioDuration(req.files.track[0]);
+
+        const track = await Track.create({
+            name,
+            primaryArtist: userId,
+            artists,
+            coverArt,
+            audio: {
+                streamUrl: `/api/track/${audioRes.publicId}/stream`,
+                publicId: audioRes.publicId.split('/')[1]
             },
-            image:{
-                src: imageUrl,
-                publicId: imagePublicId
-            },
-            duration
-        });
-        
-        // Save to database
-        await newTrack.save();
-        
-        return res.status(201).json({
-            success: true,
-            data: newTrack,
-            message: "Music uploaded successfully"
-        });
-        
-    } catch (error) {
-        return setError ( res , 500 , error );
-    }
-};
+            visibility,
+            totalDuration,
+            genre
+        })
 
-
-// GET controllers
-export const getAllTracks = async ( req , res )=> {
-    await getAllData( Track , req , res );
-}
-
-export const getTrackById = async ( req , res )=>{
-    await getDataById( Track , req , res );
-}
-
-export const getTrackByName = async ( req , res ) => {
-    try {
-        const { name } = req.query;
-        if( !name ){
-            return setError( res , 400 , "Required fields not set"  );
+        if (!track) {
+            throw new ApiError(500,"Something went wrong while creating track");
         }
-        const res = await Track.find({title: name});
-        if( !res ){
-            return setError( res , 404 , "Track not found" );
-        }
+
+        res.status(201).json(new ApiResponse(201, 'Track Created Successfully', {id: track._id}));
+
     } catch (error) {
-        return setError( res , 500 , error );
+        console.log("deleteing files");
+        if (audioId) await deleteFromCloudinary(audioId, 'video');
+        if (coverId) await deleteFromCloudinary(coverId, 'image');
+
+        return next(error);
     }
 }
 
-export const getTrackByArtist = async ( req , res ) => {
+export const getAllTracks = async (req, res, next) => {
     try {
-        const { artistId } = req.query;
-        if( !artistId ){
-            return setError( res , 404 , "Invalid Id" );
-        }
-        if( !mongoose.Types.ObjectId.isValid(artistId) ){
-            return setError( res , 404 , "Invalid Id" );
-        }
+        validatorMiddlewareError(req);
+        let { sort } = req.query;
 
-        const response = await Track.find({artist: artistId});
-        if( response.length === 0 ){
-            return setError( res , 404 , "Track not found" );
-        }
+        const trackRes = sort ? await sortTracks(req.query) : await allTracks(req.query);
 
-        res.status(200).json({ success: true , data: response , message: "Track Found" });
+        res.status(200).json(new ApiResponse(200, 'Successfully fetched tracks', trackRes));
     } catch (error) {
-        return setError( res , 500 , error );
+        next(error);
     }
 }
 
-// DELETE Controllers
+export const getTrackById = async (req, res, next) => {
+    validatorMiddlewareError(req);
 
-export const deleteTrackById = async (req, res) => {
+    const { trackId } = req.params;
+    validateMongoose(trackId);
+
+    const track = await Track.findById(trackId).lean();
+    const savedBy = await getTrackSaves(trackId);
+
+    res.status(200).json(new ApiResponse(200, "Fetched Track Successfully", {
+        ...track,
+        savedBy,
+        saveCount: savedBy.length
+    }));
+}
+
+export const deleteTrackById = async (req, res, next) => {
+    validatorMiddlewareError(req);
+
+    let { trackId } = req.params;
+    validateMongoose(trackId);
+
+    const track = await Track.findByIdAndDelete(trackId);
+    if (!track) {
+        throw new ApiError(400, 'Track not found');
+    }
+    
+    if (track.audio.publicId) {
+        await deleteFromCloudinary(track.audio.publicId, 'video');
+    }
+    if (track.coverArt.publicId) {
+        await deleteFromCloudinary(track.coverArt.publicId, 'image');
+    }
+
+    // Updates affiliates
+    await cleanAffilicatedTrackData(trackId);
+
+    res.status(200).json(new ApiResponse(200, "Deleted Track Successfully", { id: trackId }));
+}
+
+export const updateTrackById = async (req, res, next) => {
+    const userId = req.user.id;
+    validatorMiddlewareError(req);
+    const { trackId } = req.params;
+    const {
+        name,
+        artists,
+        visibility,
+        genre,
+    } = req.body;
+    const imageFile = req.file;
+
+    if (!userId) {
+        throw new ApiError(401, "userId must be present");
+    }
+
     try {
-        const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return setError( res , 404 , "Invalid ID" );
+        const track = await Track.findById(trackId);
+        if (!track) {
+        return res.status(404).json({ message: 'Track not found' });
         }
 
-        const target = await Track.findByIdAndDelete(id);
-        if (!target) {
-            return setError( res , 404 , "Track not found" );
+        if (track.primaryArtist !== userId) {
+            throw new ApiError(401, "Track can only be updated by the primaryArtist");
         }
-        
-        res.status(200).json({ success: true, message: "Track deleted successfully." });
 
-        // need to fix
-        setImmediate( async()=>{
-            try {
-                if( target?.track?.public_id ){
-                    await deleteFromCloudinary( target.track.public_id , 'video');
-                }
+        if (name) track.name = name;
+        if (artists && Array.isArray(artists)) track.artists = artists;
+        if (visibility) track.visibility = visibility;
+        if (genre && Array.isArray(genre)) track.genre = genre;
 
-                if( target?.image?.public_id === "" ){
-                    await deleteFromCloudinary( target.image.public_id , 'image' );
-                }
-                await updateAffiliatedPlaylists(id);
-            } catch (error) {
-                console.error("Failed to delete track or image information, or update playlists:", error);
+        if (imageFile) {
+            const imgRes = await uploadToCloudinary(imageFile.buffer, 'image', 'image');
+            if (track.coverArt.publicId) {
+                await deleteFromCloudinary(track.coverArt.publicId , 'image');
             }
-        } )
+            track.coverArt.src = imgRes.secure_url;
+            track.coverArt.publicId = imgRes.public_id;
+        }
 
-
-    } catch (error) {
-        console.error("Deletion failed:", error);
-        return setError( res , 500 , error );
+        await track.save();
+        res.json({ data: track });
+    } catch (err) {
+        if (err instanceof mongoose.Error.ValidationError) {
+            // Format errors for the frontend
+            const errors = {};
+            for (let field in err.errors) {
+            errors[field] = {
+                message: err.errors[field].message
+            };
+            }
+            return res.status(400).json({ errors });
+        }
+        next(err);
     }
-};
+}
 
-// export const deleteAll = async ( req , res ) => {
-//     try {
-//         await Track.deleteMany();
-//         return { success: true , message: "Deleted all tracks" };
-//     } catch (error) {
-//         return setError( 500 , error );
-//     }
-// }
+export const updatePlayCount = async (req, res) => {
+    const userId = req.user.id
+    validatorMiddlewareError(req);
+    const { trackId } = req.params;
+
+    if (!userId) {
+        throw new ApiError(401, "Must have a valid userId");
+    }
+
+    validateMongoose(trackId);
+
+    const track = await Track.findById(trackId);
+    if (!track) {
+        throw new ApiError(404, "Track not found");
+    }
+
+    track.playCount++;
+    await track.save();
+
+    res.status(200).json(new ApiResponse(200, "playcount++"));
+}

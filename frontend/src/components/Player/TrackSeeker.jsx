@@ -5,7 +5,7 @@ import usePlayerServices from "../../services/player.services";
 const TrackSeeker = () => {
   const seekerRef = useRef();
   const {setSeekSliderRefs ,currentTime , totalDuration , seekPosition } = useTrackStore();
-  const { seekTo } = usePlayerServices();
+  const { seekTo } = usePlayerServices(); 
   const [sliderValue, setSliderValue] = useState(0);
 
   console.log("Current Time:" , currentTime);

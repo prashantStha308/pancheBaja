@@ -1,7 +1,7 @@
-const ProfilePicture = ({ src , altText = "user profile picture" , size = 45 }) => {
+const ProfilePicture = ({ src , alt = "user profile picture" , size = 45 }) => {
     return (
-        <div className="rounded-full cursor-pointer box-border px-1" >
-            <img src={src} alt={altText} className="rounded-full object-cover" width={size} height={size} />
+        <div className="rounded-full aspect-square cursor-pointer box-border px-1" >
+            <img src={src} alt={alt} className="rounded-full object-cover" width={size} height={size} />
         </div>
     )
 }

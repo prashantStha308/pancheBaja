@@ -1,164 +1,311 @@
 import mongoose from "mongoose";
 import Playlist from "../models/playlist.model.js";
-import { setError } from "./utils.controller.js";
-import { IMAGE_DEFAULT_URL } from "../constants.js";
 import Track from "../models/track.model.js";
-import { deleteFromCloudinary, uploadToCloudinary } from "../services/cloudinary.services.js";
+import { deleteFromCloudinary } from "../services/cloudinary.services.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { handleImageUploads, reorderTracks, validateMongoose } from "../utils/helper.js";
+import { validatorMiddlewareError } from "../utils/validator.js";
+import SavedPlaylist from "../models/saves/playlistSave.model.js";
+import { validationResult } from "express-validator";
 
-export const getAllPlaylist = async( req , res ) => {
-        try {
-    let { page= 1 , limit= 10 } = req.query;
-        page = Math.max( 1 , parseInt(page) ) ;
-        limit = Math.max( 1 , parseInt(limit) ); 
 
-        const response = await Playlist.find({}).skip( ( page - 1 ) * limit ).limit(limit).populate({
-            path: 'trackList',
-            select: '_id title artist duration track image',
-            populate:{
-                path: 'artists',
-                select: '_id name'
-            }
-        });
-        res.status(200).json({ success: true , data: response , message: "Successfully fetched user's datas" });
-
-    } catch (error) {
-        return setError( res , 500 , error );
-    }
-
-}
-
-export const getPlaylistById = async( req , res ) => {
-    console.log("GetPlaylistById hit");
-        try {
-            const { id } = req.params;
-            console.log(id);
-            if( !mongoose.Types.ObjectId.isValid(id) ){
-                return setError( res , 404 , "Invalid Id" );
-            }
-
-            const response = await Playlist.findById(id).populate({
-                path: 'trackList',
-                select: '_id title artist duration track image',
-                populate: {
-                    path: 'artists',
-                    select: '_id name'
-                }
-            });
-            if( !response ){
-                return setError( res , 404 , "Playlist not found" );
-            }
-            res.status(200).json({ success: true , data: response , message: "Data found" });
-        } catch (error) {
-            console.log(error);
-            return setError ( res , 500 , error );
-        }
-}
-
-export const createPlaylist = async ( req , res ) => {
+export const createPlaylist = async (req, res) => {
+    let coverArtId;
     try {
+        const userId = req.user.id;
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            throw new ApiError(400 , "Validation Error: " + errors.array());
+        }
         const body = req.body;
-        let image = { src:IMAGE_DEFAULT_URL , publicId: "" };
-
-        if( !body.title || !body.visibility ){
-            return setError( res , 400 , "Required Fields not met" );
-        }
-        if( !Array.isArray(body.trackList) || body.trackList.length < 1 ){
-            return setError( res , 400 , "Tracklist must have at least 1 tracks" );
-        }
-        // get all the tracks present in playlist
-        const tracks = await Track.find({ _id: { $in: body.trackList } })
-
-        // need to reorder it exactly as body.trackList
-        const trackCopy = {};
-        tracks.map( ( item )=>(
-            trackCopy[item._id.toString()] = item
-        ));
-
-        let reorderedTrackList = body?.trackList.map( id => trackCopy[id.toString()] );
-
-        // manage image upload
-        if( !req.file ){
-            image.src = reorderedTrackList[0].image.src;
-        }else{
-            const imgRes = await uploadToCloudinary( req.file.buffer , 'image' , 'image' );
-            image = {
-                src: imgRes.secure_url,
-                publicId: imgRes.public_id
-            }
+        
+        if (!userId) {
+            throw new ApiError(401, "Must have valid userId");
         }
 
-        // calculate total duration
-        const duration = tracks.reduce( (sum , track )=>{
-            return sum + (track.duration);
-        },0 )
-        // get all artists. They're present in artistsID/s
-        const artists = tracks.map( track=> track.artists || [] ).flat(1);
+        if (!Array.isArray(body.trackList) || body.trackList.length < 1) {
+            throw new ApiError(400, "body.trackList must be an array containing atleast 1 track._id");
+        }
 
-        const newPlaylist = new Playlist({
+        const artists = await Promise.all(
+            body.trackList.map(async (item) => {
+                const artist = await Track.findById(item).populate({
+                    path: 'artists',
+                    select: '_id'
+                });
+                return artist;
+            })
+        )
+
+        const coverArt = await handleImageUploads(req.file);
+        coverArtId = coverArt.publicId;
+
+        const reorderedTrackList = await reorderTracks(body.trackList);
+
+        // handleDuration
+        const totalDuration = reorderedTrackList.reduce((sum , track) => {
+            return sum + (track.totalDuration);
+        } , 0)
+
+        const newPlaylist = await Playlist.create({
             ...body,
+            createdBy: userId,
             trackList: reorderedTrackList,
             artists,
-            totalTracks: tracks.length || 0,
-            image,
-            duration
-        })
+            coverArt,
+            totalDuration
+        });
 
-        await newPlaylist.save();
+        if (!newPlaylist) {
+            throw new ApiError(500, "Some Error occured while creating playlist");
+        }
 
-        return res.status(201).json({ success: true , message: "Playlist Created!" });
+        res.status(201).json(new ApiResponse(201, 'Created PLaylist Successfully', { id: newPlaylist._id }));
 
     } catch (error) {
-        console.error(error);
-        return setError( res , 500 , error );
+        if (coverArtId) {
+            await deleteFromCloudinary(coverArtId , 'image');
+        }
+        if (error instanceof ApiError) {
+            return res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+                errors: error.errors
+            });
+        }
+
+        // Unknown error - fallback
+        console.error("Unexpected error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
     }
 }
 
-export const updatePlaylist = async( req , res ) => {
+export const getAllPlaylist = async (req, res, next) => {
+    const errors = validationResult(req);
+            
+    if (!errors.isEmpty()) {
+        throw new ApiError(400 , "Validation Error: " + errors.array());
+    }
+    let { page = 1, limit = 5 } = req.query;
+    page = Math.max(1, parseInt(page));
+    limit = Math.max(1, parseInt(limit));
+
+    const playlists = await Playlist.find({}).skip((page - 1) * limit).limit(limit).populate({
+        path: 'trackList',
+        select: '_id name createdBy artists audio coverArt totalDuration',
+        populate: {
+            path: 'artists',
+            select: '_id username role profilePicture'
+        },
+    }).populate({
+        path: 'createdBy',
+        select: '_id username role profilePicture'
+    }).lean();
+
+    if (!playlists) {
+        throw new ApiError(500, "Failed to get playlists");
+    }
+
+    res.status(200).json(new ApiResponse(200, 'Fetched Playlists successfully', playlists));
+}
+
+export const getPlaylistById = async (req, res, next) => {
+    validatorMiddlewareError(req);
+    const { playlistId } = req.params;
+
+    if (!validateMongoose(playlistId)) {
+        throw new ApiError(400, "Invalid Id");
+    }
+
+    const playlist = await Playlist.findById(playlistId).populate({
+        path: 'artists',
+        select: '_id username profilePicture'
+    }).populate({
+        path: 'createdBy',
+        select: '_id username profilePicture'
+    }).populate({
+        path: 'trackList',
+        select: '_id name coverArt audio artists totalDuration'
+    }).lean();
+
+    const saves = await SavedPlaylist.find({ resource: playlistId }).populate({
+        path: 'savedBy',
+        select: '_id username role profilePicture'
+    }).lean();
+    const savedBy = saves.map(item => item.savedBy);
+
+    res.status(200).json(new ApiResponse(200, "Fetched Playlist Successfully", {
+        ...playlist,
+        totalTracks: playlist.trackList.length,
+        savedBy,
+        saveCount: savedBy.length
+    }));
+
+}
+
+export const deletePlaylistById = async (req, res) => {
+    const userId = req.user.id;
+    const errors = validationResult(req);
+            
+    if (!errors.isEmpty()) {
+        throw new ApiError(400 , "Validation Error: " + errors.array());
+    }
+    const { playlistId } = req.params;
+
+    if (!userId) {
+        throw new ApiError(401, "User ID is required");
+    }
+
+    if (!validateMongoose(playlistId)) {
+        throw new ApiError(400, "Invalid Id");
+    }
+
+    const playlist = await Playlist.findById(playlistId);
+    if (!playlist) {
+        throw new ApiError(404, "Playlist not found");
+    }
+
+    if (playlist.createdBy !== userId) {
+        throw new ApiError(401, "Playlist can only be updated by owner");
+    }
+
+    await playlist.findByIdAndDelete(playlistId);
+    // delete saves associated with this playlist
+    const saves = await SavedPlaylist.find({ resource: playlistId })
+    saves.forEach(async(save) => {
+        await SavedPlaylist.findByIdAndDelete(save._id);
+    })
+
+    // also need to delete playlist from user's save playlists
+
+    if (playlist.coverArt.publicId && playlist.coverArt.publicId !== ""  ) {
+        await deleteFromCloudinary(playlist.coverArt.publicId, 'image');
+    }
+}
+
+export const addTrackToPlaylist = async (req, res, next) => {
+    const userId = req.user.id;
+    const errors = validationResult(req);
+            
+    if (!errors.isEmpty()) {
+        throw new ApiError(400 , "Validation Error: " + errors.array());
+    }
+    const { playlistId } = req.params;
+    // body should be trackId: id
+    const body = req.body;
+
+    if (!validateMongoose(playlistId) || !validateMongoose(body.id)) {
+        throw new ApiError(400, "Invalid ID");
+    }
+
+    const playlist = await Playlist.findById(playlistId);
+    if (!playlist) {
+        throw new ApiError(404, "Playlist not found");
+    }
+
+    if (playlist.createdBy !== userId) {
+        throw new ApiError(401 , "Playlist must belong to you to update");
+    }
+
+    if (playlist.trackList.includes(body.id)) {
+        return res.status(200).json(new ApiResponse(200, "Track is already saved"));
+    }
+
+    playlist.trackList.push(body.id);
+
+    await playlist.save();
+    res.status(200).json(new ApiResponse(200, "Track added successfully"));
+}
+
+export const updatePlayCount = async (req, res) => {
+    const userId = req.user.id;
+    const errors = validationResult(req);
+            
+    if (!errors.isEmpty()) {
+        throw new ApiError(400 , "Validation Error: " + errors.array());
+    }
+    const { playlistId } = req.params;
+    if (!validateMongoose(playlistId)) {
+        throw new ApiError(400, "Invalid playlist id");
+    }
+
+    const playlist = await Playlist.findById(playlistId);
+    if (!playlist) {
+        throw new ApiError(404, "Playlist not found");
+    }
+
+    playlist.playCount++;
+    await playlist.save();
+
+    res.status(200).json(new ApiResponse(200, "playcount++"));
+}
+
+export const updateTotalPlayDuration = async (req, res, next) => {
+    
+}
+
+export const updatePlaylistById = async (req, res, next) => {
+    const userId = req.user.id;
+    const errors = validationResult(req);
+            
+    if (!errors.isEmpty()) {
+        throw new ApiError(400 , "Validation Error: " + errors.array());
+    }
+
+    const { playlistId } = req.params;
+    const {
+        name,
+        visibility,
+        durationPlayed,
+    } = req.body;
+    const imageFile = req.file;
+
+    if (!validateMongoose(playlistId)) {
+        throw new ApiError(400, "Invalid playlist id");
+    }
+
     try {
-        const body = req.body;
-        const image = body.image;
-        if( !body.title || !body.visibility ){
-            return setError( res , 400 , "Required Fields not met" );
+        const playlist = await Playlist.findById(playlistId);
+        if (!playlist) {
+            return res.status(404).json({ message: 'Playlist not found' });
         }
 
-        // update coverArt if selected or uploaded
-        if( body.updatedCoverId ){
-            image = await Track.findById(updatedCoverId).select('image');
-        }else if( req.file ){
-            const imgRes = await uploadToCloudinary( req.file.buffer , 'image' , 'image' );
-            image = {
-                src: imgRes.secure_url,
-                publicId: imgRes.public_id
+        if (playlist.createdBy !== userId) {
+            throw new ApiError(401, "Playlist can only be updated by owner");
+        }
+
+        if (name) playlist.name = name;
+        if (visibility) playlist.visibility = visibility;
+        if (durationPlayed) playlist.durationPlayed = durationPlayed;
+
+        if (imageFile) {
+            const imgRes = await uploadToCloudinary(imageFile.buffer, 'image', 'image');
+            if (playlist.coverArt.publicId) {
+                await deleteFromCloudinary(playlist.coverArt.publicId , 'image');
+            }
+            playlist.coverArt.src = imgRes.secure_url;
+            playlist.coverArt.publicId = imgRes.public_id;
+        }
+
+        await playlist.save();
+        res.json({ data: playlist });
+    } catch (err) {
+        if (err instanceof mongoose.Error.ValidationError) {
+            // Format errors for the frontend
+            const errors = {};
+            for (let field in err.errors) {
+            errors[field] = {
+                message: err.errors[field].message
             };
+            }
+            return res.status(400).json({ errors });
         }
-
-    } catch (error) {
-        
+        next(err);
     }
-}
 
-export const deletePlaylistById = async( req , res ) =>{
-    try {
-        const {id} = req.params;
-        if( !mongoose.Types.ObjectId.isValid(id) ){
-            return setError( res , 404 , "Invalid Id" );
-        }
-
-        const target = await Playlist.findByIdAndDelete(id);
-        res.status(200).json({ success: true , message: "Playlist Deleted Successfully" });
-
-        // need to fix
-        if( target?.image?.publicId !== "" ){
-            setInterval( async()=>{
-                try {
-                    await deleteFromCloudinary( target?.image?.publicId , 'image' );
-                } catch (error) {
-                    console.error("Error deleting playlist's coverArt from Cloudinary: ",error);
-                }
-            } )
-        }
-
-    } catch (error) {
-        return setError( res , 500 , error );
-    }
 }
