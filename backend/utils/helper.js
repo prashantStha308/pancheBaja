@@ -1,9 +1,11 @@
-import { uploadToCloudinary } from "../services/cloudinary.services.js";
+import {
+    uploadToCloudinary,
+    deleteFromCloudinary
+} from "../services/cloudinary.services.js";
 import { ApiError } from "./ApiError.js";
 
 // Libraries
 import mongoose from "mongoose";
-import { parseBuffer } from "music-metadata";
 
 // Models
 import SavedTrack from "../models/saves/trackSave.model.js";
@@ -11,6 +13,7 @@ import SavedPlaylist from "../models/saves/playlistSave.model.js";
 import Following from "../models/following.model.js"
 import Track from "../models/track.model.js";
 import Playlist from "../models/playlist.model.js";
+import User from "../models/user.model.js";
 
 export const handleFilesUploads = async ( files ) => {
     if (!files.coverArt) { throw new ApiError(400, 'Missing coverArt') };
@@ -43,28 +46,6 @@ export const handleImageUploads = async (file) => {
     return img;
 }
 
-export const reorderTracks = async (trackList) => {
-
-    if (!Array.isArray(trackList) || !trackList.every(item=> mongoose.Types.ObjectId.isValid(item)) ) {
-        throw new ApiError(400, "trackList must be an array of valid ObjectIds");
-    }
-
-    const tracks = await Track.find({ _id: { $in: trackList } });
-
-    const trackCopy = {};
-    tracks.forEach( ( item )=>(
-        trackCopy[item._id.toString()] = item
-    ));
-
-    const reorderedTrackList = trackList.map(id => trackCopy[id.toString()]);
-
-    return reorderedTrackList;
-}
-
-export const validateMongoose = (id) => {
-    return mongoose.Types.ObjectId.isValid(id);
-}
-
 export const getFollowers = async (userId) => {
     return await Following.find({ receiver: userId }).select('sender').populate({
         path: 'sender',
@@ -85,11 +66,6 @@ export const getSavedTracks = async (userId) => {
         select: "_id name primaryArtist coverArt genre coverArt "
     }).lean();
 }
-
-export const getCreatedTracks = async (userId) => {
-    return await Track.find({ artists: userId }).lean();
-}
-
 export const getSavedPlaylist = async (userId) => {
     return await SavedPlaylist.find({ savedBy: userId }).select('playlist').populate({
         path: 'playlist',
@@ -105,123 +81,33 @@ export const getCreatedPlaylist = async (userId) => {
     }).lean();
 }
 
-export const getTrackSaves = async (trackId) => {
-    const saves = await SavedTrack.find({ track: trackId }).populate({
-        path: 'savedBy',
-        select: '_id username role profilePicture'
-    }).lean();
-    const savedBy = saves.map(item => item.savedBy);
-    return savedBy;
-}
+export const updateImageFile = async (doc, key = "coverArt", imageFile) => {
+    let publicID;
+    if (imageFile) {
+        const imgRes = await uploadToCloudinary(imageFile.buffer, 'image', 'image');
 
-export const sortTracks = async (queries) => {
-    
-    const { page = 1, limit = 5, sort, artist , search } = queries;
+        if (doc[key]?.publicId) {
+            await deleteFromCloudinary(doc[key].publicId, 'image');
+        }
 
-    const sortByOptions = ["playCount", "durationPlayed","-playCount", "-durationPlayed"];
-
-    if (!sortByOptions.includes(sort)) {
-        throw new ApiError(400 , "Invalid sortBy query Input");
+        doc[key] = {
+            src: imgRes.secure_url,
+            publicId: imgRes.public_id
+        };
+        publicID = imgRes.public_id;
     }
+    return publicID;
+};
 
-    const queryObj = {};
-    if (artist) {
-        queryObj['artist'] = artist;
-    }
-    if (search) {
-        queryObj['name'] = search;
-    }
-
-    return await Track.find(queryObj).skip((page - 1) * limit).limit(limit).sort(sort).populate({
-        path: 'primaryArtist',
-        select: 'username profilePicture bio followerCount'
-    }). populate({
-        path: 'artists',
-        select: 'username profilePicture bio followerCount'
-    });
-}
-
-export const allTracks = async (queries) => {
-    
-    const { page = 1, limit = 5, artist , search } = queries;
-
-    const queryObj = {};
-    if (artist) {
-        queryObj['artists'] = artist;
-    }
-    if (search) {
-        queryObj['name'] = search;
-    }
-
-    return await Track.find(queryObj).skip((page - 1) * limit).limit(limit).populate({
-        path: 'primaryArtist',
-        select: 'username profilePicture bio followerCount'
-    }). populate({
-        path: 'artists',
-        select: 'username profilePicture bio followerCount'
-    });
-}
-
-export const sortPlaylist = async (queries) => {
-        
-    const { page = 1, limit = 5, sort, search } = queries;
-
-    const sortByOptions = ["playCount", "durationPlayed","-playCount", "-durationPlayed"];
-
-    if (!sortByOptions.includes(sort)) {
-        throw new ApiError(400 , "Invalid sortBy query Input");
-    }
-
-    const queryObj = {};
-    if (search) {
-        queryObj['name'] = search;
-    }
-
-    return await Playlist.find(queryObj).skip((page - 1) * limit).limit(limit).sort(sort).populate({
-        path: 'primaryArtist',
-        select: 'username profilePicture bio followerCount'
-    }). populate({
-        path: 'artists',
-        select: 'username profilePicture bio followerCount'
-    });
-}
-
-export const allPlaylist = async (queries) => {
-    
-    const { page = 1, limit = 5, artist , search } = queries;
-
-    const queryObj = {};
-    if (artist) {
-        queryObj['artist'] = artist;
-    }
-    if (search) {
-        queryObj['name'] = search;
-    }
-
-    return await Playlist.find(queryObj).skip((page - 1) * limit).limit(limit).populate({
-        path: 'primaryArtist',
-        select: 'username profilePicture bio followerCount'
-    }). populate({
-        path: 'artists',
-        select: 'username profilePicture bio followerCount'
-    });
-}
-
-export const getAudioDuration = async (audioFile) => {
-    const musicMetadata = await parseBuffer(audioFile.buffer, 'audio/mpeg');
-    return musicMetadata.format.duration;
-}
-
-export const updateTrackAffiliatedPlaylists = async (trackId) => {
-    const playlistsHavingTrack = await Playlist.find({ trackList: trackId }).populate('trackList');
+export const updateTrackAffiliatedPlaylists = async (track) => {
+    const playlistsHavingTrack = await Playlist.find({ trackList: track._id }).populate('trackList');
 
     for (const playlist of playlistsHavingTrack) {
         playlist.totalDuration = (playlist.totalDuration || 0) - (track.totalDuration || 0);
         
-        const updatedTrackList = playlist.trackList.filter(track => !track._id.equals(trackId));
+        const updatedTrackList = playlist.trackList.filter(track => !track._id.equals(track._id));
         playlist.trackList = updatedTrackList;
 
-        // pre hook updates artist field while saving
         await playlist.save();
     }
 }
@@ -234,12 +120,4 @@ export const updateTrackAffiliatedArtists = async (trackId) => {
         artist.trackList = updatedArtistTrackList;
         await artist.save();
     }
-}
-
-export const cleanAffilicatedTrackData = async (trackId) => {
-    await Promise.all([
-        updateTrackAffiliatedArtists(trackId),
-        updateTrackAffiliatedPlaylists(trackId),
-        SavedTrack.deleteMany({ track: trackId })
-    ]);
 }

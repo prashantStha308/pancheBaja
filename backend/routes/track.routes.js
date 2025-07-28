@@ -34,6 +34,6 @@ trackRouter.delete('/:trackId', authorize(['artist' , 'admin']), sanitizeTrackPa
 trackRouter.patch('/playcount/:trackId', authorize(['artist' , 'admin']), sanitizeTrackParams , sanitizeAndValidateTrackBody ,  updatePlayCount);
 
 // stream
-trackRouter.get('/:trackId/stream', authorize(['user' , 'artist' , 'admin']) , sanitizeTrackParams , streamAudio);
+trackRouter.get('/:publicId/stream', streamAudio);
 
 export default trackRouter;

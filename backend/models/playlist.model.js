@@ -94,7 +94,7 @@ const updatePlaylist = async function (next){
         const allGenre = new Set();
         for (const track of tracks) {
             track.artists.forEach(artistId => {
-                allArtists.add(artistId);
+                allArtists.add(artistId.toString());
             });
 
             track.genre.forEach((genre) => {
@@ -107,7 +107,8 @@ const updatePlaylist = async function (next){
         }, 0);
         
         this.totalDuration = updatedDuration;
-        this.artists = Array.from(allArtists);
+        console.log(this.totalDuration);
+        this.artists = Array.from(allArtists).map(id => new mongoose.Types.ObjectId(id));
         this.genre = Array.from(allGenre);
         next();
     } catch (err) {

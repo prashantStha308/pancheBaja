@@ -1,12 +1,5 @@
 import axios from "axios";
 import { setError, setSuccess } from "./utils.services";
-/*
-    setError(error) ---> error == error object
-    returns { success: false , message: error.message || "Unexpected Error" }
-
-    setSuccess(res) ---> res = Response Object
-    returns { success: true , data: res.data , message: res.message }
-*/
 
 
 export const uploadTrack = async ( formData ) => {

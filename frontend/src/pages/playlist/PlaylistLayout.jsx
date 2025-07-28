@@ -5,8 +5,8 @@ import { useState } from "react";
 import { setError } from "../../services/utils.services";
 import Loader from "../../components/Loader";
 import { getPlaylistByid } from "../../services/playlist.services";
-import List from "../../components/List";
-import TopDetails from "../../components/TopDetails";
+import ListLayout from "../../components/List/ListLayout.jsx";
+import TopDetails from "../../components/TopDetails.jsx";
 import Background from "../../components/Background";
 import transition from "../../utils/transition";
 
@@ -52,7 +52,7 @@ const PlaylistLayout = () => {
 			<section className="flex flex-col min-h-screen w-full md:mt-8  gap-2 z-40" >
 				{/* Top */}
 				<TopDetails visitingPage={visitingPlaylist} />
-				<List tracks={visitingPlaylist?.type === 'track' ? [visitingPlaylist] : visitingPlaylist?.trackList } />
+				<ListLayout tracks={visitingPlaylist?.type === 'track' ? [visitingPlaylist] : visitingPlaylist?.trackList } />
 			</section>
 
 			<Background src={visitingPlaylist?.coverArt?.src} />

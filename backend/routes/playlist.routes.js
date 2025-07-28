@@ -7,6 +7,7 @@ import {
     getAllPlaylist,
     getPlaylistById,
     addTrackToPlaylist,
+    removeTrackFromPlaylist,
     updatePlaylistById,
     updatePlayCount,
     deletePlaylistById,
@@ -30,9 +31,12 @@ playlistRouter.get('/:playlistId', sanitizePlaylistParams ,  getPlaylistById);
 // delete playlist by Id
 playlistRouter.delete('/:playlistId',authorize(['user', 'artist', 'admin']), sanitizePlaylistParams ,deletePlaylistById );
 // update playlist by Id
-playlistRouter.patch('/:playlistId',upload.single('coverArt'),authorize(['user', 'artist', 'admin']), sanitizePlaylistParams , sanitizeAndValidatePlaylistBody,updatePlaylistById);
+playlistRouter.patch('/:playlistId', upload.single('coverArt'), authorize(['user', 'artist', 'admin']), sanitizePlaylistParams, sanitizeAndValidatePlaylistBody, updatePlaylistById);
+
 // add track to playlist
-playlistRouter.patch('/addTrack/:playlistId', authorize(['user', 'artist', 'admin']),  sanitizePlaylistParams , sanitizeAndValidatePlaylistBody, addTrackToPlaylist);
+playlistRouter.patch('/addTrack/:playlistId', authorize(['user', 'artist', 'admin']), sanitizePlaylistParams, addTrackToPlaylist);
+// remove track from playlist
+playlistRouter.patch('/removeTrack/:playlistId', authorize(['user', 'artist', 'admin']), removeTrackFromPlaylist);
 // update playcount
 playlistRouter.patch('/playCount/:playlistId', authorize(['user', 'artist', 'admin']),  sanitizePlaylistParams , sanitizeAndValidatePlaylistBody, updatePlayCount);
 // update total play duration

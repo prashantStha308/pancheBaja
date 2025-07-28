@@ -1,13 +1,13 @@
-import useTrackStore from "../../store/track.store"
+import usePlayerStore from "../../store/player.store.js"
 import Player from "./Player"
 import TrackDetail from "./TrackDetail";
 import VolumeSeeker from "./VolumeSeeker";
 
 const BottomPlayer = () => {
 
-  const { currentTrack } = useTrackStore();
+  const { currentTrack } = usePlayerStore();
 
-  if( Object.keys(currentTrack).length === 0 ){
+  if( currentTrack && Object.keys(currentTrack).length === 0 ){
     // return;
   }
 

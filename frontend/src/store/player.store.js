@@ -1,20 +1,21 @@
 import { create } from "zustand";
 
-const TrackStore = create( ( set , get )=>({
+const PlayerStore = create( ( set , get )=>({
     // states
-    currentTrack:{}, 
+    currentTrack: null,
     currentIndex: 0,
     currentTime: "00:00",
     totalDuration: "00:00",
     seekPosition: 0,
     volume: 100,
     isPlaying: false,
+
     // refs
     seekSliderRefs: [],
     seekVolumeRef: null, //volume control garna lai
     audioElementRef: null,
     // misc
-    updateTimer: null, //setInterval ID ko lagi
+    audioIntervalTimer: null, //setInterval ID ko lagi
     
     // setters
     setCurrentTrack: ( track ) => { set({currentTrack: track}) },
@@ -37,7 +38,7 @@ const TrackStore = create( ( set , get )=>({
     setAudioElementRef: (ref)=>{set({audioElementRef: ref})},
 
     // misc
-    setUpdateTimer: (intervalId)=>{set({updateTimer: intervalId})},
+    setAudioIntervalTimer: (intervalId)=>{set({updateTimer: intervalId})},
 
     updateAllSliders: (value) => {
         const { seekSliderRefs } = get();
@@ -52,5 +53,5 @@ const TrackStore = create( ( set , get )=>({
     
 }) );
 
-const useTrackStore = ()=> TrackStore();
-export default useTrackStore;
+const usePlayerStore = ()=> PlayerStore();
+export default usePlayerStore;

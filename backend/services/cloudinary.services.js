@@ -47,10 +47,7 @@ export const buildCloudinaryUrl = (publicId, expiryTime) => {
 
     return cloudinary.url( publicId, {
         resource_type: 'video',
-        type: 'upload',
+        type: 'private',
         sign_url: true,
-        // auth_token: {
-        //     duration: expiryTime || 3600
-        // }
     })
 }

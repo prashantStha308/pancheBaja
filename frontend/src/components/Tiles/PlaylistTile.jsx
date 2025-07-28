@@ -26,7 +26,7 @@ const PlaylistTile = ({ item }) => {
 				</p>
 				<p className="text-xs text-gray-400">
 					{
-						item.type !== 'track' && item.totalTracks || 0 + "Tracks" 
+						item.type !== 'track' && (item?.trackList.length || 0) + " Tracks" 
 					}
 				</p>
 			</div>

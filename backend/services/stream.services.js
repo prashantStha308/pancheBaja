@@ -2,16 +2,17 @@ import { ApiError } from "../utils/ApiError.js";
 import { buildCloudinaryUrl } from "./cloudinary.services.js";
 import { Readable } from 'stream';
 
-export const streamAudio = async (req, res , next) => {
-    const { trackId } = req.params;
-    const userId = req.user.id;
+export const streamAudio = async (req, res, next) => {
+    console.log("Streaming");
+    const { publicId } = req.params;
+    // const userId = req.user.id;
     const range = req.headers.range;
 
-    if (!userId) {
-        throw new ApiError(401, "Must authorize to access resource");
-    }
+    // if (!userId) {
+    //     throw new ApiError(401, "Must authorize to access resource");
+    // }
 
-    const cloudinaryUrl = buildCloudinaryUrl(trackId);
+    const cloudinaryUrl = buildCloudinaryUrl(publicId);
     console.log("Url: ",cloudinaryUrl);
     
     const headers = {};

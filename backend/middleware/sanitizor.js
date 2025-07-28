@@ -31,13 +31,15 @@ export const sanitizeLogin = [
 export const sanitizeBasicQuery = [
     query('page').isInt({min: 1}).optional(),
     query('limit').isInt({ min: 1, max: 100 }).optional(),
-    query('search').escape().optional(),
+    query('name').trim().escape().optional(),
 ]
 
 export const sanitizeUserQuery = [
     ...sanitizeBasicQuery,
     query('city').trim().escape().optional(),
     query('country').trim().escape().optional(),
+    query('sort').trim().escape().optional(),
+    query('role').isIn(['user', 'artist']).trim().optional()
 ]
 
 export const sanitizeTrackQuery = [
@@ -47,7 +49,7 @@ export const sanitizeTrackQuery = [
 ]
 
 export const sanitizePlaylistQuery = [
-    ...sanitizeBasicQuery,
+    ...sanitizeTrackQuery,
 ]
 
 // Params

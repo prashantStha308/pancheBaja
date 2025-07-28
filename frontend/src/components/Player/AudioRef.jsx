@@ -1,13 +1,21 @@
-import React from 'react'
-import useTrackStore from '../../store/track.store'
+import { useEffect, useRef } from 'react';
+import usePlayerStore from '../../store/player.store';
 
 const AudioRef = () => {
 
-    const { currentTrack } = useTrackStore();
+    const audioRef = useRef();
+    const { setAudioElementRef , currentTrack } = usePlayerStore();
+
+    useEffect(() => {
+        if (audioRef.current !== null) {
+            console.log("Log in audio Ref",currentTrack);
+            setAudioElementRef(audioRef);
+        }
+    }, []);
 
     return (
         <>
-            <audio src={ currentTrack.audio.src } ></audio>
+            <audio ref={audioRef} ></audio>
         </>
     )
 }

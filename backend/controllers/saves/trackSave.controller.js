@@ -1,7 +1,7 @@
 import SavedTrack from "../../models/saves/trackSave.model.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
-import { validateMongoose } from "../../utils/helper.js";
+import { validateMongoose } from "../../utils/validator.js";
 import { validationResult } from "express-validator";
 
 

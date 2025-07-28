@@ -5,11 +5,9 @@ const PlaylistStore = create( ( set ) => ({
     currentPlaylist: {},
     visitingPlaylist: {},
 
-    // setters
     setCurrentPlaylist: (playlist)=>{set({currentPlaylist: playlist})},
     setVisitingPlaylist: ( playlist )=>{ set({visitingPlaylist: playlist}) },
 
-    // services
     addTrack: ( track ) =>{
 
         set((state)=>{ state.currentPlaylist.some( item => item._id === track._id ) ? [ ...state.currentPlaylist.filter(item=> item._id !== track._id), track ]  : [...state.currentPlaylist , track] });

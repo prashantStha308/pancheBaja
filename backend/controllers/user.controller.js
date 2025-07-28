@@ -13,52 +13,37 @@ import {
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {
-    handleImageUploads,
     getFollowers,
     getFollowings,
-    getSavedTracks,
-    getSavedPlaylist,
-    getCreatedPlaylist,
-    getCreatedTracks
+    updateImageFile,
 } from "../utils/helper.js";
-import { validateMongoose, validatorMiddlewareError } from "../utils/validator.js";
+import {
+    validateMongoose,
+    checkValidationResult,
+    validatePassword,
+} from "../utils/validator.js";
+import {
+    checkExistingUserByEmail,
+    uploadUserMedias,
+    deleteUserMediaUploads,
+    getUserStats,
+    getQueryFilteredUsers,
+} from "../helpers/user.helper.js";
 
 
 export const createUser = async (req, res, next) => {
     let profilePictureId , coverArtId;
     try {
-        validatorMiddlewareError(req);
-        
+        checkValidationResult(req);
         const body = req.body;
         const files = req.files;
 
-        if (!body.username || !body.email || !body.password || !body.role || !body.location ) {
-            throw new ApiError(400, 'Required Feilds not filled');
-        }
-        // Check if the user already exists
-        const existingUser = await User.findOne({ email: body.email });
-        if (existingUser) {
-            return next(new ApiError(400, 'User with this email already exists'));
-        }
-
+        await checkExistingUserByEmail(body.email);
         const hashedPassword = await bcrypt.hash(body.password, 10);
 
-        let profilePicture = {
-            src: "https://res.cloudinary.com/dww0antkw/image/upload/v1747984790/deafultImg_woxk8f.png",
-            publicId: ""
-        }
-
-        let coverArt = { ...profilePicture };
-
-        if (files.profilePicture) {
-            profilePicture = await handleImageUploads(files.profilePicture);
-            profilePictureId = profilePicture.publicId;
-        }
-
-        if (files.coverArt) {
-            coverArt = await handleImageUploads(files.coverArt);
-            coverArtId = coverArt.publicId;
-        }
+        const { profilePicture, coverArt } = await uploadUserMedias(files);
+        profilePictureId = profilePicture.publicId;
+        coverArtId = coverArt.publicId;
         
         const user = await User.create({
             ...body,
@@ -67,52 +52,36 @@ export const createUser = async (req, res, next) => {
             coverArt,
         })
 
-        if (!user) {
-            throw new ApiError(500, "Something went wrong while registering a user");
-        }
-
-        return res.status(201).json(new ApiResponse(200, 'User Created Successfully', { id: user._id }));
+        return res.status(201).json(new ApiResponse(201, 'User Created Successfully', { id: user._id }));
 
     } catch (error) {
-        if (profilePictureId) {
-            await deleteFromCloudinary(profilePictureId, 'image', 'image');
-        }
-        if (coverArtId) {
-            await deleteFromCloudinary(coverArtId, 'image', 'image');
-        }
+        await deleteUserMediaUploads(profilePictureId , coverArtId);
 
         return next(new ApiError(500, error.message || 'Unexpected error occured'));
     }
 }
 
 export const loginUser = async (req, res, next) => {
-    validatorMiddlewareError(req);
-
+    checkValidationResult(req);
     const body = req.body;
     const email = body.email;
-    const user = await User.findOne({ email });
 
+    const user = await User.findOne({ email });
     if (!user) {
         throw new ApiError(404, 'Unregistered Email');
     }
 
-    const isMatch = await bcrypt.compare(body.password, user.password);
-    if (!isMatch) {
-        throw new ApiError('400', "Invalid Password");
-    }
-
+    await validatePassword(body.password , user.password);
     const token = jwt.sign({ id: user._id , role: user.role }, JWT_SECRET, {
         expiresIn: '30d',
     });
 
     return res.status(200).json(new ApiResponse(200, 'Logged In Successfully', { token }));
-
 }
 
 // get details of logged in user
 export const getUserDetails = async (req, res, next) => {
     const userId = req.user.id;
-
     validateMongoose(userId);
 
     const user = await User.findById(userId).select('-password').lean();
@@ -120,33 +89,17 @@ export const getUserDetails = async (req, res, next) => {
         throw new ApiError(400, "User not found");
     }
 
-    const [followers, followings, savedTracks, savedPlaylist, createdPlaylists] = await Promise.all([
-        getFollowers(userId),
-        getFollowings(userId),
-        getSavedTracks(userId),
-        getSavedPlaylist(userId),
-        getCreatedPlaylist(userId)
-    ]);
-    
-    let createdTracks
-    if (user.role === 'artist') createdTracks = await getCreatedTracks(userId);
+    const userFollowingsAndSaves = await getUserStats(userId);
 
     res.status(200).json(new ApiResponse(200, "User Fetched Succesfully", {
         ...user,
-        followersCount: followers.length ,
-        followers,
-        followingsCount: followings.length,
-        followings,
-        savedTracks,
-        savedPlaylist,
-        createdPlaylists,
-        createdTracks
+        userFollowingsAndSaves
     }));
-
 }
+
 // user detail by ID
 export const userDetailsById = async (req, res, next) => {
-    validatorMiddlewareError(req);
+    checkValidationResult(req);
     const { userId } = req.params;
 
     validateMongoose(userId);
@@ -156,9 +109,10 @@ export const userDetailsById = async (req, res, next) => {
     if (!user) {
         throw new ApiError(404, 'User not found');
     }
-
-    const followers = await getFollowers(userId);
-    const followings = await getFollowings(userId);
+    const [followers, followings] = await Promise.all([
+        getFollowers(userId),
+        getFollowings(userId)
+    ]);
 
     res.status(200).json(new ApiResponse(200, 'User found', {
         ...user,
@@ -170,28 +124,15 @@ export const userDetailsById = async (req, res, next) => {
 }
 
 export const getAllUsers = async (req, res, next) => {
-    validatorMiddlewareError(req);
-    let { limit = 10, page = 1 , city , country , search } = req.query;
+    checkValidationResult(req);
 
-    const queryObj = { role: 'user' };
-    if (city) {
-        queryObj['location.city'] = city;
-    }
-    if (country) {
-        queryObj['location.country'] = country;
-    }
-    if (search) {
-        queryObj['username'] = search;
-    }
-
-    const users = await User.find(queryObj).select('-password -location -dob -subscription -trackList -playLists').skip((page - 1) * limit).limit(limit);
+    const users = await getQueryFilteredUsers(req);
 
     res.status(200).json(new ApiResponse(200, "Fetched Users successfully", users));
 }
 
 export const deleteUser = async (req, res, next) => {
     const userId = req.user.id;
-
     validateMongoose(userId , "userId");
     
     const user = await User.findById(userId);
@@ -199,14 +140,7 @@ export const deleteUser = async (req, res, next) => {
         throw new ApiError(404, 'User not found');
     }
 
-    if (user.profilePicture.publicId) {
-        await deleteFromCloudinary(user.profilePicture.publicId, 'image', 'image');
-    }
-
-    if (user.coverPicture.publicId) {
-        await deleteFromCloudinary(user.coverPicture.publicId, 'image', 'image');
-    }
-
+    await deleteUserMediaUploads( user.profilePicture.publicId , user.coverArt.publicId );
     const deletedUser = await User.findByIdAndDelete(userId);
 
     res.status(200).json(new ApiResponse(200 , "User Deleted Successfully" , {id: deletedUser._id}))
@@ -216,7 +150,7 @@ export const deleteUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
     let profilePictureId, coverArtId;
     try {
-        validatorMiddlewareError(req);
+        checkValidationResult(req);
 
         const userId = req.user.id;
         const {
@@ -227,12 +161,9 @@ export const updateUser = async (req, res, next) => {
         } = req.body;
         const files = req.files;
 
-        if (!validateMongoose(userId)) {
-            throw new ApiError(400, "Invalid User ID");
-        }
+        validateMongoose(userId);
 
         const user = await User.findById(userId);
-
         if (!user) {
             throw new ApiError(404, "User not found");
         }
@@ -240,42 +171,21 @@ export const updateUser = async (req, res, next) => {
         if (username) user.username = username;
         if (email) user.email = email;
         if (role) user.role = role;
-        if (password) user.password = await bcrypt.hash(password, 10);
-
-        // update profilePicture if available
-        if (files?.profilePicture) {
-            const imgRes = await uploadToCloudinary(files.profilePicture[0].buffer, 'image', 'image');
-            if (user.profilePicture.publicId) {
-                await deleteFromCloudinary(user.profilePicture.publicId, 'image');
-            }
-            profilePictureId = imgRes.public_id;
-            user.profilePicture.src = imgRes.secure_url;
-            user.profilePicture.publicId = imgRes.public_id;
+        if (password && !(await bcrypt.compare(password, user.password))) {
+            user.password = await bcrypt.hash(password, 10);
         }
 
-        // update coverArt if available
-        if (files?.coverArt) {
-            const imgRes = await uploadToCloudinary(files.coverArt[0].buffer, 'image', 'image');
-            if (user.coverArt.publicId) {
-                await deleteFromCloudinary(user.coverArt.publicId, 'image');
-            }
-            coverArtId = imgRes.public_id;
-            user.coverArt.src = imgRes.secure_url;
-            user.coverArt.publicId = imgRes.public_id;
-        }
+        [profilePictureId, coverArtId] = await Promise.all([
+            updateImageFile(user, 'profilePicture', files?.profilePicture),
+            updateImageFile(user, 'coverArt', files?.coverArt)
+        ]);
 
         await user.save();
-        
+    
         res.status(200).json(new ApiResponse(200, "User updated successfully", { id: userId }));
 
     } catch (error) {
-        if (profilePictureId) {
-            await deleteFromCloudinary(profilePictureId, 'image');
-        }
-
-        if (coverArtId) {
-            await deleteFromCloudinary(coverArtId, 'image');
-        }
+        await deleteUserMediaUploads(profilePictureId , coverArtId);
         next(error);
     }
 }

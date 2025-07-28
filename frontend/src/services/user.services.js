@@ -1,34 +1,104 @@
 import axios from "axios"
-import { setError, setSuccess } from "./utils.services.js"
+import { setError, setSuccess } from "../utils/utils.services.js"
+import { BASE_API_URL } from "../utils/constants.js";
 
-const getAllUsers = async (page = 1, limit = 10) => {
-    
+const throwError = (res) => {
+    throw new Error(res.data?.message || "API returned unsuccessful response");
 }
 
-const getUsersByCity = async (city, page = 1, limit = 10) => {
-    
+export const getAllUsers = async (page = 1, limit = 10) => {
+    try {
+        const res = await axios.get(`${BASE_API_URL}/api/user?page=${page}&limit=${limit}`);
+
+        if (!res.data?.success) {
+            throwError(res);
+        }
+
+        return setSuccess(res.data);
+    } catch (error) {
+        console.log("Error inside getAllUsers");    
+        return setError( error );
+    }
+};
+
+export const getUserById = async (id) => {
+    try {
+        const res = await axios.get(`${BASE_API_URL}/api/user/${id}`);
+        
+        if (!res.data?.success) {
+            throwError(res);
+        }
+        
+        return setSuccess(res.data);
+    } catch (error) {
+        console.log("Error inside getUserById");    
+        return setError( error );
+    }
 }
 
-const getUsersByCountry = async (country, page = 1, limit = 10) => {
-    
+export const getUsersByCity = async (city, page = 1, limit = 10) => {
+    try {
+        const res = await axios.get(`${BASE_API_URL}/api/user?city=${city}&page=${page}&limit=${limit}`);
+
+        if (!res.data?.success) {
+            throwError(res);
+        }
+
+        return setSuccess(res.data);
+    } catch (error) {
+        console.log("Error inside getUsersByCity");    
+        return setError( error );
+    }
 }
 
-const getAllArtists = async (page = 1, limit = 10) => {
-    
+export const getUsersByCountry = async (country, page = 1, limit = 10) => {
+    try {
+        const res = await axios.get(`${BASE_API_URL}/api/user?country=${country}&page=${page}&limit=${limit}`);
+
+        if (!res.data?.success) {
+            throwError(res);
+        }
+
+        return setSuccess(res.data);
+    } catch (error) {
+        console.log("Error inside getUsersByCity");    
+        return setError( error );
+    }
 }
 
-const getArtistsByCity = async (city, page = 1, limit = 10) => {
+const validateQueryObj = (queryKeys) => {
+  const allowedKeys = ['role', 'name', 'sort', 'page', 'limit', 'city', 'country'];
+  
+  return queryKeys.every(key => allowedKeys.includes(key));
+};
 
+export const getUsersByQuery = async (queryObj, page = 1, limit = 10) => {
+    try {
+        const queryKeys = Object.keys(queryObj);
+
+        if (!validateQueryObj(queryKeys)) {
+            throw new Error("Invalid parameters in query");
+        }
+
+        // Build queryString
+        const optionQuery = queryKeys.map(key => `&${key}=${encodeURIComponent(queryObj[key])}`).join("");
+        const queryString = `?page=${page}&limit=${limit}${optionQuery}`;
+        console.log(queryString);
+
+        const res = await axios.get(`${BASE_API_URL}/api/user${queryString}`);
+        
+        if (!res.data.success) {
+            throwError(res.data);
+        }
+
+        return setSuccess(res.data);
+
+    } catch (error) {
+        console.log("Error inside getUsersByCity");    
+        return setError( error );
+    }
 }
 
-const getArtistsByCountry = async (country, page = 1, limit = 10) => {
-
-}
-
-const searchUser = async ( serachWord ) => {
-    
-}
-
-const searchArtist = async ( serachWord ) => {
+export const searchUser = async ( searchWord ) => {
     
 }
