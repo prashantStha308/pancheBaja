@@ -1,5 +1,5 @@
 import axios from "axios"
-import {setError , setSuccess} from "./utils.services.js"
+import { setError, setSuccess } from "../utils/utils.services.js";
 
 export const getAllPlaylist = async ( page = 1 , limit = 10 )=>{
     try {

@@ -13,8 +13,6 @@ import {
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {
-    getFollowers,
-    getFollowings,
     updateImageFile,
 } from "../utils/helper.js";
 import {
@@ -28,6 +26,7 @@ import {
     deleteUserMediaUploads,
     getUserStats,
     getQueryFilteredUsers,
+    getUserFollowingAndFollowerData,
 } from "../helpers/user.helper.js";
 
 
@@ -109,16 +108,12 @@ export const userDetailsById = async (req, res, next) => {
     if (!user) {
         throw new ApiError(404, 'User not found');
     }
-    const [followers, followings] = await Promise.all([
-        getFollowers(userId),
-        getFollowings(userId)
-    ]);
+
+    const followerFollowingData = await getUserFollowingAndFollowerData(userId);
 
     res.status(200).json(new ApiResponse(200, 'User found', {
         ...user,
-        followersCount: followers.length ,
-        followers,
-        followingsCount: followings.length,
+        ...followerFollowingData
     }))
 
 }
@@ -129,6 +124,30 @@ export const getAllUsers = async (req, res, next) => {
     const users = await getQueryFilteredUsers(req);
 
     res.status(200).json(new ApiResponse(200, "Fetched Users successfully", users));
+}
+
+export const getBulkUsersById = async (req, res, next) => {
+    checkValidationResult(req);
+    const { ids } = req.body;
+    validateMongoose(ids);
+
+    const users = await User.find({ _id: {$in: ids} }).select('-password -email -location -dob -subscription').lean();
+
+    if (users.length === 0) {
+        throw new ApiError(404, "No matching users associated with the ids");
+    }
+
+    const completeUserObj = await Promise.all(
+        users.map(async (user) => {
+            const stats = await getUserStats(user._id);
+            return {
+                ...user,
+                ...stats
+            };
+        })
+    );
+
+    res.status(200).json(new ApiResponse(200, "Fetched Bulk users by ID successfully", completeUserObj));
 }
 
 export const deleteUser = async (req, res, next) => {

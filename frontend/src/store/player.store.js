@@ -9,6 +9,7 @@ const PlayerStore = create( ( set , get )=>({
     seekPosition: 0,
     volume: 100,
     isPlaying: false,
+    hasLoadedTrack: false,
 
     // refs
     seekSliderRefs: [],
@@ -24,7 +25,8 @@ const PlayerStore = create( ( set , get )=>({
     setTotalDuration: (duration)=>{set({totalDuration: duration})},
     setSeekPosition: (position) => set({ seekPosition: position }),
     setVolume: (vol)=>{ set({volume: vol}) },
-    setIsPlaying: (bool)=>{set({isPlaying: bool})},
+    setIsPlaying: (bool) => { set({ isPlaying: bool }) },
+    setHasLoadedTrack: (bool) => {set({hasLoadedTrack: bool})},
     
     // ref setters
     setSeekSliderRefs: (ref) => set(state => {

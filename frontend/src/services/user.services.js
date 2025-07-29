@@ -36,6 +36,10 @@ export const getUserById = async (id) => {
     }
 }
 
+export const getBulkUsersById = async (ids) => {
+    
+}
+
 export const getUsersByCity = async (city, page = 1, limit = 10) => {
     try {
         const res = await axios.get(`${BASE_API_URL}/api/user?city=${city}&page=${page}&limit=${limit}`);
@@ -94,11 +98,7 @@ export const getUsersByQuery = async (queryObj, page = 1, limit = 10) => {
         return setSuccess(res.data);
 
     } catch (error) {
-        console.log("Error inside getUsersByCity");    
+        console.log("Error inside getUsersByCity");
         return setError( error );
     }
-}
-
-export const searchUser = async ( searchWord ) => {
-    
 }

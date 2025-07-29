@@ -1,10 +1,15 @@
 import {Link} from "react-router-dom";
 import usePlayerStore from "../../store/player.store.js";
+import { useGetUserById } from "../../queries/user.queries.js";
 
 const TrackDetail = () => {
 
     const { currentTrack } = usePlayerStore();
     console.log(currentTrack);
+
+    const { isPending, isLoading, data, isError, error } = useGetUserById( currentTrack.artists );
+    
+
 
     return (
         <section className="flex items-center gap-4" >

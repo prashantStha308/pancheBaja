@@ -6,6 +6,7 @@ import {
     createUser,
     deleteUser,
     getAllUsers,
+    getBulkUsersById,
     getUserDetails,
     loginUser,
     updateUser,
@@ -25,20 +26,28 @@ userRouter.post('/',upload.fields([
     { name: 'coverArt', maxCount: 1 },
     { name: 'profilePicture' , maxCount: 1 }
 ]) , sanitizeAndValidateUserBody ,createUser);
+
 // Login
 userRouter.post('/login' , sanitizeLogin , loginUser);
+
+// Get bulk users by id
+// sanitize this
+userRouter.post('/bulk' , getBulkUsersById);
+
 // Get logged in user's data
 userRouter.get('/me', authorize(['user', 'artist', 'admin']), getUserDetails);
+
 // Get All users
 userRouter.get('/', sanitizeUserQuery , getAllUsers);
+
 // Delete logged in user
 userRouter.delete('/me/delete', authorize(['user' , 'artist' , 'admin']), deleteUser);
+
 // update logged in user
 userRouter.patch('/me/update', authorize(['user' , 'artist' , 'admin']), upload.fields([
     { name: 'profilePicture', maxCount: 1 },
     { name: 'coverArt', maxCount: 1 }
 ]), sanitizeAndValidateUserBody , updateUser);
-
 
 // Dynamic Links
 // Get user by ID

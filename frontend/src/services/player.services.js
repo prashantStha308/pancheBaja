@@ -21,7 +21,8 @@ const usePlayerServices = () => {
         currentTrack, setCurrentIndex,
         isPlaying, setIsPlaying,
         audioElementRef,
-        audioIntervalTimer , setAudioIntervalTimer, updateAllSliders,
+        audioIntervalTimer, setAudioIntervalTimer, updateAllSliders,
+        setHasLoadedTrack
     } = usePlayerStore();
 
     function loadTrack(track, playlist) {
@@ -34,6 +35,7 @@ const usePlayerServices = () => {
             selectTrackInPlaylist(track, playlist);
             resetPlayer();
             initializeAudio(track, nextTrack);
+            setHasLoadedTrack(true);
             playTrack();
             // update seeker every 1 second
             setAudioIntervalTimer(setInterval(seekUpdate, 1000));

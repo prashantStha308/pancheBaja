@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom"
 import usePlaylistStore from "../../store/playlist.store";
 import { useEffect } from "react";
 import { useState } from "react";
-import { setError } from "../../services/utils.services";
+import { setError } from "../../utils/utils.services.js";
 import Loader from "../../components/Loader";
 import { getPlaylistByid } from "../../services/playlist.services";
 import ListLayout from "../../components/List/ListLayout.jsx";

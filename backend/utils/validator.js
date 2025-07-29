@@ -13,10 +13,20 @@ export const checkValidationResult = (req) => {
     }
 }
 
-export const validateMongoose = (id , name = "Object Id") => {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        throw new ApiError(400, `Invalid ${name}`);
+export const validateMongoose = (id, name = "Object Id") => {
+    if (!id) {
+        throw new ApiError(400, `${name} is required`);
     }
+    const isValidId = (item) => mongoose.Types.ObjectId.isValid(item);
+
+    if (Array.isArray(id)) {
+        if (id.length === 0) throw new ApiError(400 , `${name} array cannot be empty`);
+        if (!id.every(isValidId)) throw new ApiError(400, `Invalid ${name}`);
+    } else {
+        if (!isValidId(id)) throw new ApiError(400, `Invalid ${name}`);
+    }
+
+    return true;
 }
 
 export const validatePermission = (resourceOwnerId, currentUserId) => {
