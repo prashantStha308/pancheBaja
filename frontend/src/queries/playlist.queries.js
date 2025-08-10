@@ -10,8 +10,10 @@ export const useAllPlaylistQuery = ( page = 1 , limit = 10 ) => {
 
 export const usePlaylistByIdQuery = (id)=>{
     return useQuery({
-        queryFn: ()=> getPlaylistByid(id),
+        queryFn: () => {
+            console.log("test");
+            return getPlaylistByid(id)
+        },
         queryKey: [ 'playlist' , {id} ],
-        enabled: false
     })
 }

@@ -1,50 +1,43 @@
 import { useParams } from "react-router-dom"
 import usePlaylistStore from "../../store/playlist.store";
 import { useEffect } from "react";
-import { useState } from "react";
-import { setError } from "../../utils/utils.services.js";
 import Loader from "../../components/Loader";
-import { getPlaylistByid } from "../../services/playlist.services";
 import ListLayout from "../../components/List/ListLayout.jsx";
 import TopDetails from "../../components/TopDetails.jsx";
 import Background from "../../components/Background";
 import transition from "../../utils/transition";
+import { usePlaylistByIdQuery } from "../../queries/playlist.queries.js";
 
 const PlaylistLayout = () => {
-	
 	const { id } = useParams();
-	const { setVisitingPlaylist , visitingPlaylist } = usePlaylistStore();
-	const [ loading , setLoading ] = useState(false);
+	const { setVisitingPlaylist, visitingPlaylist } = usePlaylistStore();
 
 	useEffect(() => {
-		document.title = visitingPlaylist?.title ? `${visitingPlaylist?.title } | Panche Baja` : "Panche Baja";
+		document.title = visitingPlaylist?.name ? `${visitingPlaylist?.name } | Panche Baja` : "Panche Baja";
 		return( ()=> document.title = "Panche Baja")
-	}, [visitingPlaylist?.title]);
+	}, [visitingPlaylist?.name]);
 
-	useEffect( ()=>{
-		const fetchPlaylist = async()=>{
-			try {
-				setLoading(true);
-				const res = await getPlaylistByid(id);
-				if( !res.success ){
-					throw new Error(res.message);
-				}
-				setVisitingPlaylist(res.data);
-			} catch (error) {
-				setError(error);
-			}finally{
-				setLoading(false);
-			}
-		}
 
-		if (visitingPlaylist?._id !== id) {
-			fetchPlaylist();
-		}
+	console.log(id);
+	const { isPending, isLoading, data, isError, error } = usePlaylistByIdQuery(id);
 
-	} , [id] );
+	useEffect(() => {
+        if (data && data.success) {
+            setVisitingPlaylist(data.data);
+        }
+    },[data , setVisitingPlaylist])
 
-	if( loading || !(visitingPlaylist?._id) ){
+	if( isPending || isLoading ){
 		return <Loader />;
+	}
+
+
+	if (isError) {
+		return (
+			<p>
+				Error occured: {error}
+			</p>
+		)
 	}
 	
 	return (
@@ -55,7 +48,7 @@ const PlaylistLayout = () => {
 				<ListLayout tracks={visitingPlaylist?.type === 'track' ? [visitingPlaylist] : visitingPlaylist?.trackList } />
 			</section>
 
-			<Background src={visitingPlaylist?.coverArt?.src} />
+			<Background src={visitingPlaylist.coverArt.src} />
 		</>
 	)
 }

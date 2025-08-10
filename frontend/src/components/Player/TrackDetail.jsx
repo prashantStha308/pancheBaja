@@ -5,10 +5,20 @@ import { useGetUserById } from "../../queries/user.queries.js";
 const TrackDetail = () => {
 
     const { currentTrack } = usePlayerStore();
-    console.log(currentTrack);
 
-    const { isPending, isLoading, data, isError, error } = useGetUserById( currentTrack.artists );
+    const { isPending, data, isError, error } = useGetUserById(currentTrack?.artists[0]);
     
+    if (isPending) {
+        return (
+            <p>
+                Loading....
+            </p>
+        )
+    }
+
+    if (isError) {
+        return <p>Error loading artist: {error?.message || "Unknown error"}</p>;
+    }
 
 
     return (

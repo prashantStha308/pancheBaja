@@ -22,6 +22,7 @@ export const getAllUsers = async (page = 1, limit = 10) => {
 };
 
 export const getUserById = async (id) => {
+    console.log(id);
     try {
         const res = await axios.get(`${BASE_API_URL}/api/user/${id}`);
         
@@ -31,13 +32,14 @@ export const getUserById = async (id) => {
         
         return setSuccess(res.data);
     } catch (error) {
-        console.log("Error inside getUserById");    
+        console.log("Error inside getUserById");
+        console.error(error);
         return setError( error );
     }
 }
 
 export const getBulkUsersById = async (ids) => {
-    
+    console.log(ids);
 }
 
 export const getUsersByCity = async (city, page = 1, limit = 10) => {

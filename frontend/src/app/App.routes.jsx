@@ -8,6 +8,7 @@ import UploadTrack from "../pages/create/UploadTrack"
 import Login from "../pages/user/Login.jsx";
 import Test from "../pages/Test"
 import Signup from "../pages/user/Signup.jsx"
+import TrackLayout from "../pages/playlist/TrackLayout.jsx"
 
 const AppRoutes = () => {
 	return (
@@ -28,6 +29,7 @@ const AppRoutes = () => {
 
 			{/* DYNAMIC ROUTES */}
 			<Route path="/playlist/:id" element={ <PlaylistLayout /> } />
+			<Route path="/track/:id" element={<TrackLayout />} />
 			<Route path="/profile/:slug" element={ <ProfileLayout /> } />
 
 		</Routes>

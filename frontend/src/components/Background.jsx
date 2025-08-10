@@ -1,5 +1,7 @@
 const Background = ({ src }) => {
 
+    console.log(src);
+
     return (
         <div className="absolute top-0 left-0 right-0 min-h-screen max-w-screen isolate overflow-hidden" >
             {/* gradient */}

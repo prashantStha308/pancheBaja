@@ -9,7 +9,8 @@ const PlaylistTile = ({ item }) => {
 
 	const handleLink = ()=>{
 		setVisitingPlaylist(item);
-		navigator(`/playlist/${item._id}`);
+		const route = item.type === "track" ? 'track' : 'playlist' ;
+		navigator(`/${route}/${item._id}`);
 	}
 
 	return (
