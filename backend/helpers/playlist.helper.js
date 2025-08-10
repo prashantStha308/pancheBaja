@@ -6,6 +6,7 @@ import { ApiError } from "../utils/ApiError.js";
 import Playlist from "../models/playlist.model.js";
 import Track from "../models/track.model.js";
 import SavedPlaylist from "../models/saves/playlistSave.model.js";
+import { validateExistance } from "../utils/validator.js";
 
 export const validateBodyTrackList = (body) => {
     if (!Array.isArray(body.trackList) || body.trackList.length < 1) {
@@ -81,20 +82,17 @@ export const getQueryFilteredPlaylists = async (req) => {
 }
 
 export const getIdPlaylist = async (id) => {
-    const playlist = await Playlist.findById(id).populate({
-        path: 'artists',
-        select: '_id username profilePicture'
-    }).populate({
-        path: 'createdBy',
-        select: '_id username profilePicture'
-    }).populate({
-        path: 'trackList',
-        select: '_id name coverArt audio artists totalDuration'
-    }).lean();
+    const select = '_id username profilePicture';
+    const playlist = await Playlist.findById(id).populate([
+        { path: 'artists', select },
+        { path: 'createdBy', select },
+        {
+            path: 'trackList',
+            select: '_id name coverArt audio artists totalDuration'
+        }
+    ]).lean();
 
-    if (!playlist) {
-        throw new ApiError(404, "Playlist not found");
-    }
+    validateExistance(playlist);
     return playlist;
 }
 

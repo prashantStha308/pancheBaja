@@ -10,6 +10,8 @@ import {
     updateTrackAffiliatedArtists,
     updateTrackAffiliatedPlaylists
 } from "../utils/helper.js";
+import { ApiError } from "../utils/ApiError.js";
+import { validateExistance } from "../utils/validator.js";
 
 // Functions
 export const cleanUpFailedUploads = async (audioId, imageId) => {
@@ -45,6 +47,17 @@ export const getQueryFilteredTracks = async (req) => {
     }
     const tracks = await query.lean();
     return tracks;
+}
+
+export const getIdTrack = async (id) => {
+    const select = '_id username profilePicture'
+    const track = await Track.findById(id).populate([
+        { path: 'artists', select },
+        { path: 'primaryArtist', select }
+    ]).lean();
+
+    validateExistance(track);
+    return track;
 }
 
 export const getAudioDuration = async (audioFile) => {

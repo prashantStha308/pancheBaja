@@ -17,7 +17,8 @@ import {
     getQueryFilteredTracks,
     getTrackSavedBy,
     updateTrackCoverArt, updateTrackFields,
-    getAudioDuration
+    getAudioDuration,
+    getIdTrack
 } from "../helpers/track.helper.js";
 
 
@@ -76,8 +77,7 @@ export const getTrackById = async (req, res, next) => {
     const { trackId } = req.params;
     validateMongoose(trackId);
 
-    const track = await Track.findById(trackId).lean();
-    validateExistance(track);
+    const track = await getIdTrack(trackId);
     const savedBy = await getTrackSavedBy(trackId);
 
     res.status(200).json(new ApiResponse(200, "Fetched Track Successfully", {
@@ -95,8 +95,7 @@ export const deleteTrackById = async (req, res, next) => {
     const track = await Track.findByIdAndDelete(trackId);
     validateExistance(track);
 
-    await removeTrackMediaFromCloudinary(track);
-    await cleanAffiliatedTrackData(track);
+    await Promise.all([removeTrackMediaFromCloudinary(track), cleanAffiliatedTrackData(track)]);
 
     res.status(200).json(new ApiResponse(200, "Deleted Track Successfully", { id: trackId }));
 }
