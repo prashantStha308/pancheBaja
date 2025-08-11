@@ -29,9 +29,10 @@ const ListLayout = ({ tracks = [] }) => {
                         </div>
                     </th>
                     <th className="text-left p-2">Artists</th>
+                      
                     <th className="p-2" >
                         <div className=" flex gap-6 justify-end">
-                            <span className="text-left" >Time</span>
+                            <span className="text-left" >Duration</span>
                             <span className="opacity-0" ><Heart size={15} /></span>
                         </div>
                     </th>

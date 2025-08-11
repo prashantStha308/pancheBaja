@@ -11,7 +11,7 @@ import { useEffect } from "react";
 const TrackLayout = () => {
     
     const { id } = useParams();
-    const { setVisitingPlaylist, visitingPlaylist } = usePlaylistStore();
+    const { setVisitingPlaylist } = usePlaylistStore();
 
     console.log("Track Id: ", id);
 
@@ -37,13 +37,13 @@ const TrackLayout = () => {
     
     return (
         <>
-			<section className="flex flex-col min-h-screen w-full md:mt-8  gap-2 z-40" >
+			<section className="flex flex-col w-full mt-8 gap-2 z-40" >
 				{/* Top */}
 				<TopDetails visitingPage={data.data} />
 				<ListLayout tracks={ [data.data] } />
 			</section>
 
-			<Background src={data.data.coverArt.src} />
+			<Background src={data.data.coverArt.src} gradientPercent={50} />
 		</>
     )
 }

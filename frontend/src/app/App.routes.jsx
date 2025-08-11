@@ -5,9 +5,9 @@ import LibraryLayout from "../pages/LibraryLayout"
 import ProfileLayout from '../pages/ProfileLayout'
 import PlaylistLayout from "../pages/playlist/PlaylistLayout"
 import UploadTrack from "../pages/create/UploadTrack"
-import Login from "../pages/user/Login.jsx";
+import Login from "../pages/auth/Login.jsx";
 import Test from "../pages/Test"
-import Signup from "../pages/user/Signup.jsx"
+import Signup from "../pages/auth/Signup.jsx"
 import TrackLayout from "../pages/playlist/TrackLayout.jsx"
 
 const AppRoutes = () => {

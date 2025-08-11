@@ -28,9 +28,9 @@ const MoveLeft = ({ scrollRef }) => {
 
     return (
         !atEndScroll &&(
-            <button onClick={scrollRight} className="sticky -left-3 z-10 flex justify-end items-center text-white-tersery cursor-pointer p-3 opacity-60 hover:opacity-95 active:opacity-95 transition-all duration-100 ease-in isolate" style={{height: `${scrollRef.clientHeight}`}} >
-                <div className="z-30 bg-red-primary text-white-secondary rounded-full p-1 md:p-2">
-                    <ChevronLeft />
+            <button onClick={scrollRight} className="sticky -left-3 z-10 flex justify-end items-center text-white-tersery cursor-pointer p-3 opacity-80 hover:opacity-95 active:opacity-95 transition-all duration-100 ease-in isolate" style={{height: `${scrollRef.clientHeight}`}} >
+                <div className=" text-red-primary bg-white-secondary/15 active:bg-white-secondary/25 rounded-full p-1 md:p-2">
+                    <ChevronLeft size={30} />
                 </div>
             </button>
         )

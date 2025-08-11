@@ -42,7 +42,7 @@ const PlaylistLayout = () => {
 	
 	return (
 		<>
-			<section className="flex flex-col min-h-screen w-full md:mt-8  gap-2 z-40" >
+			<section className="flex flex-col w-full mt-8 gap-2 z-40" >
 				{/* Top */}
 				<TopDetails visitingPage={visitingPlaylist} />
 				<ListLayout tracks={visitingPlaylist?.type === 'track' ? [visitingPlaylist] : visitingPlaylist?.trackList } />

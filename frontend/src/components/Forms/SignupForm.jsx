@@ -1,4 +1,4 @@
-import { motion, scale , spring } from "motion/react";
+import { motion, scale } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom"
 import { CountrySelect } from "react-country-state-city";
@@ -9,55 +9,63 @@ const SignupForm = () => {
     const [ acceptTerms , setAcceptTerms ] = useState(false);
     const inputRef = useRef();
 
+    // handle nested object datas.
+    // Example: location.city, location.country
+    const handleNestedChange = (name, value) => {
+        const [outer, inner] = name.split('.');
+            setFormData(prev => ({
+            ...prev,
+            [outer]: {
+                ...prev[outer],
+                [inner]: value
+            }
+        }))
+    }
+
     const handleChange = (e)=>{
-    const { name, value } = e.target;
-    if (name.includes('.')) {
-    const [outer, inner] = name.split('.');
-    setFormData(prev => ({
-    ...prev,
-    [outer]: {
-    ...prev[outer],
-    [inner]: value
-    }
-    }))
-    } else {
-    setFormData(prev =>({
-    ...prev,
-    [name]: value
-    }))
-    }
+        const { name, value } = e.target;
+
+        if (name.includes('.')) {
+            handleNestedChange(name, value);
+        } else {
+            setFormData(prev =>({
+                ...prev,
+                [name]: value
+            }))
+        }
     }
 
     const toggleAcceptTerms = ()=>{
-    setAcceptTerms(prev => !prev);
+        setAcceptTerms(prev => !prev);
     }
+
     const containerVarient = {
-    hidden: {
-    opacity: 0,
-    },
-    visible: {
-    opacity: 1,
-    transition: {
-    staggerChildren: 20,
-    duration: 0.8,
-    delay: 0.015,
-    ease: [0, 0.71, 0.2, 1.01],
-    },
-    },
+        hidden: {
+            opacity: 0,
+        },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 20,
+                duration: 0.8,
+                delay: 0.015,
+                ease: [0, 0.71, 0.2, 1.01],
+            },
+        },
     }
 
     const childVarient = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0 },
+        hidden: { opacity: 0, y: 40 },
+        visible: { opacity: 1, y: 0 },
     };
 
     useEffect(()=>{
-    if(inputRef.current !== null){
-    const children = inputRef.current.children;
-    Array.from(children).forEach(child =>{
-    child.setAttribute( 'varients' , {childVarient} );
-    })
-    }
+        if(inputRef.current !== null){
+            const children = inputRef.current.children;
+            Array.from(children).forEach(child =>{
+                child.setAttribute( 'varients' , {childVarient} );
+            })
+        }
     })
 
     return (
@@ -144,7 +152,7 @@ const SignupForm = () => {
 
                     {/* Submit Button */}
                     <div className="w-full flex justify-end" >
-                        <motion.button type="submit" whileHover={{scale: acceptTerms && 1.15}} whileTap={{scale: acceptTerms && 0.8 , rotate: 3}} transition={{duration: 0.05}} className={`py-2 px-8 font-text font-bold text-base rounded-md shadow-lg transition-all duration-100 ease-in ${acceptTerms ? "text-white bg-red-primary hover:bg-red-700 active:bg-red-700 cursor-pointer" : "bg-neutral-800 text-neutral-500 cursor-not-allowed"}`} disabled={acceptTerms ? false : true } >
+                        <motion.button type="submit" whileHover={{scale: acceptTerms && 1.15}} whileTap={{scale: acceptTerms && 0.8 , rotate: 3}} transition={{duration: 0.05}} className={`py-2 px-8 font-text font-bold text-base rounded-md shadow-lg transition-all duration-100 ease-in ${acceptTerms ? "text-white bg-red-primary hover:bg-red-700 active:bg-red-700 cursor-pointer" : "bg-button-disabled text-disabledtext cursor-not-allowed"}`} disabled={acceptTerms ? false : true } >
                         Sign Up
                         </motion.button>
                     </div>

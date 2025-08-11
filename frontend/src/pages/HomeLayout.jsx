@@ -17,7 +17,7 @@ const HomeLayout = () => {
   },[])
 
   return (
-    <div className="flex flex-col mt-8 gap-8 w-full justify-start md:items-center" >
+    <div className="flex flex-col md:mt-8 gap-8 w-full justify-start md:items-center" >
         <Section query ={trackQuery} title={"Trending Songs"} Tile={PlaylistTile} />
         <Section query={playlistQuery} title={"Playlists"} Tile={PlaylistTile} />
     </div>

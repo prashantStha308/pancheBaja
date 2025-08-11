@@ -26,9 +26,12 @@
     --color-black-secondary: #000000;
     --color-black-tersery: #1D1D1D;
     
-    /* --color-hover-primary: #171717; */
+    --color-hover-tersery: #171717;
     --color-hover-primary: #1f1d1d;
     --color-hover-secondary: #1d1d1d;
+
+    --color-button-disabled: #262626;
+    --color-disabledtext: #737373;
 
 }
 
@@ -132,4 +135,9 @@ tbody:before {
 .stsearch-box>input{
     border: none !important;
     outline: none !important;
+}
+
+/* User option */
+.usr-li{
+    @apply border-b border-b-gray-500;
 }
