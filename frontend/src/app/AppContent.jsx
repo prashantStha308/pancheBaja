@@ -35,7 +35,7 @@ const AppContent = () => {
 
 			<div >
 				{!dontShowPlayer && (
-					<div className={`sticky bottom-0 left-0 right-0 ${ hasLoadedTrack ? "opacity-100" : "opacity-0" } bg-black-secondary/55 backdrop-blur-3xl z-40 transition-all duration-200 ease-in-out`} >
+					<div className={`fixed bottom-0 left-0 right-0 ${ hasLoadedTrack ? "opacity-100" : "opacity-0" } bg-black-secondary/55 backdrop-blur-3xl z-40 transition-all duration-200 ease-in-out`} >
 						<BottomPlayer />
 					</div>
 				)}

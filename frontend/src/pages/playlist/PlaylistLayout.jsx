@@ -17,8 +17,6 @@ const PlaylistLayout = () => {
 		return( ()=> document.title = "Panche Baja")
 	}, [visitingPlaylist?.name]);
 
-
-	console.log(id);
 	const { isPending, isLoading, data, isError, error } = usePlaylistByIdQuery(id);
 
 	useEffect(() => {
@@ -44,11 +42,11 @@ const PlaylistLayout = () => {
 		<>
 			<section className="flex flex-col w-full mt-8 gap-2 z-40" >
 				{/* Top */}
-				<TopDetails visitingPage={visitingPlaylist} />
-				<ListLayout tracks={visitingPlaylist?.type === 'track' ? [visitingPlaylist] : visitingPlaylist?.trackList } />
+				<TopDetails visitingPage={data.data} />
+				<ListLayout tracks={data.data?.trackList } />
 			</section>
 
-			<Background src={visitingPlaylist.coverArt.src} />
+			<Background src={data.data.coverArt.src} />
 		</>
 	)
 }

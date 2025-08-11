@@ -4,11 +4,10 @@ import usePlayerStore from '../../store/player.store';
 const AudioRef = () => {
 
     const audioRef = useRef();
-    const { setAudioElementRef , currentTrack } = usePlayerStore();
+    const { setAudioElementRef } = usePlayerStore();
 
     useEffect(() => {
         if (audioRef.current !== null) {
-            console.log("Log in audio Ref",currentTrack);
             setAudioElementRef(audioRef);
         }
     }, []);

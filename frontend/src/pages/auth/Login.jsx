@@ -1,25 +1,19 @@
-import { useEffect, useState } from "react";
+// Libraries
+import { useEffect } from "react";
+// Components
 import Background from "../../components/Background.jsx";
 import LoginForm from "../../components/Forms/LoginForm.jsx"
-import Loader from "../../components/Loader.jsx";
+// Utils
 import transition from "../../utils/transition.jsx";
+// Image
+import loginBg from "/assets/login_bg.jpg?url";
 
 const Login = () => {
 
-	const [isBgLoaded, setIsBgLoaded] = useState(false);
-	const src = '/assets/bg_2.jpg';
-
 	useEffect(() => {
-		const img = new Image();
-		img.src = src;
-		img.onload = () => setIsBgLoaded(true);
-		img.onerror = () => {
-			console.error("Failed to load resources");
-			setIsBgLoaded(false);
-		}
-	}, [src])
-
-	if (!isBgLoaded) return <Loader />
+		document.title = "Sign Up | Panche Baja";
+		return( ()=> document.title = "Panche Baja")
+	}, []);
 
 	// Buuild the second phase
 	return (
@@ -28,7 +22,7 @@ const Login = () => {
 				<LoginForm />
 			</section>
 
-			<Background src={'/assets/bg_2.jpg'} />
+			<Background src={loginBg} />
 		</section>
 	)
 }

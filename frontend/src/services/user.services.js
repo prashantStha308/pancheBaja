@@ -16,13 +16,12 @@ export const getAllUsers = async (page = 1, limit = 10) => {
 
         return setSuccess(res.data);
     } catch (error) {
-        console.log("Error inside getAllUsers");    
+        console.error("Error inside getAllUsers");    
         return setError( error );
     }
 };
 
 export const getUserById = async (id) => {
-    console.log(id);
     try {
         const res = await axios.get(`${BASE_API_URL}/api/user/${id}`);
         
@@ -32,7 +31,7 @@ export const getUserById = async (id) => {
         
         return setSuccess(res.data);
     } catch (error) {
-        console.log("Error inside getUserById");
+        console.error("Error inside getUserById");
         console.error(error);
         return setError( error );
     }

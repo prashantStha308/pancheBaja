@@ -25,7 +25,6 @@ export const getAllTracks = async( page = 1 , limit = 10 )=>{
         if( !res.data.success ){
             throw new Error(res.data.message); 
         }
-        console.log(res.data);
         return setSuccess(res.data);
     } catch (error) {
         return setError(error);

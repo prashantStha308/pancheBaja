@@ -21,7 +21,7 @@ const usePlayerServices = () => {
         currentTrack, setCurrentIndex,
         isPlaying, setIsPlaying,
         audioElementRef,
-        audioIntervalTimer, setAudioIntervalTimer, updateAllSliders,
+        setAudioIntervalTimer, updateAllSliders,
         setHasLoadedTrack
     } = usePlayerStore();
 
@@ -45,10 +45,8 @@ const usePlayerServices = () => {
     }
 
     function nextTrack() {
-        console.log("Clearing: ", audioIntervalTimer);
         clearSeekerInterval();
         const nextIndex = getNextIndex();
-        console.log(nextIndex);
         const nextTrack = currentPlaylist.trackList[nextIndex];
 
         if (nextTrack) {
@@ -72,10 +70,8 @@ const usePlayerServices = () => {
 
     function togglePlayPause() {
         if (isPlaying) {
-            console.log("Pausing");
             pauseTrack();
         } else {
-            console.log("Playing");
             playTrack();
         }
     }

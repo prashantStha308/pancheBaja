@@ -11,9 +11,12 @@ import { useEffect } from "react";
 const TrackLayout = () => {
     
     const { id } = useParams();
-    const { setVisitingPlaylist } = usePlaylistStore();
+    const { setVisitingPlaylist, visitingPlaylist } = usePlaylistStore();
 
-    console.log("Track Id: ", id);
+    useEffect(() => {
+        document.title = visitingPlaylist?.name ? `${visitingPlaylist?.name } | Panche Baja` : "Panche Baja";
+		return( ()=> document.title = "Panche Baja")
+    }, [visitingPlaylist?.name])
 
     const { isPending, isLoading, data, isError, error } = useTrackByIdQuery(id);
     

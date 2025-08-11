@@ -47,10 +47,7 @@ const usePlayerHelper = () => {
     }
 
     const clearSeekerInterval = () => {
-        console.log("Clearing interval 1");
-        console.log(audioIntervalTimer);
         if (audioIntervalTimer) {
-            console.log("Clearing interval 2");
             clearInterval(audioIntervalTimer);
             setAudioIntervalTimer(null); 
         }
@@ -81,7 +78,6 @@ const usePlayerHelper = () => {
             return;
         }
         ref.pause();
-        console.log("Clearing interval");
         clearSeekerInterval();
         setIsPlaying(false);
     }

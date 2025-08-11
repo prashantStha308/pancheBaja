@@ -8,8 +8,6 @@ import useGlobalHelpers from "../helpers/global.helpers.js";
 
 const TopDetails = ({ visitingPage }) => {
 
-    console.log("Top details ",visitingPage);
-
     const { normalizeTimeFromMS } = useGlobalHelpers();
 
     let duration = normalizeTimeFromMS(visitingPage?.totalDuration);

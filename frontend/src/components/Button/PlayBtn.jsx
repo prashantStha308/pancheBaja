@@ -1,33 +1,19 @@
 import usePlayerServices from "../../services/player.services.js";
 import usePlaylistStore from "../../store/playlist.store";
-import usePlayerStore from "../../store/player.store";
 import Play from "../icons/Play";
 
 const PlayBtn = () => {
   const { visitingPlaylist, currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
   const { loadAndPlayTrack } = usePlayerServices();
-  const { currentTrack , audioElementRef } = usePlayerStore();
   
   const handlePlayClick = () => {
 
     if (visitingPlaylist !== currentPlaylist) {
-
-      console.log("Setting current Playlist");
-      setCurrentPlaylist(visitingPlaylist);
-      console.log("CurrentPlaylist: ", currentPlaylist);
-    
+      setCurrentPlaylist(visitingPlaylist);    
     }
 
     if (visitingPlaylist?.trackList?.length > 0) {
-
-      console.log("Loading track");
-      console.log(visitingPlaylist.trackList[0]);
-    
       loadAndPlayTrack(visitingPlaylist.trackList[0], visitingPlaylist);
-    
-      console.log("Current Track: ", currentTrack);
-      console.log("Element ref: ", audioElementRef);
-    
     }
   }
 
