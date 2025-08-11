@@ -34,6 +34,7 @@ trackRouter.delete('/:trackId', authorize(['artist' , 'admin']), sanitizeTrackPa
 trackRouter.patch('/playcount/:trackId', authorize(['artist' , 'admin']), sanitizeTrackParams , sanitizeAndValidateTrackBody ,  updatePlayCount);
 
 // stream
+// update the audio path in track.controller.js and change here
 trackRouter.get('/:publicId/stream', streamAudio);
 
 export default trackRouter;

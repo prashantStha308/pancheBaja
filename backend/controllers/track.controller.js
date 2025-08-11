@@ -44,6 +44,7 @@ export const createTrack = async (req, res, next) => {
             artists,
             coverArt,
             audio: {
+                // update the route path in track.route.js and change here
                 streamUrl: `/api/track/${audioRes.publicId.split('/')[1]}/stream`,
                 publicId: audioRes.publicId.split('/')[1]
             },
