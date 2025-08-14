@@ -1,7 +1,7 @@
 import React from 'react'
 import ProfilePicture from '../../components/icons/ProfilePicture'
 import useUserStore from '../../store/user.store';
-import LoginError from '../error/LoginError';
+import LoginError from '../../components/Error/LoginError';
 
 
 

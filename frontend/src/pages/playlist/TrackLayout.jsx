@@ -1,12 +1,17 @@
+// Libraries
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom"
+// Stores and Queries
 import usePlaylistStore from "../../store/playlist.store";
 import { useTrackByIdQuery } from "../../queries/track.queries";
-import Loader from "../../components/Loader";
+// Utils and Services
+import transition from "../../utils/transition";
+// Components
+import LoadingPlaylist from "../../components/Loaders/LoadingPlaylist.jsx";
 import TopDetails from "../../components/TopDetails";
 import ListLayout from "../../components/List/ListLayout";
 import Background from "../../components/Background";
-import transition from "../../utils/transition";
-import React, { useEffect } from "react";
+
 
 const TrackLayout = () => {
     
@@ -26,10 +31,6 @@ const TrackLayout = () => {
         }
     },[data , setVisitingPlaylist])
 
-    if (isPending || isLoading) {
-        return <Loader />
-    }
-
     if (isError) {
         return (
             <p>
@@ -40,13 +41,20 @@ const TrackLayout = () => {
     
     return (
         <>
-			<section className="flex flex-col w-full mt-8 gap-2 z-40" >
-				{/* Top */}
-				<TopDetails visitingPage={data.data} />
-				<ListLayout tracks={ [data.data] } />
-			</section>
+            {
+                isPending || isLoading ?
+                    <LoadingPlaylist />
+                    :
+                    <>
+                        <section className="flex flex-col w-full mt-8 gap-2 z-40" >
+                            {/* Top */}
+                            <TopDetails visitingPage={data.data} />
+                            <ListLayout tracks={ [data.data] } />
+                        </section>
 
-			<Background src={data.data.coverArt.src} gradientPercent={50} />
+                        <Background src={data.data.coverArt.src} gradientPercent={50} />
+                    </>
+            }
 		</>
     )
 }

@@ -1,12 +1,15 @@
-import { useParams } from "react-router-dom"
-import usePlaylistStore from "../../store/playlist.store";
+// Libraries
 import { useEffect } from "react";
-import Loader from "../../components/Loader";
+import { useParams } from "react-router-dom"
+// Stores and Queries
+import usePlaylistStore from "../../store/playlist.store";
+import { usePlaylistByIdQuery } from "../../queries/playlist.queries.js";
+// Components
 import ListLayout from "../../components/List/ListLayout.jsx";
 import TopDetails from "../../components/TopDetails.jsx";
 import Background from "../../components/Background";
 import transition from "../../utils/transition";
-import { usePlaylistByIdQuery } from "../../queries/playlist.queries.js";
+import LoadingPlaylist from "../../components/Loaders/LoadingPlaylist.jsx";
 
 const PlaylistLayout = () => {
 	const { id } = useParams();
@@ -25,10 +28,6 @@ const PlaylistLayout = () => {
         }
     },[data , setVisitingPlaylist])
 
-	if( isPending || isLoading ){
-		return <Loader />;
-	}
-
 
 	if (isError) {
 		return (
@@ -40,13 +39,20 @@ const PlaylistLayout = () => {
 	
 	return (
 		<>
-			<section className="flex flex-col w-full mt-8 gap-2 z-40" >
-				{/* Top */}
-				<TopDetails visitingPage={data.data} />
-				<ListLayout tracks={data.data?.trackList } />
-			</section>
+			{
+				isPending || isLoading ?
+					<LoadingPlaylist />
+					:
+					<>
+						<section className="flex flex-col w-full mt-8 gap-2 z-40" >
+							{/* Top */}
+							<TopDetails visitingPage={data.data} />
+							<ListLayout tracks={data.data?.trackList } />
+						</section>
 
-			<Background src={data.data.coverArt.src} />
+						<Background src={data.data.coverArt.src} />
+					</>
+			}
 		</>
 	)
 }

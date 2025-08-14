@@ -39,7 +39,6 @@ body,html{
     @apply min-h-screen bg-black-primary text-white scroll-smooth;
 }
 
-
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }

@@ -2,7 +2,6 @@ import React from 'react'
 import { motion } from 'motion/react';
 
 const LoadingTile = () => {
-    console.log(motion);
 
     const movingSpan =
     <motion.div

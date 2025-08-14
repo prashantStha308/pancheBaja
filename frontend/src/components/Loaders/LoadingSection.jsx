@@ -28,7 +28,7 @@ const LoadingSection = () => {
         visible: { opacity: 1, y: 0 },
     };
     
-    const Array = isMobile ? [1, 2] : [1, 2, 3, 4];
+    const Array = [1, 2, 3, 4, 5, 6, 7, 8];
 
     return (
         <motion.section initial="hidden" whileInView="visible" variants={containerVarient} viewport={{ amount: isMobile ? 0.5 : 0.1 }} className="flex flex-col isolate w-full justify-center " >
@@ -50,7 +50,7 @@ const LoadingSection = () => {
                 ></motion.div>
             </div>
             
-            <article ref={sectRef} className=" relative h-full flex gap-2 justify-between md:justify-start md:gap-4 overflow-x-auto scrollbar-hide" >
+            <article ref={sectRef} className=" relative max-w-screen h-full flex gap-2 md:gap-4 overflow-x-auto scrollbar-hide" >
 
             { Array.map( (item , index) => (
                 <motion.div key={index} variants={childVarient} >
