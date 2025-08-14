@@ -1,12 +1,9 @@
 import Heart from "../icons/Heart"
 import { Link } from "react-router-dom"
 import Play from "../icons/Play"
+import { normalizeTimeFromMS } from "../../helpers/global.helpers"
 
-const ListItems = ({ track , index , demoEffect , activeIndex }) => {
-
-    const getDuration = () => {
-        return track?.totalDuration < 3600 ? new Date(track?.totalDuration * 1000).toISOString().substring(14, 19) : new Date(track?.totalDuration * 1000).toISOString().substring(11, 16);
-    }
+const ListItems = ({ track, index, demoEffect, activeIndex }) => {
 
     return (
         <tr className=" text-sm hover:text-white-primary active:text-white-primary cursor-pointer hover:bg-hover-primary active:bg-hover-primary transition-all duration-75 ease-in-out rounded-md p-4" >
@@ -40,7 +37,7 @@ const ListItems = ({ track , index , demoEffect , activeIndex }) => {
                 <div className="flex gap-6 justify-end items-center">
                     
                     {/* Duration */}
-                    <span className="text-left" > {track.totalDuration === undefined ? 0 : getDuration()} </span>
+                    <span className="text-left" > {track.totalDuration === undefined ? 0 : normalizeTimeFromMS(track.totalDuration)} </span>
                     {/* For alignment */}
                     <span className="md:hidden group" > <Heart size={15} strokeWidth={2} className="group-hover:text-red-primary group-active:text-red-primary " /> </span>
                     {/* Heart btn */}

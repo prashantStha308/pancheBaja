@@ -33,7 +33,7 @@ const NavbarBottom = () => {
             </div>
         </Link>
 
-        <Link className="px-3 py-1 rounded-md active:bg-black-tersery" to={'/upload/track'} >
+        <Link className="px-3 py-1 rounded-md active:bg-black-tersery" to={'/publish'} >
             <div>
                 <Add className={`${currentPage === 'upload' && "fill-red-primary text-white " }`} size={35} strokeWidth={5} />
             </div>
@@ -47,7 +47,7 @@ const NavbarBottom = () => {
 
         <Link to={'/login'} className="px-3 py-1 rounded-md active:bg-black-tersery " >
             <div>
-                <ProfilePicture src={"/assets/aadiiItyadii.jpg"} altText="aadiiItyadi" size={35} />
+                <ProfilePicture altText="aadiiItyadi" size={35} />
             </div>
         </Link>
     </nav>

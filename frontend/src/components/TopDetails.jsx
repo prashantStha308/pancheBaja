@@ -4,15 +4,13 @@ import ShuffleBtn from "./Button/ShuffleBtn";
 import Share from "./icons/Share";
 import Heart from "./icons/Heart";
 import Dot from "./icons/Dot";
-import useGlobalHelpers from "../helpers/global.helpers.js";
+import { normalizeTimeFromMS } from "../helpers/global.helpers.js";
 
 const TopDetails = ({ visitingPage }) => {
 
-    const { normalizeTimeFromMS } = useGlobalHelpers();
-
     let duration = normalizeTimeFromMS(visitingPage?.totalDuration);
 
-    const owner = visitingPage.type === 'track' ? visitingPage?.primaryArtist || "Unknown Artist" : visitingPage?.createdBy || "Unknown user" ;
+    const owner = visitingPage.type !== 'playlist' ? visitingPage?.primaryArtist || "Unknown Artist" : visitingPage?.createdBy || "Unknown user" ;
 
     return (
         <section className="flex flex-col gap-4 items-start w-full" >
@@ -33,22 +31,30 @@ const TopDetails = ({ visitingPage }) => {
                         <p className=" capitalize font-medium hidden md:block md:text-lg" > { visitingPage?.type } </p>
 
                         {/* Name of playlist / track */}
-                        <p className="capitalize text-[clamp(1.25rem,4vw,2.75rem)] font-extrabold w-fit break-words" > { visitingPage?.name } </p>
-                        <div id="created-by" className="flex items-center gap-1" >
+                        <p className="capitalize text-[clamp(1.25rem,4vw,2.75rem)] font-extrabold w-fit break-words" > {visitingPage?.name} </p>
+                        
+                        <div className="flex md:flex-col items-center md:items-start gap-2" >
+                            {/* User pfp */}
+                            <div id="created-by" className="flex items-center gap-2" >
 
-                            <ProfilePicture src={owner?.profilePicture?.src} alt={owner?.username || "Unknown User"} size={23} />
+                                <ProfilePicture src={owner?.profilePicture?.src} alt={owner?.username || "Unknown User"} size={23} />
+                                
+                                <Dot size={5} />
+                                <p className="text-base md:text-lg font-semibold" > {owner?.username || "Unknown User"} </p>
+                                
+                                <span className="md:hidden" >
+                                    <Dot size={5} />
+                                </span>
+                            </div>
                             
-                            <Dot size={5} />
-                            <p className="text-base md:text-lg font-semibold" > {owner?.username || "Unknown User"} </p>
-                        </div>
-
-                        {/* Metadatas */}
-                        <div className="flex items-center gap-2 md:gap-3 text-sm md:text-base" >
-                            <p> <span className="font-bold" >{visitingPage.type === "track" ? 1 : visitingPage?.trackList.length || 0 }</span> tracks </p>
-                            <p> <Dot size={5} /> </p>
-                            <p> <span className="font-bold" > {duration} </span> </p>
-                            <p> <Dot size={5} /> </p>
-                            <p> <span className="font-bold" > {visitingPage?.saveCount} </span> saves </p>
+                            {/* Metadatas */}
+                            <div className="flex items-center gap-2 md:gap-3 text-sm md:text-base" >
+                                <p> <span className="font-bold" >{visitingPage.type === "track" ? 1 : visitingPage?.trackList.length || 0 }</span> tracks </p>
+                                <p> <Dot size={5} /> </p>
+                                <p> <span className="font-bold" > {duration} </span> </p>
+                                <p> <Dot size={5} /> </p>
+                                <p> <span className="font-bold" > {visitingPage?.saveCount} </span> saves </p>
+                            </div>
                         </div>
                     </article>
 

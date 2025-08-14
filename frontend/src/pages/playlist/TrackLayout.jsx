@@ -6,7 +6,7 @@ import TopDetails from "../../components/TopDetails";
 import ListLayout from "../../components/List/ListLayout";
 import Background from "../../components/Background";
 import transition from "../../utils/transition";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 const TrackLayout = () => {
     

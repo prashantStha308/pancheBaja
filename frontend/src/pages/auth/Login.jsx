@@ -17,8 +17,8 @@ const Login = () => {
 
 	// Buuild the second phase
 	return (
-		<section className=" w-full flex flex-col justify-center items-center " >
-			<section className="relative min-h-full md:min-h-0 md:h-auto z-40 flex justify-center items-center ">
+		<section className="w-full flex flex-col justify-center items-center " >
+			<section className="relative min-h-full md:h-auto z-40 flex justify-center items-center ">
 				<LoginForm />
 			</section>
 

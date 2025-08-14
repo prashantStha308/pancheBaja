@@ -23,7 +23,7 @@ const Signup = () => {
 					<SignupForm />
 			</section>
 
-			<Background src={signupBg} gradientPercent={20} />
+			<Background src={signupBg} gradientPercent={20} blur={false} />
 
 		</section>
 	)

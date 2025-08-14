@@ -21,17 +21,18 @@ const NavbarPrimary = () => {
     const historyStack = useRef([]);
     const location = useLocation();
     const navigate = useNavigate();
-    const { isLoggedIn } = useUserStore()
+    const { isLoggedIn, currentUser } = useUserStore()
     const { setNavbarRef } = useGlobalStore();
 
     const  handleUserRedirect = ()=>{
         if( !isLoggedIn ){
             navigate('/login');
+        } else {
+            // navigate to user page
         }
     }
-    
-    const canGoBack = historyStack.current.length > 1;
 
+    const canGoBack = historyStack.current.length > 1;
     const goBack = () => {
         if (canGoBack) {
             historyStack.current.pop();
@@ -112,16 +113,20 @@ const NavbarPrimary = () => {
 
               {/* Right portion */}
               <div className="hidden md:flex items-center gap-4" >
-                    <button className="flex items-center text-red-primary " >
-                        <Add size={35} />
+                    <button className={`flex items-center text-red-primary ${!isLoggedIn && "hidden"}`} >
+						<Link to={'/publish'} >
+							<Add size={35} />
+                        </Link>
                     </button>
 
-                  <button className="flex items-center text-red-primary hover:text-white-secondary hover:fill-red-primary cursor-pointer hover:bg-hover-primary active:bg-hover-primary transition-all ease-in-out duration-100 box-border p-1 rounded-full" >
-                      <Bell size={25} />
+                  <button className={`flex items-center text-red-primary hover:text-white-secondary hover:fill-red-primary cursor-pointer hover:bg-hover-primary active:bg-hover-primary transition-all ease-in-out duration-100 box-border p-1 rounded-full ${!isLoggedIn && "hidden"}`} >
+                        <Link to={'/me/notification'} >
+                            <Bell size={25} />
+                        </Link>
                   </button>
                   
                     <button className="items-center" onClick={handleUserRedirect}>
-                        <ProfilePicture src={"/assets/aadiiItyadii.jpg"} altText="aadiiItyadi" size={50} />
+                        <ProfilePicture src={currentUser?.profilePicture?.src} alt={"test test"} size={30} />
                     </button>                  
               </div>
         </div>

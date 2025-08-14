@@ -9,6 +9,7 @@ import Login from "../pages/auth/Login.jsx";
 import Test from "../pages/Test"
 import Signup from "../pages/auth/Signup.jsx"
 import TrackLayout from "../pages/playlist/TrackLayout.jsx"
+import SelfProfilePage from "../pages/auth/SelfProfilePage.jsx"
 
 const AppRoutes = () => {
 	return (
@@ -20,12 +21,14 @@ const AppRoutes = () => {
 			<Route path="/search" element={ <SearchLayout /> } />
 			<Route path="/library" element={ <LibraryLayout /> } />
 
+			{/* Auth */}
 			<Route path="/login" element={ <Login /> } />
-			<Route path="/signup" element={ <Signup /> } />
+			<Route path="/signup" element={<Signup />} />
+			<Route path="/me" element={<SelfProfilePage />} />
 
 			
 			{/* UPLOAD ROUTES */}
-			<Route path="/upload/track" element={ <UploadTrack /> } />
+			<Route path="/publish" element={ <UploadTrack /> } />
 
 			{/* DYNAMIC ROUTES */}
 			<Route path="/playlist/:id" element={ <PlaylistLayout /> } />

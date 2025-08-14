@@ -2,7 +2,7 @@ import { motion, useMotionValue, useAnimationFrame } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 
 
-const Background = ({ src, gradientPercent = 50 }) => {
+const Background = ({ src, gradientPercent = 50, blur = true }) => {
 
     // Gradient Essentials
     const [grd, setGrd] = useState(100);
@@ -32,11 +32,11 @@ const Background = ({ src, gradientPercent = 50 }) => {
     }, [src, gradientPercent, grdValue]);
 
     return (
-        <div className="absolute top-0 left-0 right-0 min-h-screen max-w-screen isolate overflow-hidden" >
+        <div className="absolute top-0 bottom-0 left-0 right-0 min-h-screen max-w-screen isolate overflow-hidden" >
 
             {/* gradient */}
             <motion.div
-                className="absolute top-0 right-0 left-0 min-h-screen w-screen backdrop-blur-xs z-20"
+                className={`absolute top-0 bottom-0 right-0 left-0 min-h-screen w-screen ${blur && "backdrop-blur-xs"} z-20`}
                 style={{
                     backgroundImage: `linear-gradient(to top, rgba(20,20,20,1) ${grd}%, transparent)`
                 }}
@@ -44,7 +44,7 @@ const Background = ({ src, gradientPercent = 50 }) => {
 
             {/* image */}
             <div
-                className="absolute top-0 right-0 left-0 h-[80dvh] object-cover bg-top lg:bg-center z-10 transition-all ease-in-out duration-100"
+                className="absolute top-0 right-0 left-0 h-screen object-cover bg-top lg:bg-center z-10 transition-all ease-in-out duration-100"
                 style={{
                     backgroundImage: `url(${src})`,
                     backgroundRepeat: 'no-repeat',

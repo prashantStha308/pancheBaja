@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Logo from "../icons/Logo.jsx"; 
 import LogoNoRect from "../icons/Logo_noRect.jsx";
 import LoginBtn from "../Button/LoginBtn.jsx";
+import { Link } from "react-router-dom";
 
 const LoginForm = () => {
 
@@ -28,15 +28,21 @@ const LoginForm = () => {
 				<h1 className="text-white-secondary font-header text-3xl text-center font-black capitalize" > LOG IN </h1>
 			</div>
 			
-			<form className="flex flex-col gap-1 w-full" >
+			<form className="flex flex-col gap-2 w-full" >
 				<input type="text" name="email" id="email"
 					className={`border ${ (isFilledNotValid) ? "border-red-primary" : (isFilledValid) ? "border-white-secondary" : "border-black-tersery" }  w-xs md:w-md font-semibold text-base rounded-md px-6 py-2 outline-none bg-black-tersery active:bg-black-primary focus:bg-black-primary transition-all ease-in duration-100`} placeholder="Enter yout email"
 					onChange={detectValidEmail}
 				/>
 
-				<span className={`text-xs text-red-primary ${(isFilledNotValid) ? "opacity-100" : "opacity-0" } transition-all ease-in-out duration-150`} >
-					Please enter a valid email
-				</span>
+				<div className="flex justify-between" >
+					<span className={`text-xs text-red-primary ${(isFilledNotValid) ? "opacity-100" : "opacity-0" } transition-all ease-in-out duration-150`} >
+						Please enter a valid email
+					</span>
+
+						<span className="text-xs" >
+							Don't have an account? <Link to={'/signup'} className="text-blue-500 hover:underline font-bold" > Register here! </Link>
+						</span>
+				</div>
 
 				<button type="submit"
 					className={`${isValidEmail ? "bg-red-primary hover:bg-red-secondary active:bg-red-800 text-white cursor-pointer" : "cursor-not-allowed bg-button-disabled text-disabledtext" } rounded-md py-2 font-semibold transition-all ease-in duration-100 shadow-md shadow-black`}

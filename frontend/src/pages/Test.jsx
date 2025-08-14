@@ -1,12 +1,15 @@
 import AllIcons from "../components/icons/All_Icons"
+import LoadingPfp from "../components/Loaders/LoadingPfp"
+import LoadingSection from "../components/Loaders/LoadingSection"
+import LoadingTile from "../components/Loaders/LoadingTile"
 
 const Test = () => {
 
 	return (
-		<section className="grid justify-center items-center min-h-screen w-full" >
-			Build UI Elements here
-			<AllIcons />
-		</section>
+			<div>
+				Build UI Elements here
+				<LoadingPfp size={60} />
+			</div>
 	)
 }
 
