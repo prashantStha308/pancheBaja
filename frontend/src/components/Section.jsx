@@ -2,13 +2,13 @@ import { useRef } from "react"
 import { motion, spring } from "motion/react";
 import MoveLeft from "./Button/MoveLeft";
 import MoveRight from "./Button/MoveRight";
-import useIsMobile from "../utils/useIsMobile.jsx";
+import useBreakpoint from "../hooks/useBreakpoint.jsx";
 import LoadingSection from "./Loaders/LoadingSection.jsx";
 
 
 const Section = ({ query, title, Tile }) => {
 	const sectRef = useRef(null);
-	const isMobile = useIsMobile(760)
+	const isMobile = useBreakpoint(640)
 	const { data, isPending, isLoading, isError, error } = query;
 
 	const containerVarient = {

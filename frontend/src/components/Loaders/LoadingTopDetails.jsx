@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import Dot from '../icons/Dot';
 import LoadingPfp from './LoadingPfp';
+import React from 'react';
 
 const LoadingTopDetails = () => {
 
@@ -77,8 +78,8 @@ const LoadingTopDetails = () => {
                             {/* Metadatas */}
                             <div className="flex items-center gap-1.5 md:gap-3 text-sm md:text-base" >
                                 {
-                                    [1, 2, 3].map((item) => (
-                                        <>
+                                    [1, 2, 3].map((item, index) => (
+                                        <React.Fragment key={index}>
                                             <div className='bg-hover-primary overflow-hidden w-10 md"w-14 h-4 rounded-sm' >
                                                 {motionDiv(
                                                     {
@@ -97,7 +98,7 @@ const LoadingTopDetails = () => {
                                                     item !== 3 && <Dot size={3} />
                                                 }
                                             </div>
-                                        </>
+                                        </React.Fragment>
                                     ))
                                 }
                             </div>
@@ -109,8 +110,8 @@ const LoadingTopDetails = () => {
             <section className="flex flex-row-reverse md:flex-row justify-between items-center w-full" >
                 <div className="flex flex-row-reverse md:flex-row gap-2" >
                     {
-                        [1, 2].map(() => (
-                            <div className='bg-hover-primary w-16 h-7 rounded-sm overflow-hidden' >
+                        [1, 2].map((_, index) => (
+                            <div key={index} className='bg-hover-primary w-16 h-7 rounded-sm overflow-hidden' >
                                 {
                                     motionDiv({
                                         x:[-40, 100]

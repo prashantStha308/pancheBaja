@@ -13,9 +13,9 @@ const AudioRef = () => {
     }, []);
 
     return (
-        <>
+        <div className='opacity-0 translate-x-[9999rem] translate-y-[9999rem]' >
             <audio ref={audioRef} ></audio>
-        </>
+        </div>
     )
 }
 

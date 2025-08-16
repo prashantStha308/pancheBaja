@@ -21,16 +21,18 @@ const LoginForm = () => {
 	const isFilledValid = isFilled && isValidEmail;
 
 	return (
-		<section id="login-form" className=" py-8 md:py-6 px-8 md:px-24 flex flex-col gap-8 " >
+		<section id="login-form" className=" py-8 md:py-6 px-8 md:px-24 flex flex-col gap-4 " >
 
+			{/* Logo */}
 			<div className="flex flex-col gap-4 justify-center items-center" >
-				<LogoNoRect size={75} fill="#dbdbdb" />
+				<LogoNoRect size={80} fill="#fff" />
 				<h1 className="text-white-secondary font-header text-3xl text-center font-black capitalize" > LOG IN </h1>
 			</div>
-			
+
+			{/* Form */}
 			<form className="flex flex-col gap-2 w-full" >
 				<input type="text" name="email" id="email"
-					className={`border ${ (isFilledNotValid) ? "border-red-primary" : (isFilledValid) ? "border-white-secondary" : "border-black-tersery" }  w-xs md:w-md font-semibold text-base rounded-md px-6 py-2 outline-none bg-black-tersery active:bg-black-primary focus:bg-black-primary transition-all ease-in duration-100`} placeholder="Enter yout email"
+					className={`border ${ (isFilledNotValid) ? "border-red-primary" : (isFilledValid) ? "border-white-secondary" : "border-black-tersery" }  w-xs md:w-md font-semibold text-base rounded-md px-6 py-2 outline-none bg-black-tersery active:bg-black-primary focus:bg-black-primary transition-all ease-in duration-100`} placeholder="Enter your email(This and signup,both doesn't work for now)"
 					onChange={detectValidEmail}
 				/>
 
@@ -39,7 +41,7 @@ const LoginForm = () => {
 						Please enter a valid email
 					</span>
 
-						<span className="text-xs" >
+						<span className=" text-[0.65rem] md:text-xs" >
 							Don't have an account? <Link to={'/signup'} className="text-blue-500 hover:underline font-bold" > Register here! </Link>
 						</span>
 				</div>

@@ -6,6 +6,21 @@ const throwError = (res) => {
     throw new Error(res.data?.message || "API returned unsuccessful response");
 }
 
+export const registerUser = async (formData) => {
+    try {
+        const res = await axios.post(`${BASE_API_URL}/api/user`, formData.toObject());
+
+        if (!res.success) {
+            throwError(res);
+        }
+
+        return setSuccess(res.data);
+
+    } catch (error) {
+        return setError(error);
+    }
+}
+
 export const getAllUsers = async (page = 1, limit = 10) => {
     try {
         const res = await axios.get(`${BASE_API_URL}/api/user?page=${page}&limit=${limit}`);

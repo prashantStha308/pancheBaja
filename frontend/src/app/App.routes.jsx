@@ -1,6 +1,6 @@
 import { Routes , Route } from "react-router-dom"
 import HomeLayout from "../pages/HomeLayout"
-import SearchLayout from "../pages/SearchLayout"
+import ExploreLayout from "../pages/Explore/ExploreLayout.jsx"
 import LibraryLayout from "../pages/LibraryLayout"
 import ProfileLayout from '../pages/ProfileLayout'
 import PlaylistLayout from "../pages/playlist/PlaylistLayout"
@@ -18,7 +18,7 @@ const AppRoutes = () => {
 			<Route path="/test" element={ <Test /> } />
 
 			<Route path="/" element={ <HomeLayout /> } />
-			<Route path="/search" element={ <SearchLayout /> } />
+			<Route path="/explore" element={ <ExploreLayout /> } />
 			<Route path="/library" element={ <LibraryLayout /> } />
 
 			{/* Auth */}

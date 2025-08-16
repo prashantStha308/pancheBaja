@@ -1,5 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllUsers, getUserById, getUsersByCity } from "../services/user.services.js";
+import { getAllUsers, getUserById, getUsersByCity, registerUser } from "../services/user.services.js";
+
+export const useUserRegistrationQuery = (formData) => {
+    return useQuery({
+        queryFn: () => registerUser(formData),
+        queryKey: ['user-registration']
+    })
+}
 
 export const useGetAllUsers = ( page = 1 , limit = 10 ) => {
     return useQuery({

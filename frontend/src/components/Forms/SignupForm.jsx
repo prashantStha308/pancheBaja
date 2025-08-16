@@ -105,7 +105,7 @@ const SignupForm = () => {
                     {/* Location */}
                     <div className=" w-full flex flex-col group" >
                         <div className=" w-full text-sm flex gap-4 items-center" >
-                            <label htmlFor="phone" className="flex items-center gap-1 font-bold" >
+                            <label htmlFor="country" className="flex items-center gap-1 font-bold" >
                             Country:
                             </label>
                             <CountrySelect
@@ -115,7 +115,8 @@ const SignupForm = () => {
                             value={formData.location?.country}
                             onChange={handleChange}
                             placeHolder="Select Country"
-                            showFlag = {false}
+                            showFlag={false}
+                            name="location.country"
                             />
                         </div>
                         <hr className="border-[0.02rem] border-white-secondary group-active:border-white-primary group-hover:border-white-primary" style={{boxShadow: '0 4px 4px rgba(0,0,0,0.8)'}} />

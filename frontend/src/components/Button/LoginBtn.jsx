@@ -27,7 +27,7 @@ const LoginBtn = ({ brand = "apple" }) => {
     }
 
     return (
-        <button className="flex justify-between items-center bg-white-primary hover:bg-white-secondary active:bg-white-tersery text-black  cursor-pointer box-border px-10 py-1 md:py-2 rounded-md transition-all ease-in-out duration-100 shadow-md shadow-black" >
+        <button className="flex justify-between items-center bg-white-primary hover:bg-white-secondary active:bg-white-tersery text-black  cursor-pointer box-border px-10 py-2 rounded-md transition-all ease-in-out duration-100 shadow-md shadow-black" >
             
             <div>
                 <img src={src} alt={`${brand.toLowerCase()} logo`} className="h-8" />

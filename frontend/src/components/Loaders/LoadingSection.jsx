@@ -1,12 +1,12 @@
 import React from 'react'
 import {motion, spring} from "motion/react"
-import useIsMobile from '../../utils/useIsMobile';
+import useBreakpoint from "../../hooks/useBreakpoint.jsx";
 import LoadingTile from './LoadingTile';
 
 const LoadingSection = () => {
 
     const sectRef = React.useRef(null);
-    const isMobile = useIsMobile(760)
+    const isMobile = useBreakpoint(640)
 
     const containerVarient = {
     hidden: {
@@ -28,8 +28,6 @@ const LoadingSection = () => {
         visible: { opacity: 1, y: 0 },
     };
     
-    const Array = [1, 2, 3, 4, 5, 6, 7, 8];
-
     return (
         <motion.section initial="hidden" whileInView="visible" variants={containerVarient} viewport={{ amount: isMobile ? 0.5 : 0.1 }} className="flex flex-col isolate w-full justify-center " >
             
@@ -52,7 +50,7 @@ const LoadingSection = () => {
             
             <article ref={sectRef} className=" relative max-w-screen h-full flex gap-2 md:gap-4 overflow-x-auto scrollbar-hide" >
 
-            { Array.map( (item , index) => (
+            { [1, 2, 3, 4, 5, 6, 7, 8].map( (item , index) => (
                 <motion.div key={index} variants={childVarient} >
                     <LoadingTile />
                 </motion.div>
