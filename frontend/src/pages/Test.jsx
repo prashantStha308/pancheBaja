@@ -1,10 +1,9 @@
-import SearchButton from "../components/Button/SearchButton"
-import ExploreTile from "../components/Tiles/ExploreTile"
+import LoadingExploreTile from "../components/Loaders/LoadingExploreTile"
 
 const Test = () => {
 
 	return (
-		<ExploreTile />
+		<LoadingExploreTile />
 	)
 }
 

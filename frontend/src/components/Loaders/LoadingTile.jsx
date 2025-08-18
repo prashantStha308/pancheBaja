@@ -18,10 +18,10 @@ const LoadingTile = () => {
     ></motion.div>
 
     return (
-        <motion.section
+        <section
             className="flex flex-col items-center justify-start gap-2 w-40 h-56 rounded-md bg-hover-primary/25 p-4 "
         >
-            <motion.div
+            <div
                 className=" relative overflow-hidden w-full flex justify-center aspect-square bg-hover-primary rounded-sm"
             >
                 <motion.div
@@ -37,7 +37,7 @@ const LoadingTile = () => {
                     }}
                     className='h-64 w-14 absolute bg-white/5 blur-lg '
                 ></motion.div>
-            </motion.div>
+            </div>
 
             <article className=' w-full h-24 flex flex-col justify-between' >
                 <div className='flex flex-col gap-1' >
@@ -57,7 +57,7 @@ const LoadingTile = () => {
 
             </article>
 
-        </motion.section>
+        </section>
     )
 }
 
