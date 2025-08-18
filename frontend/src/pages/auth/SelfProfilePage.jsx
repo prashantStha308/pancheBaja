@@ -1,6 +1,8 @@
 import React from 'react'
-import ProfilePicture from '../../components/icons/ProfilePicture'
+// Stores
 import useUserStore from '../../store/user.store';
+// Components
+import ProfilePicture from '../../components/icons/ProfilePicture'
 import LoginError from '../../components/Error/LoginError';
 
 
@@ -23,9 +25,9 @@ const SelfProfilePage = () => {
 	
 	const { isLoggedIn, currentUser } = useUserStore();
 
-	// if (!isLoggedIn) {
-	// 	return <LoginError />
-	// }
+	if (!isLoggedIn) {
+		return <LoginError />
+	}
 
 	return (
 		<section id="self-page">

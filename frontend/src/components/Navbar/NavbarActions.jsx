@@ -14,9 +14,8 @@ const NavbarActions = () => {
 
     const handleUserRedirect = () => {
         if (!isLoggedIn) navigate("/login");
-        else {
-            // navigate to user page
-        }
+        
+        else navigate("/me");
     };
 
     return (

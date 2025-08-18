@@ -1,8 +1,8 @@
 import { useState } from "react";
-import InputField from "../../components/Inputs/InputField";
-import InputFile from "../../components/Inputs/InputFile";
-import { uploadTrack } from "../../services/track.services";
-import Loader from "../../components/Loader.jsx";
+import InputField from "../Inputs/InputField.jsx";
+import InputFile from "../Inputs/InputFile.jsx";
+import { uploadTrack } from "../../services/track.services.js";
+import Loader from "../Loader.jsx";
 
 const PublishForm = () => {
 

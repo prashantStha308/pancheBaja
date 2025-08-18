@@ -4,7 +4,7 @@ import ExploreLayout from "../pages/Explore/ExploreLayout.jsx"
 import LibraryLayout from "../pages/LibraryLayout"
 import ProfileLayout from '../pages/ProfileLayout'
 import PlaylistLayout from "../pages/playlist/PlaylistLayout"
-import UploadTrack from "../pages/create/UploadTrack"
+import PublishLayout from "../pages/create/PublishLayout.jsx"
 import Login from "../pages/auth/Login.jsx";
 import Test from "../pages/Test"
 import Signup from "../pages/auth/Signup.jsx"
@@ -28,7 +28,7 @@ const AppRoutes = () => {
 
 			
 			{/* UPLOAD ROUTES */}
-			<Route path="/publish" element={ <UploadTrack /> } />
+			<Route path="/publish" element={ <PublishLayout /> } />
 
 			{/* DYNAMIC ROUTES */}
 			<Route path="/playlist/:id" element={ <PlaylistLayout /> } />

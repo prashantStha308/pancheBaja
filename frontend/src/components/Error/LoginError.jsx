@@ -2,7 +2,7 @@ import React from 'react'
 
 const LoginError = () => {
     return (
-        <div>LoginError</div>
+        <div> Please Log-In to Continue </div>
     )
 }
 

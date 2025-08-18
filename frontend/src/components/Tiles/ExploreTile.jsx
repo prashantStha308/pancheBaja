@@ -5,7 +5,7 @@ const ExploreTile = ({ topic = "Test", bgUrl = "/assets/aadiiItyadii.jpg" }) => 
     const [isLoaded, setIsLoaded] = useState(false);
 
     return (
-        <div className="relative group cursor-pointer w-[clamp(3.5rem,10vw,9rem)] md:w-52 aspect-video rounded-md overflow-hidden">
+        <div className="relative group cursor-pointer w-40 md:w-52 aspect-video rounded-md overflow-hidden">
             {!isLoaded && <LoadingExploreTile />}
 
             <img 
