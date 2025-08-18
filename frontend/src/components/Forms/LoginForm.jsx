@@ -32,7 +32,7 @@ const LoginForm = () => {
 			{/* Form */}
 			<form className="flex flex-col gap-2 w-full" >
 				<input type="text" name="email" id="email"
-					className={`border ${ (isFilledNotValid) ? "border-red-primary" : (isFilledValid) ? "border-white-secondary" : "border-black-tersery" }  w-xs md:w-md font-semibold text-base rounded-md px-6 py-2 outline-none bg-black-tersery active:bg-black-primary focus:bg-black-primary transition-all ease-in duration-100`} placeholder="Enter your email(This and signup,both doesn't work for now)"
+					className={`border ${ (isFilledNotValid) ? "border-red-primary" : (isFilledValid) ? "border-white-secondary" : "border-black-tersery" }  w-xs md:w-md font-semibold text-base rounded-md px-6 py-2 outline-none bg-black-tersery active:bg-black-primary focus:bg-black-primary transition-all ease-in duration-100`} placeholder="Enter your email"
 					onChange={detectValidEmail}
 				/>
 

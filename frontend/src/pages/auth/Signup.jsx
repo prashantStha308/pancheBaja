@@ -50,9 +50,9 @@ const Signup = () => {
 		<section id="signUpPage" className=" w-full" >
 
 			<section className="relative z-40" >
-				{/* <SignupForm /> */}
+				<SignupForm />
 				
-				<form className="flex flex-col gap-4" onSubmit={handleSubmit} >
+				{/* <form className="flex flex-col gap-4" onSubmit={handleSubmit} >
 					<label> Full name <input onChange={handleChange} className="border" type="text" name="fullName" value={formData?.fullName} id="fullName" /> </label>
 					<label> Username <input onChange={handleChange} className="border" type="text" name="username" value={formData?.username} id="username" /> </label>
 					<label> Email <input onChange={handleChange} className="border" type="email" name="email" value={formData?.email} id="email" /> </label>
@@ -63,9 +63,8 @@ const Signup = () => {
 
 					<input type="submit" value="Signup" className="bg-white-secondary text-black p-2 px-8 cursor-pointer" />
 
-				</form>
+				</form> */}
 
-				<span className="font-bold text-white/45" > Will Work on this later. Aaile lai kaam chalau </span>
 			</section>
 
 			<Background src={signupBg} gradientPercent={20} blur={false} />

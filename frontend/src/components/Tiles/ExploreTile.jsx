@@ -2,7 +2,7 @@ import React from 'react'
 
 const ExploreTile = ({topic= "Test", bgUrl="/assets/aadiiItyadii.jpg"}) => {
     return (
-        <div className="relative group cursor-pointer w-52 aspect-video rounded-md overflow-hidden">
+        <div className="relative group cursor-pointer w-40 md:w-52 aspect-video rounded-md overflow-hidden">
             <img 
                 src={bgUrl} 
                 alt={topic} 

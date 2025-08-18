@@ -32,8 +32,8 @@ const SearchLayout = () => {
 	]
 
 	return (
-		<section id="explore-page" className="w-full" >
-			<section id="genre-grid" className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" >
+		<section id="explore-page" className="w-full flex justify-center " >
+			<section id="genre-grid" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" >
 				{
 					ExploreOptionExamples.map((item, index) => (
 						<ExploreTile topic={item.name} key={index} />
