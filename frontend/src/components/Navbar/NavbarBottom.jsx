@@ -48,7 +48,7 @@ const NavbarBottom = () => {
 
         <Link to={'/login'} className="px-3 py-1 rounded-md active:bg-black-tersery transition-all duration-75 ease-in-out" >
             <div>
-                <ProfilePicture altText="aadiiItyadi" size={35} />
+                <ProfilePicture altText="aadiiItyadi" size={30} />
             </div>
         </Link>
     </nav>

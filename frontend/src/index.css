@@ -75,7 +75,7 @@ tbody:before {
 .track-seeker {
   -webkit-appearance: none; 
   appearance: none;
-  @apply bg-white-secondary h-[3px] rounded-full;
+  @apply bg-white-secondary h-[3px] w-md rounded-full;
 }
 
 /* WebKit (Chrome, Safari) */

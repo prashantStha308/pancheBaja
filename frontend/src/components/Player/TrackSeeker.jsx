@@ -48,10 +48,8 @@ const TrackSeeker = () => {
   }, [setSeekSliderRefs]);
 
   useEffect(() => {
-    if (typeof seekPosition === "number") {
-      setSliderValue(seekPosition);
-      updateSliderBackground(seekPosition);
-    }
+    setSliderValue(seekPosition);
+    updateSliderBackground(seekPosition);
   }, [seekPosition]);
 
   return (

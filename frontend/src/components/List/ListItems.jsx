@@ -37,7 +37,7 @@ const ListItems = ({ track, index, demoEffect, activeIndex }) => {
                 <div className="flex gap-6 justify-end items-center">
                     
                     {/* Duration */}
-                    <span className="text-left" > {track.totalDuration === undefined ? 0 : normalizeTimeFromMS(track.totalDuration)} </span>
+                    <span className="text-left hidden md:block " > {track.totalDuration === undefined ? 0 : normalizeTimeFromMS(track.totalDuration)} </span>
                     {/* For alignment */}
                     <span className="md:hidden group" > <Heart size={15} strokeWidth={2} className="group-hover:text-red-primary group-active:text-red-primary " /> </span>
                     {/* Heart btn */}

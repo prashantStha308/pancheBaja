@@ -26,12 +26,12 @@ const LoadingTile = () => {
             >
                 <motion.div
                     animate={{
-                        x: [-90, 120, -90],
+                        x: [-220, 220],
                         y: [-90],
                         rotate:[-45]
                     }}
                     transition={{
-                        duration: 4,
+                        duration: 2,
                         repeat: Infinity,
                         ease: 'easeInOut',
                     }}

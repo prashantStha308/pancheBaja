@@ -32,7 +32,7 @@ const ListLayout = ({ tracks = [] }) => {
                       
                     <th className="p-2" >
                         <div className=" flex gap-6 justify-end">
-                            <span className="text-left" >Duration</span>
+                            <span className="text-left hidden md:block " >Duration</span>
                             <span className="opacity-0" ><Heart size={15} /></span>
                         </div>
                     </th>

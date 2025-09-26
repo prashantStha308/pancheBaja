@@ -6,16 +6,16 @@ import { AnimatePresence } from "motion/react";
 
 function App() {
 
-  return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <Queries>
-        <AnimatePresence>
-          <AppContent />
-        </AnimatePresence>
-      </Queries>
-    </BrowserRouter>
-  )
+	return (
+		<BrowserRouter>
+			<ScrollToTop />
+			<Queries>
+				<AnimatePresence>
+					<AppContent />
+				</AnimatePresence>
+			</Queries>
+		</BrowserRouter>
+	)
 }
 
 export default App

@@ -19,7 +19,7 @@ const PlaylistTile = ({ item }) => {
 			<StackedFrames imageSrc={ item.coverArt.src} />
 			
 			<div className="flex flex-col gap-0.5 mt-2 w-full ">
-				<h3 className="text-left font-bold text-sm text-white line-clamp-1 leading-tight whitespace-normal break-words">
+				<h3 className="capitalize text-left font-bold text-sm text-white line-clamp-1 leading-tight whitespace-normal break-words">
 					{item.name || "Unnamed Playlist"}
 				</h3>
 				<p className="text-sm text-gray-300">

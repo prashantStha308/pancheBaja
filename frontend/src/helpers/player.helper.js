@@ -36,6 +36,8 @@ const usePlayerHelper = () => {
     }
 
     const initializeAudio = (track, nextTrack) => {
+        console.log("Initializing audio",track);
+
         if (audioElementRef?.current) {
             audioElementRef.current.removeEventListener('ended', nextTrack);
             audioElementRef.current.src = track.audio.streamUrl;
@@ -53,11 +55,17 @@ const usePlayerHelper = () => {
         }
     }
 
+    const selectTrack = (track) => {
+        setCurrentTrack(track);
+        setCurrentIndex(0);
+    }
+
     const selectTrackInPlaylist = (track, playlist) => {
         const targetIndex = playlist.trackList.findIndex(item => item._id === track._id);
         if (targetIndex == -1) {
             throw new Error("Track not present in playlist");
         }
+        console.log(track);
         setCurrentTrack(track);        
         setCurrentIndex(targetIndex);
     }
@@ -101,7 +109,11 @@ const usePlayerHelper = () => {
         }
     }
     
-    const getNextIndex = () => (currentIndex < currentPlaylist.length - 1) ? currentIndex + 1 : 0;
+    const getNextIndex = () => {
+        console.log(currentPlaylist);
+        
+        return (currentIndex < currentPlaylist.length - 1) ? currentIndex + 1 : 0
+    }
     
     const getPrevIndex = ()=> (currentIndex !== 0) ? currentIndex - 1 : currentPlaylist.length - 1;
 
@@ -109,7 +121,7 @@ const usePlayerHelper = () => {
 
 
     return ({
-        selectTrackInPlaylist,
+        selectTrackInPlaylist, selectTrack,
         isSameTrackLoaded,
         validateTrackOrThrow,
         startSeekerInterval,

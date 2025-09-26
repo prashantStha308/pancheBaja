@@ -29,14 +29,14 @@ const LoadingSection = () => {
     };
     
     return (
-        <motion.section initial="hidden" whileInView="visible" variants={containerVarient} viewport={{ amount: isMobile ? 0.5 : 0.1 }} className="flex flex-col isolate w-full justify-center " >
+        <motion.section initial="hidden" whileInView="visible" variants={containerVarient} viewport={{ amount: isMobile ? 0.5 : 0.1 }} className="flex flex-col isolate w-full justify-center gap-2 " >
             
             <div
                 className="relative bg-white-primary/10 w-[40%] md:w-[25%] h-5 rounded-sm overflow-hidden"
             >
                 <motion.div
                 animate={{
-                    x: [-30,120]
+                    x: [-30,320]
                 }}
                 transition={{
                     duration: 2,
@@ -44,7 +44,7 @@ const LoadingSection = () => {
                     ease: 'easeInOut',
                 }}
                 
-                className='h-full w-5 absolute bg-white/70 blur-sm'
+                className='h-full w-5 absolute bg-white/10 blur-md'
                 ></motion.div>
             </div>
             

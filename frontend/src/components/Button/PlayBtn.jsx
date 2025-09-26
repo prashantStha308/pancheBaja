@@ -5,11 +5,19 @@ import Play from "../icons/Play";
 const PlayBtn = () => {
   const { visitingPlaylist, currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
   const { loadAndPlayTrack } = usePlayerServices();
+
   
   const handlePlayClick = () => {
+    // check if the visitingPlaylist is a singles or an album and deal with theit types
+    console.log(visitingPlaylist);
 
     if (visitingPlaylist !== currentPlaylist) {
-      setCurrentPlaylist(visitingPlaylist);    
+      setCurrentPlaylist(visitingPlaylist);
+    }
+
+    if (visitingPlaylist.type == 'track') {
+      loadAndPlayTrack(visitingPlaylist.audio, visitingPlaylist);
+      return;
     }
 
     if (visitingPlaylist?.trackList?.length > 0) {

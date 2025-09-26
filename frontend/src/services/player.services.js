@@ -11,7 +11,8 @@ const usePlayerServices = () => {
     const {
         playTrack, pauseTrack,
         getNextIndex, getPrevIndex,
-        initializeAudio, selectTrackInPlaylist,
+        initializeAudio,
+        selectTrackInPlaylist, selectTrack,
         resetPlayer, seekUpdate,
         isSameTrackLoaded,
         clearSeekerInterval,
@@ -30,11 +31,21 @@ const usePlayerServices = () => {
             if ( currentTrack && isSameTrackLoaded(track)) {
                 return;
             }
-            setIsPlaying(false);
 
-            selectTrackInPlaylist(track, playlist);
+            setIsPlaying(false);
             resetPlayer();
-            initializeAudio(track, nextTrack);
+
+            console.log("loading track: ", track);
+            console.log("loading Playlist: ", playlist);
+
+            if (playlist.type === 'track') {
+                selectTrack(playlist);
+                initializeAudio(playlist, nextTrack);
+            } else {
+                selectTrackInPlaylist(track, playlist);
+                initializeAudio(track, nextTrack);
+            }
+            
             setHasLoadedTrack(true);
             playTrack();
             // update seeker every 1 second
@@ -45,8 +56,14 @@ const usePlayerServices = () => {
     }
 
     function nextTrack() {
+        console.log("Inside nextTrack");
+
         clearSeekerInterval();
+        console.log("Before getNextIndex");
         const nextIndex = getNextIndex();
+        console.log("After getNextIndex");
+
+
         const nextTrack = currentPlaylist.trackList[nextIndex];
 
         if (nextTrack) {
@@ -63,7 +80,7 @@ const usePlayerServices = () => {
 
         if (nextTrack) {
             setCurrentIndex(prevIndex);  
-            loadTrack(nextTrack);
+            loadTrack(nextTrack, currentPlaylist);
             playTrack();
         }
     }
