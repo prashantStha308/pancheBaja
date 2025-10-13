@@ -51,7 +51,7 @@ body::-webkit-scrollbar-track{
 }
 
 body::-webkit-scrollbar-thumb{
-    @apply bg-red-primary/75 rounded-full;
+    @apply bg-red-primary/25 rounded-full;
 }
 
 .scrollbar-hide::-webkit-scrollbar {

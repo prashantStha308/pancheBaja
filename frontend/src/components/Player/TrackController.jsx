@@ -1,7 +1,9 @@
+// Stores and Hooks
+import usePlayerStore from "../../store/player.store.js";
+import usePlayer from "../../hooks/usePlayer.jsx";
+// Components
 import Play from "../icons/Play.jsx";
 import { SkipBack, SkipForward, Pause } from "lucide-react";
-import usePlayer from "../../hooks/usePlayer.jsx";
-import usePlayerStore from "../../store/player.store.js";
 
 const TrackController = () => {
 

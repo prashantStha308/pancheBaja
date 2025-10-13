@@ -1,13 +1,19 @@
+// Libraries
 import { useState } from "react";
+import { Link } from "react-router-dom";
+// Components
 import LogoNoRect from "../icons/Logo_noRect.jsx";
 import LoginBtn from "../Button/LoginBtn.jsx";
-import { Link } from "react-router-dom";
+
 
 const LoginForm = () => {
-
+	// React Hooks
 	const [isValidEmail, setIsValidEmail] = useState(false);
 	const [isFilled, setIsFilled] = useState(false);
 
+	// Main body
+
+	// Functions
 	const detectValidEmail = (e) => {
 		setIsFilled(e.target.value.trim().length > 0);
 

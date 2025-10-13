@@ -6,7 +6,6 @@ import useNavbarStore from "../../store/navbar.store"
 import SearchButton from "../Button/SearchButton.jsx";
 import Home from "../icons/Home";
 import Library from "../icons/Library";
-import { useEffect } from "react";
 
 const NavbarList = () => {
 

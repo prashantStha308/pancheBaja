@@ -1,5 +1,7 @@
+// Libraries
+import React, { useState, useRef } from "react"
+// Components
 import Heart from "../icons/Heart"
-import React, { useState , useRef } from "react"
 import ListItem from "./ListItems.jsx";
 
 const ListLayout = ({ tracks = [] }) => {

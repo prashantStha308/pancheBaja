@@ -1,7 +1,6 @@
 import {Link} from "react-router-dom";
 
 const TrackDetail = ({ currentTrack }) => {
-    console.log(currentTrack);
 
     return (
         <section className="flex items-center gap-4 h-14 w-56 " >

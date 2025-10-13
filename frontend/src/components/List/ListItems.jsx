@@ -1,5 +1,7 @@
-import Heart from "../icons/Heart"
+// Libraries
 import { Link } from "react-router-dom"
+// Components
+import Heart from "../icons/Heart"
 import Play from "../icons/Play"
 import { normalizeTimeFromMS } from "../../helpers/global.helpers"
 

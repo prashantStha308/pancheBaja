@@ -1,13 +1,15 @@
+// Libraries
 import { useState } from "react";
+// Services
+import { uploadTrack } from "../../services/track.services.js";
+// Components
 import InputField from "../Inputs/InputField.jsx";
 import InputFile from "../Inputs/InputFile.jsx";
-import { uploadTrack } from "../../services/track.services.js";
 import Loader from "../Loader.jsx";
 
 const PublishForm = () => {
-
     const [loading, setLoading] = useState(false);
-    
+
     const handleSubmit = async (e)=>{
         e.preventDefault();
         try {

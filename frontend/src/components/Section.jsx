@@ -1,5 +1,7 @@
+// Libraries
 import { useRef } from "react"
 import { motion, spring } from "motion/react";
+// Components
 import MoveLeft from "./Button/MoveLeft";
 import MoveRight from "./Button/MoveRight";
 import useBreakpoint from "../hooks/useBreakpoint.jsx";
@@ -7,10 +9,12 @@ import LoadingSection from "./Loaders/LoadingSection.jsx";
 
 
 const Section = ({ query, title, Tile }) => {
+	// Hooks and queries
 	const sectRef = useRef(null);
 	const isMobile = useBreakpoint(640)
 	const { data, isPending, isLoading, isError, error } = query;
 
+	// Motion variables
 	const containerVarient = {
 		hidden: {
 			opacity: 0.25,
@@ -69,5 +73,3 @@ const Section = ({ query, title, Tile }) => {
 }
 
 export default Section;
-
-

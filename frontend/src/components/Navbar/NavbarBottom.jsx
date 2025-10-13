@@ -1,11 +1,14 @@
+// Libraries
 import { Link, useLocation } from "react-router-dom"
+import { useEffect } from "react"
+// Stores
+import useNavbarStore from "../../store/navbar.store.js"
+// Components
 import Home from "../icons/Home"
 import Search from "../icons/Search"
 import Library from "../icons/Library"
 import Add from "../icons/Add"
 import ProfilePicture from "../icons/ProfilePicture"
-import { useEffect } from "react"
-import useNavbarStore from "../../store/navbar.store"
 
 const NavbarBottom = () => {
 

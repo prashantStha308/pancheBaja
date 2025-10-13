@@ -1,13 +1,18 @@
-import { motion, scale } from "motion/react";
+// Libraries
+import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom"
 import { CountrySelect } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
 
 const SignupForm = () => {
-    const [ formData , setFormData ] = useState({})
+    // React Hooks
+    const [formData, setFormData] = useState({})
     const [ acceptTerms , setAcceptTerms ] = useState(false);
     const inputRef = useRef();
+
+
+    // Functions
 
     // handle nested object datas.
     // Example: location.city, location.country
@@ -39,6 +44,8 @@ const SignupForm = () => {
         setAcceptTerms(prev => !prev);
     }
 
+    // Motion Variables
+
     const containerVarient = {
         hidden: {
             opacity: 0,
@@ -59,6 +66,7 @@ const SignupForm = () => {
         visible: { opacity: 1, y: 0 },
     };
 
+    // Use Effects
     useEffect(()=>{
         if(inputRef.current !== null){
             const children = inputRef.current.children;

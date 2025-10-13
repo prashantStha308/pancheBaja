@@ -14,13 +14,12 @@ import AudioRef from "../components/Player/AudioRef.jsx";
 const AppContent = () => {
 
 	const location = useLocation();
-
+	// Store Subscriptions
 	const isTrackLoaded = usePlayerStore(store => store.isTrackLoaded);
 	const isPlaying = usePlayerStore(store => store.isPlaying);
-	
-	const { navbarRef } = useNavbarStore();
+	const navbarRef = useNavbarStore( store => store.navbarRef );
 
-	// Filter eher not to show player
+	// Filter where not to show player
 	const BtmPlayerBlackList = [ '/player' , '/login' , '/signup' ];
 	const dontShowPlayer = BtmPlayerBlackList.some( path => location.pathname.startsWith(path) );
 

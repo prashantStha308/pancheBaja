@@ -1,14 +1,16 @@
+// Helpers
+import { normalizeTime } from "../helpers/player.helper.js";
+// Components
 import ProfilePicture from "./icons/ProfilePicture";
 import PlayBtn from "./Button/PlayBtn";
 import ShuffleBtn from "./Button/ShuffleBtn";
 import Share from "./icons/Share";
 import Heart from "./icons/Heart";
 import Dot from "./icons/Dot";
-import { normalizeTimeFromMS } from "../helpers/global.helpers.js";
 
 const TopDetails = ({ visitingPage }) => {
 
-    let duration = normalizeTimeFromMS(visitingPage?.totalDuration);
+    let duration = normalizeTime(visitingPage?.totalDuration);
 
     const owner = visitingPage.type !== 'playlist' ? visitingPage?.primaryArtist || "Unknown Artist" : visitingPage?.createdBy || "Unknown user" ;
 

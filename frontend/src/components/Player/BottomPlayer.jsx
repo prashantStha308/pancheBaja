@@ -1,5 +1,6 @@
-// Components
+// Store
 import usePlayerStore from "../../store/player.store";
+// Components
 import Player from "./Player"
 import TrackDetail from "./TrackDetail";
 import VolumeSeeker from "./VolumeSeeker";

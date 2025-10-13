@@ -1,24 +1,25 @@
+// Libraries
 import { useEffect, useRef } from 'react';
+// Components
 import usePlayerStore from '../../store/player.store';
 import usePlayer from '../../hooks/usePlayer';
 
 const AudioRef = () => {
-
+    // React Hooks
     const audioRef = useRef();
-    const { setAudioRef } = usePlayerStore.getState();
 
+    // Store Subscriptions
+    const { setAudioRef } = usePlayerStore.getState();
     const trackList = usePlayerStore(store => store.trackList);
     const currentTrackIndex = usePlayerStore(store => store.currentTrackIndex);
-
+    // Custom hooks
     const { nextTrack, pauseTrack } = usePlayer();
 
+    // useEffect
     useEffect(() => {
-
         const handleOnEnd = () => {
-            console.log("In end");
             pauseTrack();
             if ( currentTrackIndex !== trackList.length - 1 ) {
-                console.log("Not the last item of the trackList");
                 nextTrack();
             }
         }

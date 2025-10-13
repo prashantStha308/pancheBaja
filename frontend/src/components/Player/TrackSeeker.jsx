@@ -1,8 +1,7 @@
 // Libraries
 import { useEffect, useRef, useState } from "react";
-// Store
+// Stores and Hooks
 import usePlayerStore from "../../store/player.store.js";
-// Hooks
 import usePlayer from "../../hooks/usePlayer.jsx";
 // Helper
 import { normalizeTime } from "../../helpers/player.helper.js";
@@ -27,14 +26,12 @@ const TrackSeeker = () => {
 
   // Functions
   const updateSliderBackground = (value) => {
-
     const seeker = seekerRef.current;
     if (!seeker) return;
 
     const min = parseFloat(seeker.min) || 0;
     const max = parseFloat(seeker.max) || 100;
     const percentage = ((value - min) / (max - min)) * 100;
-
 
     seeker.style.background = `linear-gradient(to right, #fd4b4e 0%, #fd4b4e ${percentage}%, #ddd ${percentage}%, #ddd 100%)`;
     seeker.style.transition = "all 12s ease-in-out";
@@ -62,7 +59,6 @@ const TrackSeeker = () => {
       intervalId.current = setInterval(updateSeek, 1000);
 
     } else if( !isPlaying && intervalId.current ) {
-      
       clearInterval(intervalId.current);
       intervalId.current = null;
     }

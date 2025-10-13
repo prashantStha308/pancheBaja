@@ -1,6 +1,5 @@
 // Libraries
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "motion/react";
 // Stores
 import useUserStore from "../../store/user.store"
 // Components

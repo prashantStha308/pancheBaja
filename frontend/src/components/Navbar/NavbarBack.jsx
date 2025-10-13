@@ -1,6 +1,8 @@
-import { ChevronLeft } from 'lucide-react';
-import React, { useEffect, useRef } from 'react'
+// Libraries
+import { useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
+// Components
+import { ChevronLeft } from 'lucide-react';
 
 const NavbarBack = () => {
 

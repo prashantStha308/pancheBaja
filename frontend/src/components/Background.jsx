@@ -1,15 +1,17 @@
+// Libraries
 import { motion, useMotionValue, useAnimationFrame } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 
 
 const Background = ({ src, gradientPercent = 50, blur = true }) => {
 
-    // Gradient Essentials
+    //React Hooks
     const [grd, setGrd] = useState(100);
     const grdValue = useMotionValue(100);
     const target = useRef(gradientPercent);
     const speed = 1.5;
 
+    // Motion Hooks
     useAnimationFrame((t, delta) => {
         const current = grdValue.get();
         const isAnimationInProgress = Math.abs(current - target.current) > 0.1;
@@ -25,6 +27,7 @@ const Background = ({ src, gradientPercent = 50, blur = true }) => {
         }
     });
 
+    // useEffects
     useEffect(() => {
         grdValue.set(100);
         setGrd(100);

@@ -1,12 +1,16 @@
+// React Hooks
 import { useEffect, useState } from "react"
+// Assets
 import googleLogo from "/assets/google_logo.png?url";
 import facebookLogo from "/assets/facebook_logo.png?url";
 
 const LoginBtn = ({ brand = "apple" }) => {
 
+    // React Hooks
     const [src, setSrc] = useState();
     const [isError, setIsError] = useState(false);
 
+    // Use Effects
     useEffect(() => {
         switch (brand.toLowerCase()) {
             case "google":
