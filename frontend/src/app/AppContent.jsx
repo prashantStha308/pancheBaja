@@ -14,7 +14,10 @@ import AudioRef from "../components/Player/AudioRef.jsx";
 const AppContent = () => {
 
 	const location = useLocation();
-	const { hasLoadedTrack, isPlaying } = usePlayerStore();
+
+	const isTrackLoaded = usePlayerStore(store => store.isTrackLoaded);
+	const isPlaying = usePlayerStore(store => store.isPlaying);
+	
 	const { navbarRef } = useNavbarStore();
 
 	// Filter eher not to show player
@@ -32,9 +35,8 @@ const AppContent = () => {
 
 
 			<div >
-				{/* Only show the bottom player, if a track is loaded, or is playing and if the current page is not in BtmPlayerBlackList */}
-				{(!dontShowPlayer && (hasLoadedTrack || isPlaying))  && (
-					<div id="bottom-player" className={`fixed bottom-0 left-0 right-0 ${ (hasLoadedTrack || isPlaying) ? "opacity-100" : "opacity-0" } bg-black-secondary/55 backdrop-blur-3xl z-40 transition-all duration-200 ease-in-out`} >
+				{(!dontShowPlayer && (isTrackLoaded || isPlaying))  && (
+					<div id="bottom-player" className={`fixed bottom-0 left-0 right-0 ${ (isTrackLoaded || isPlaying) ? "opacity-100" : "opacity-0" } bg-black-secondary/55 backdrop-blur-3xl z-40 transition-all duration-200 ease-in-out `} >
 						<BottomPlayer />
 					</div>
 				)}
@@ -44,7 +46,6 @@ const AppContent = () => {
 				</div>
 			</div>
 
-			{/* Invisible to user */}
 			<AudioRef />
 
 		</main>

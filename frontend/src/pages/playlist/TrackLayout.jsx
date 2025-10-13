@@ -52,7 +52,7 @@ const TrackLayout = () => {
                             <ListLayout tracks={ [data.data] } />
                         </section>
 
-                        <Background src={data.data.coverArt.src} gradientPercent={50} />
+                        <Background src={data?.data?.coverArt?.src} gradientPercent={50} />
                     </>
             }
 		</>

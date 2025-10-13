@@ -1,31 +1,25 @@
-// Stores
-import { Loader } from "lucide-react";
-import { useGetUserById } from "../../queries/user.queries.js";
-import usePlayerStore from "../../store/player.store.js"
 // Components
+import usePlayerStore from "../../store/player.store";
 import Player from "./Player"
 import TrackDetail from "./TrackDetail";
 import VolumeSeeker from "./VolumeSeeker";
-import LoadingBottomPlayer from "../Loaders/Player/LoadingBottomPlayer.jsx";
+import LoadingBottomPlayer from "../Loaders/Player/LoadingBottomPlayer";
 
 const BottomPlayer = () => {
 
-  const { currentTrack } = usePlayerStore();
-  const { isLoading, data, isError, error } = useGetUserById(currentTrack?.artists?.[0] || undefined );
-
-  console.log(currentTrack?.artists?.[0], data);
+  const currentTrack = usePlayerStore(store => store.currentTrack);
 
   return (
     <>
       {
-        isLoading ? (
-          <LoadingBottomPlayer />
-        ) :
-          (<div className={`hidden md:flex z-40 justify-between py-2 px-5`} >
+        currentTrack ?
+          <div className={`hidden md:flex z-40 justify-between py-2 px-5`} >
             <TrackDetail currentTrack={currentTrack} />
             <Player />
             <VolumeSeeker />
-          </div>)
+          </div> 
+          :
+          <LoadingBottomPlayer />
       }
     </>
   )

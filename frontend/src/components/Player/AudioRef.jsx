@@ -1,21 +1,43 @@
 import { useEffect, useRef } from 'react';
 import usePlayerStore from '../../store/player.store';
+import usePlayer from '../../hooks/usePlayer';
 
 const AudioRef = () => {
 
     const audioRef = useRef();
-    const { setAudioElementRef } = usePlayerStore();
+    const { setAudioRef } = usePlayerStore.getState();
+
+    const trackList = usePlayerStore(store => store.trackList);
+    const currentTrackIndex = usePlayerStore(store => store.currentTrackIndex);
+
+    const { nextTrack, pauseTrack } = usePlayer();
 
     useEffect(() => {
-        if (audioRef.current !== null) {
-            setAudioElementRef(audioRef);
+
+        const handleOnEnd = () => {
+            console.log("In end");
+            pauseTrack();
+            if ( currentTrackIndex !== trackList.length - 1 ) {
+                console.log("Not the last item of the trackList");
+                nextTrack();
+            }
         }
-    }, []);
+
+        const ref = audioRef.current;
+        ref.addEventListener( "ended", handleOnEnd );
+        setAudioRef(audioRef.current);
+
+        return (() => {
+            ref.removeEventListener( "ended", handleOnEnd );
+        })
+
+    }, [currentTrackIndex, nextTrack, pauseTrack, setAudioRef, trackList]);
 
     return (
-        <div className='opacity-0 translate-x-[9999rem] translate-y-[9999rem]' >
-            <audio ref={audioRef} ></audio>
-        </div>
+        <audio 
+            ref={audioRef}
+            style={{ display: 'none' }}
+        ></audio>
     )
 }
 

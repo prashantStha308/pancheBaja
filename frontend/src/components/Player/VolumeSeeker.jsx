@@ -2,8 +2,10 @@ import { Volume , Volume1 , Volume2 } from "lucide-react"
 import usePlayerStore from "../../store/player.store.js"
 import { useEffect, useRef } from "react";
 
-const VolumeSeeker = () => {
-    const { volume , setVolume } = usePlayerStore();
+const VolumeSeeker = () => {	
+	const volume = usePlayerStore(state => state.volume);
+	const setVolume = usePlayerStore(state => state.setVolume);
+
     const seekerRef = useRef();
 
     const handleVolumeChange = (e)=>{

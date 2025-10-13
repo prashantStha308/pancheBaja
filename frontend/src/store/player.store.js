@@ -1,59 +1,65 @@
 import { create } from "zustand";
 
-const PlayerStore = create( ( set , get )=>({
-    // states
+const usePlayerStore = create((set) => ({
+    trackList: [],
+    setTrackList: (list) => set({ trackList: Array.isArray(list) ? list : [list] }),
+
     currentTrack: null,
-    currentIndex: 0,
-    currentTime: "00:00",
-    totalDuration: "00:00",
-    seekPosition: 0,
-    volume: 100,
+    setCurrentTrack: track => set({currentTrack: track}),
+
+    currentTrackIndex: 0,
+    setCurrentTrackIndex: (index) => set({ currentTrackIndex: index }),
+
     isPlaying: false,
-    hasLoadedTrack: false,
+    setIsPlaying: status => set({ isPlaying: status }),
+    
+    isTrackLoaded: false,
+    setIsTrackLoaded: status => set({ isTrackLoaded: status }),
+    
+    currentTime: 0,
+    setCurrentTime: (time) => set({ currentTime: time }),
 
     // refs
-    seekSliderRefs: [],
-    seekVolumeRef: null, //volume control garna lai
-    audioElementRef: null,
-    // misc
-    audioIntervalTimer: null, //setInterval ID ko lagi
-    
-    // setters
-    setCurrentTrack: ( track ) => { set({currentTrack: track}) },
-    setCurrentIndex: (index)=> set({currentIndex: index}),
-    setCurrentTime: (curr_time)=>{set({currentTime: curr_time})},
-    setTotalDuration: (duration)=>{set({totalDuration: duration})},
-    setSeekPosition: (position) => set({ seekPosition: position }),
-    setVolume: (vol)=>{ set({volume: vol}) },
-    setIsPlaying: (bool) => { set({ isPlaying: bool }) },
-    setHasLoadedTrack: (bool) => {set({hasLoadedTrack: bool})},
-    
-    // ref setters
-    setSeekSliderRefs: (ref) => set(state => {
-        if (typeof ref === 'function') {
-            return { seekSliderRefs: ref(state.seekSliderRefs) };
-        } else {
-            return { seekSliderRefs: [ref] };
-        }
-    }),
-    setSeekVolumeRef: (volume)=>{set({seekVolumeRef: volume})},
-    setAudioElementRef: (ref)=>{set({audioElementRef: ref})},
+    audioRef: null,
+    setAudioRef: currentRef => set({ audioRef: currentRef }),
 
-    // misc
-    setAudioIntervalTimer: (intervalId)=>{set({updateTimer: intervalId})},
+    seekerRef: null,
+    setSeekerRef: currentRef => set({ seekerRef: currentRef }),
 
-    updateAllSliders: (value) => {
-        const { seekSliderRefs } = get();
-        seekSliderRefs.forEach(ref => {
-            if (ref && ref.current) {
-                ref.current.value = value;
-            }
-        });
-        set({ seekPosition: value });
+
+    // Actions
+    addTrackTolist: track => set(state => [...state.trackList, track]),
+    removeTrackFromlist: track => set(state => state.trackList.filter(item => item._id != track._id)),
+
+    resetPlayer: () => {
+        set({
+            trackList: [],
+            currentTrack: null,
+            isPlaying: false,
+            isTrackLoaded: false,
+            currentTime: 0,
+            audioRef: null,
+            seekerRef: null
+        })
     },
 
-    
-}) );
+}));
 
-const usePlayerStore = ()=> PlayerStore();
 export default usePlayerStore;
+
+// Pseudo code
+
+/*
+
+1. User starts the player, in a playlist page(for now)
+2. The trackList of the playlist is loaded to usePlayerStore().trackList;
+3. The first track in the trackList is loaded in currentTrack state.
+4. Upon doing so, the seeker's current Track and totalDuration is updated.
+5. Use the totalDuration as the max value in the seeker
+
+Note: Only after setting up the seeker, setup the audio element.
+
+6. Use a useEffect with the currentTrack in it's dependency array to set the src of the audio.
+7. Add a onEnded lilstener to audio ele with nextTrack
+
+*/

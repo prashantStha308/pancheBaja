@@ -1,28 +1,25 @@
-import usePlayerServices from "../../services/player.services.js";
+import usePlayer from "../../hooks/usePlayer.jsx";
 import usePlaylistStore from "../../store/playlist.store";
 import Play from "../icons/Play";
+import usePlayerStore from "../../store/player.store.js";
 
 const PlayBtn = () => {
-  const { visitingPlaylist, currentPlaylist, setCurrentPlaylist } = usePlaylistStore();
-  const { loadAndPlayTrack } = usePlayerServices();
-
   
-  const handlePlayClick = () => {
-    // check if the visitingPlaylist is a singles or an album and deal with theit types
-    console.log(visitingPlaylist);
+  const visitingPlaylist = usePlaylistStore(state => state.visitingPlaylist);
 
-    if (visitingPlaylist !== currentPlaylist) {
-      setCurrentPlaylist(visitingPlaylist);
-    }
+  const { setTrackList } = usePlayerStore.getState();
+  const { loadTrack, playTrack } = usePlayer();
 
-    if (visitingPlaylist.type == 'track') {
-      loadAndPlayTrack(visitingPlaylist.audio, visitingPlaylist);
-      return;
-    }
+  const handlePlayClick = async () => {
+    console.log("Handling Play Click");
 
-    if (visitingPlaylist?.trackList?.length > 0) {
-      loadAndPlayTrack(visitingPlaylist.trackList[0], visitingPlaylist);
-    }
+    const trackList = visitingPlaylist.type === "track" ? [visitingPlaylist] : visitingPlaylist.trackList;
+
+    console.log("Setting in trackList; ",trackList);
+
+    setTrackList(trackList);
+    loadTrack(trackList[0]);
+    await playTrack();
   }
 
   return (

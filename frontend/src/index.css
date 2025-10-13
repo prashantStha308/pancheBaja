@@ -39,6 +39,21 @@ body,html{
     @apply min-h-screen bg-black-primary text-white scroll-smooth;
 }
 
+body::-webkit-scrollbar{
+    /* display: none; */
+
+    width: 3px;
+    height: 100%;
+}
+
+body::-webkit-scrollbar-track{
+    @apply bg-transparent rounded-full z-10
+}
+
+body::-webkit-scrollbar-thumb{
+    @apply bg-red-primary/75 rounded-full;
+}
+
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
