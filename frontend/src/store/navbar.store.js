@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const NavbarStore = create((set) => ({
+const useNavbarStore = create((set) => ({
     // States
     currentPage: 'home',
     isSearchActive: false,
@@ -22,6 +22,5 @@ const NavbarStore = create((set) => ({
 
 }))
 
-const useNavbarStore = () => NavbarStore()
 
 export default useNavbarStore;

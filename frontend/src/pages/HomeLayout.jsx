@@ -1,10 +1,13 @@
-import PlaylistTile from "../components/Tiles/PlaylistTile.jsx"
-import ArtistTile from "../components/Tiles/ArtistTile.jsx";
-import Section from "../components/Section.jsx";
-import transition from "../utils/transition.jsx";
+// Libraries
+import { useEffect } from "react";
+// Hooks and Helpers
 import { useAllPlaylistQuery } from "../queries/playlist.queries.js";
 import { useAllTrackQuery } from "../queries/track.queries.js";
-import { useEffect } from "react";
+import transition from "../utils/transition.jsx";
+// Components
+import PlaylistTile from "../components/Tiles/PlaylistTile.jsx"
+import Section from "../components/Section.jsx";
+
 
 const HomeLayout = () => {
 	const playlistQuery = useAllPlaylistQuery();

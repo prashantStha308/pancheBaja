@@ -9,6 +9,7 @@ import LoadingBottomPlayer from "../Loaders/Player/LoadingBottomPlayer";
 const BottomPlayer = () => {
 
   const currentTrack = usePlayerStore(store => store.currentTrack);
+  console.log("Re-rendering?");
 
   return (
     <>

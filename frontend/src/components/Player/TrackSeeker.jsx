@@ -73,19 +73,19 @@ const TrackSeeker = () => {
 
   return (
     <div className="md:w-sm flex justify-center items-center">
-      <div className="px-2 text-xs">{normalizeTime(currentTime)}</div>
+      <div className="px-2 text-xs">{normalizeTime(currentTime) || "00:00" }</div>
       <input
         ref={seekerRef}
         type="range"
         min={0}
-        max={Math.floor(currentTrack.totalDuration)}
-        value={currentTime ?? 0}
+        max={Math.floor(currentTrack?.totalDuration ?? 0 ) || 0 }
+        value={currentTime || 0}
         className="track-seeker accent-red-primary"
         onMouseDown={() => setIsDragging(true)}
         onMouseUp={() => setIsDragging(false)}
         onInput={handleChange}
       />
-      <div className="px-2 text-xs">{normalizeTime(Math.floor(currentTrack.totalDuration))}</div>
+      <div className="px-2 text-xs">{normalizeTime(Math.floor(currentTrack?.totalDuration ?? 0 )) || "00:00" }</div>
     </div>
   );
 };

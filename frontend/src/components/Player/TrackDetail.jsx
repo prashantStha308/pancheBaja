@@ -8,7 +8,13 @@ const TrackDetail = ({ currentTrack }) => {
                 <img src={ currentTrack && currentTrack.coverArt.src || "/assets/aadiiItyadii.jpg"} alt={ currentTrack && currentTrack.name || "" + "'s Cover art" } width={25} height={25} />
             </div>
             <div className="grid content-evenly gap-0" >
-                <span className=" p-0 m-0 text-left text-xs hover:underline cursor-pointer" > <Link to={ currentTrack && currentTrack._id ? `/player/${ currentTrack && currentTrack._id}` : "/" } > { currentTrack && currentTrack.name || "Unknown Title"} </Link>  </span>
+                <span className=" p-0 m-0 text-left text-xs hover:underline cursor-pointer" >
+                    <Link
+                        to={currentTrack && currentTrack._id ? "/player" : "/"}
+                    >
+                        { currentTrack && currentTrack.name || "Unknown Title"}
+                    </Link>
+                </span>
                 <span className="p-0 m-0 text-xs text-left hover:underline cursor-pointer">
                     {currentTrack && currentTrack.artists && currentTrack.artists.length > 0
                         ? currentTrack.artists.map(item => item.username).slice(0, 2).join(', ') + "..."

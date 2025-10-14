@@ -10,6 +10,7 @@ import Test from "../pages/Test"
 import Signup from "../pages/auth/Signup.jsx"
 import TrackLayout from "../pages/playlist/TrackLayout.jsx"
 import SelfProfilePage from "../pages/auth/SelfProfilePage.jsx"
+import PlayerLayout from "../pages/Player/PlayerLayout.jsx"
 
 const AppRoutes = () => {
 	return (
@@ -19,7 +20,8 @@ const AppRoutes = () => {
 
 			<Route path="/" element={ <HomeLayout /> } />
 			<Route path="/explore" element={ <ExploreLayout /> } />
-			<Route path="/library" element={ <LibraryLayout /> } />
+			<Route path="/library" element={<LibraryLayout />} />
+			<Route path="/player" element={<PlayerLayout />} />
 
 			{/* Auth */}
 			<Route path="/login" element={ <Login /> } />

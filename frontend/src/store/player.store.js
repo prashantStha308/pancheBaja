@@ -2,7 +2,15 @@ import { create } from "zustand";
 
 const usePlayerStore = create((set) => ({
     trackList: [],
-    setTrackList: (list) => set({ trackList: Array.isArray(list) ? list : [list] }),
+    setTrackList: (list) => {
+
+        list = Array.isArray(list) ? list : [list];
+
+        set({
+            trackList: list,
+            isTrackLoaded: list.length !== 0
+        })
+    },
 
     currentTrack: null,
     setCurrentTrack: track => set({currentTrack: track}),

@@ -12,11 +12,11 @@ import NavbarBack from "./NavbarBack";
 
 const NavbarPrimary = () => {
 
-    const { currentPage, setCurrentPage, setIsSearchActive } = useNavbarStore();
+    const { setCurrentPage, setIsSearchActive, setNavbarRef } = useNavbarStore.getState();
+    const currentPage = useNavbarStore(store => store.currentPage);
 
     const navRef = useRef();
     const location = useLocation();
-    const { setNavbarRef } = useNavbarStore();
 
     useEffect( ()=>{
         const path = location.pathname.substring(1).split('/')[0] || "home";

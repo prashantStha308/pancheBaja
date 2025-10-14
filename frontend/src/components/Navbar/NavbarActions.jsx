@@ -22,7 +22,10 @@ const NavbarActions = () => {
                 <>
                     <button className="flex items-center text-red-primary">
                         <Link to={"/publish"}>
-                            <Add size={35} />
+                            <Add
+                                size={35}
+                                className="rounded-full fill-transparent hover:fill-red-secondary hover:text-white transition-all ease-in duration-100 cursor-pointer"    
+                            />
                         </Link>
                     </button>
 
