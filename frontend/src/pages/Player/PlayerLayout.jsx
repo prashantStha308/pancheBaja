@@ -7,6 +7,7 @@ import usePlayerStore from '../../store/player.store';
 import transition from "../../utils/transition";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import CoverArt from "./Components/CoverArt";
 
 const PlayerLayout = () => {
 
@@ -28,22 +29,16 @@ const PlayerLayout = () => {
         <>
             <section
                 id='player'
-                className='w-full h-[calc(100dvh-75px)] flex justify-center items-center z-50'
+                className='w-full h-[calc(100dvh-120px)] flex justify-center items-center z-50'
             >
-                <div className=' flex flex-col gap-6 items-center justify-center w-60 md:w-80' >
-                    <div>
-                        <img
-                            src= {currentTrack?.coverArt?.src || "" }
-                            alt={currentTrack?.title || "Cover Art"}
-                            className=' w-60 h-60 md:w-80 md:h-80 aspect-square object-cover rounded-lg'
-                        />
-                    </div>
+                <div className=' flex flex-col gap-4 items-center justify-center w-60 md:w-80' >
+                    <CoverArt src={currentTrack?.coverArt?.src || ""} alt={currentTrack?.name || "Cover Art"} />
 
                     {/* Track Details */}
                     <TrackDetails track={currentTrack} />
 
                     <div
-                        className='flex flex-col justify-center items-center gap-1'
+                        className='flex flex-col justify-center items-center gap-1.5'
                     >
                         <Controller />
                         <Seeker />

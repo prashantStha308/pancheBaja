@@ -108,7 +108,7 @@ export const updateTrackFields = (req, track) => {
     } = req.body;
 
     if (name) track.name = name;
-    if (artists && Array.isArray(artists)) track.artists = artists;
+    if (artists) track.artists = Array.isArray(artists) ? artists : [artists];
     if (visibility) track.visibility = visibility;
-    if (genre && Array.isArray(genre)) track.genre = genre;
+    if (genre) track.genre = Array.isArray(genre) ? genre : [genre];
 }

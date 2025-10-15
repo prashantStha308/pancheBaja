@@ -39,13 +39,29 @@ const Seeker = () => {
         const percentage = ((value - min) / (max - min)) * 100;
         setGlowWidth(percentage);
 
-        seeker.style.background = `linear-gradient(to right, #93EA3D 0%, #93EA3D ${percentage}%, #ddd ${percentage}%, #ddd 100%)`;
+        seeker.style.background = `linear-gradient(to right, #FD4B4E 0%, #FD4B4E ${percentage}%, #ddd ${percentage}%, #ddd 100%)`;
         seeker.style.transition = "all 0.15s ease-in-out";
     }
 
     const handleChange = e => {
         updateSliderBackground(parseInt(e.target.value));
         seekTo(e.target.value);
+    }
+
+
+    const movingDiv = (animate, transition, blur= false ) => {
+        
+        return (
+            <motion.div
+                style={{
+                    width: `${glowWidth}%`,
+                    transformOrigin: 'left'
+                }}
+                className={`absolute bg-white rounded-full h-1 pointer-events-none z-30 ${blur && "blur-sm"} `}
+                animate={animate}
+                transition={transition}
+            ></motion.div>
+        )
     }
 
     // Use Effects
@@ -87,36 +103,35 @@ const Seeker = () => {
                     min={0}
                     max={Math.floor(currentTrack?.totalDuration ?? 0 ) || 100 }
                     value={currentTime || 0}
-                    className="track-seeker-green w-65 accent-green-standard z-20"
+                    className="track-seeker w-65 accent-red-primary z-20"
                     onMouseDown={() => setIsDragging(true)}
                     onMouseUp={() => setIsDragging(false)}
                     onInput={handleChange}
                 />
 
-                <motion.div
-                    className="absolute bg-white rounded-full h-1 z-30"
-
-                    style={{
-                        width: `${glowWidth}%`,
-                        transformOrigin: 'left'
-                    }}
-
-                    animate={{
-                        opacity: [0, 0.7],
-                        scaleX: [0.2, 1]
-                    }}
-
-                    transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "linear",
-                        repeatDelay: 0.15
-                    }}
-
-                ></motion.div>
+                {
+                    // Render the moving divs
+                    [1, 2, 3, 4].map((item) => {
+                        // apply blur to even valued elements only
+                        const blur = item % 2 == 0;
+                        return movingDiv(
+                            {
+                                opacity: [0, 0.8, 0],
+                                scaleX: [ item < 2 ? 0 :0.2  , 0.9]
+                            },
+                            {
+                                duration: 1.5,
+                                repeat: Infinity,
+                                ease: "linear",
+                                repeatDelay: 0.15
+                            },
+                            blur
+                        )
+                    } )
+                }
 
                 <div
-                    className="absolute rounded-full bg-green-glow h-1 blur-xs pointer-events-none z-10"
+                    className="absolute rounded-full bg-red-secondary h-1 blur-xs pointer-events-none z-10"
                     style={{
                         width: `${glowWidth}%`
                     }}
