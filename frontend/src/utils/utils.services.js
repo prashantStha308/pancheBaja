@@ -3,5 +3,5 @@ export const setError = (error)=>{
 }
 
 export const setSuccess = (resData) => {
-    return { success: resData.success , data: resData.data , message: resData.message || "Operation Successful" };
+    return { success: true , data: resData.data , message: resData.message || "Operation Successful" };
 }

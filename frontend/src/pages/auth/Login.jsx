@@ -15,10 +15,9 @@ const Login = () => {
 		return( ()=> document.title = "Panche Baja")
 	}, []);
 
-	// Buuild the second phase
 	return (
 		<section className="w-full flex flex-col justify-center items-center " >
-			<section className="relative min-h-full md:h-auto z-40 flex justify-center items-center ">
+			<section className="relative h-screen overflow-hidden z-40 flex justify-center items-center ">
 				<LoginForm />
 			</section>
 

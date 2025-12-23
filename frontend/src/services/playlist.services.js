@@ -26,3 +26,16 @@ export const getPlaylistByid = async (id) => {
         return setError(error);
     }
 }
+
+export const getPlaylistByUserDd = async (userId) => {
+    try {
+        const res = await axios.get(`/api/playlist/${userId}`);
+        if( res.data?.success ){
+            return setSuccess(res?.data);
+        }else{
+            throw new Error(res.data?.message);
+        }
+    } catch (error) {
+        return setError(error);
+    }
+}

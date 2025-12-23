@@ -161,7 +161,7 @@ const SignupForm = () => {
 
                     {/* Submit Button */}
                     <div className="w-full flex justify-end" >
-                        <motion.button type="submit" whileHover={{scale: acceptTerms && 1.15}} whileTap={{scale: acceptTerms && 0.8 , rotate: 3}} transition={{duration: 0.05}} className={`py-2 px-8 font-text font-bold text-base rounded-md shadow-lg transition-all duration-100 ease-in ${acceptTerms ? "text-white bg-red-primary hover:bg-red-700 active:bg-red-700 cursor-pointer" : "bg-button-disabled text-disabledtext cursor-not-allowed"}`} disabled={acceptTerms ? false : true } >
+                        <motion.button type="submit" whileHover={{scale: acceptTerms && 1.15}} whileTap={{scale: acceptTerms && 0.8 , rotate: 3}} transition={{duration: 0.05}} className={`py-2 px-8 font-text font-bold text-base rounded-md shadow-lg transition-all duration-100 ease-in ${acceptTerms ? "text-white bg-red-primary hover:bg-red-700 active:bg-red-700 cursor-pointer" : "bg-disabled-button text-disabled-text cursor-not-allowed"}`} disabled={acceptTerms ? false : true } >
                         Sign Up
                         </motion.button>
                     </div>

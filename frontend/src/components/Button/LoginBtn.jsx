@@ -31,19 +31,17 @@ const LoginBtn = ({ brand = "apple" }) => {
     }
 
     return (
-        <button className="flex justify-between items-center bg-white-primary hover:bg-white-secondary active:bg-white-tersery text-black  cursor-pointer box-border px-10 py-2 rounded-md transition-all ease-in-out duration-100 shadow-md shadow-black" >
+        <button className="" >
             
             <div>
-                <img src={src} alt={`${brand.toLowerCase()} logo`} className="h-8" />
+                <img src={src} alt={`${brand.toLowerCase()} logo`} className="h-10" />
             </div>
-            
+{/*             
             <span className="capitalize font-text font-bold">
                 Continue with {brand}
             </span> 
             
-            <div>
-                {/* just for alignment, no real content */}
-            </div>
+            <div></div> */}
         </button>
     )
 }

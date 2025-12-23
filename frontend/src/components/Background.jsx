@@ -47,7 +47,7 @@ const Background = ({ src, gradientPercent = 50, blur = true }) => {
             <div
                 className={`absolute top-0 bottom-0 right-0 left-0 min-h-screen w-screen z-10`}
                 style={{
-                    backgroundImage: `linear-gradient(to top, rgba(20,20,20,1) ${grd}%, transparent)`
+                    backgroundImage: `linear-gradient(to top, #0F0F0F ${grd}%, transparent)`
                 }}
             ></div>
 

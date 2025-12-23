@@ -61,12 +61,14 @@ export const getFollowings = async (userId) => {
 }
 
 export const getSavedTracks = async (userId) => {
+    console.log("Inside getSavedTracks");
     return await SavedTrack.find({ savedBy: userId }).select('track').populate({
         path: 'track',
         select: "_id name primaryArtist coverArt genre coverArt "
     }).lean();
 }
 export const getSavedPlaylist = async (userId) => {
+    console.log("Inside gertSavedPplaylist");
     return await SavedPlaylist.find({ savedBy: userId }).select('playlist').populate({
         path: 'playlist',
         math: { type: 'playlist' },
@@ -75,6 +77,8 @@ export const getSavedPlaylist = async (userId) => {
 }
 
 export const getCreatedPlaylist = async (userId) => {
+    console.log("Inside getCreatedPlaylist");
+
     return await Playlist.find({ createdBy: userId }).populate({
         path: 'artists',
         select: '_id username role profilePicture'

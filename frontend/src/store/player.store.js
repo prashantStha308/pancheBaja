@@ -3,9 +3,7 @@ import { create } from "zustand";
 const usePlayerStore = create((set) => ({
     trackList: [],
     setTrackList: (list) => {
-
         list = Array.isArray(list) ? list : [list];
-
         set({
             trackList: list,
             isTrackLoaded: list.length !== 0
@@ -26,6 +24,13 @@ const usePlayerStore = create((set) => ({
     
     currentTime: 0,
     setCurrentTime: (time) => set({ currentTime: time }),
+
+    // Shuffle state
+    isShuffle: false,
+    setIsShuffle: status => set({ isShuffle: status }),
+
+    isRepeat: false,
+    setIsRepeat: (state = "all") => set({ isRepeat: state }),
 
     // refs
     audioRef: null,

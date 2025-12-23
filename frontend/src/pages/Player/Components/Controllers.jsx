@@ -10,40 +10,55 @@ import Dot from "../../../components/icons/Dot.jsx";
 const Controller = () => {
 
 	const isPlaying = usePlayerStore(store => store.isPlaying);
+	const isShuffle = usePlayerStore(store => store.isShuffle);
+	const isRepeat = usePlayerStore(store => store.isRepeat);
 
+	const { setIsShuffle, setIsRepeat } = usePlayerStore.getState();
 	const {
 		togglePlayPause,
 		nextTrack, prevTrack,
 	} = usePlayer();
 
-	return (
-		<div className="flex items-center gap-6 max-w-80 " >
+	const toggleShuffle = () => setIsShuffle(!isShuffle);
+	const toggleRepeat = () => setIsRepeat(!isRepeat);
 
+	const getSecondaryActions = (Component, callback, condition) => {
+		return (
 			<button
 				className="flex flex-col gap-0.5 items-center group cursor-pointer p-1 "
+				onClick={callback}
 			>
 				<div className="relative flex justify-center items-center isolate" >
-					<Repeat
+					<Component
 						size={15}
-						className="group-hover:text-green-standard z-20 "
+						className="z-20"
 					/>
-					<Repeat
+					<Component
 						size={10}
-						className="absolute bg-green-glow blur-sm z-10 opacity-0 group-hover:opacity-100 "
+						className={`absolute bg-green-glow blur-sm z-10 ${condition ? "opacity-100" : "opacity-0 group-hover:opacity-80" } transition-opacity duration-150 ease-in-out `}
 					/>
 				</div>
-
-				<div className="relative opacity-0 group-hover:opacity-100 " >
+				
+				<div className={`relative opacity-0 ${condition ? "opacity-100" : "opacity-0"}`} >
 					<Dot
-						size={2}
-						className="text-green-standard"
+						size={3}
+						className="text-white"
 					/>
 					<Dot
-						size={2}
+						size={3}
 						className="absolute text-green-glow blur-xs"
 					/>
 				</div>
+
 			</button>
+			
+		)
+	}
+
+	return (
+		<div className="flex items-center gap-6 max-w-80 " >
+
+				{getSecondaryActions(Repeat, toggleRepeat, isRepeat)}
 
 			<div className="flex gap-3 items-center" >
 				<button className="cursor-pointer p-1.5 hover:text-red-primary bg-transparent rounded-full hover:bg-hover-primary transition-all duration-150 ease-in-out" onClick={prevTrack} >
@@ -79,31 +94,7 @@ const Controller = () => {
 				</button>
 			</div>
 
-			<button
-				className="flex flex-col gap-0.5 items-center group cursor-pointer p-1 "
-			>
-				<div className="relative flex justify-center items-center isolate" >
-					<Shuffle
-						size={15}
-						className="group-hover:text-green-standard z-20 "
-					/>
-					<Shuffle
-						size={10}
-						className="absolute bg-green-glow blur-sm z-10 opacity-0 group-hover:opacity-100 "
-					/>
-				</div>
-
-				<div className="relative opacity-0 group-hover:opacity-100 " >
-					<Dot
-						size={2}
-						className="text-green-standard"
-					/>
-					<Dot
-						size={2}
-						className="absolute text-green-glow blur-xs"
-					/>
-				</div>
-			</button>
+			{getSecondaryActions(Shuffle, toggleShuffle, isShuffle)}
 		</div>
 	)
 }

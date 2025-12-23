@@ -63,7 +63,7 @@ const usePlayer = () => {
     }
 
     const togglePlayPause = async () => {
-        console.log("Toggeling play state");
+        console.log("Toggeling play state", {isPlaying});
         if (isPlaying) {
             pauseTrack();
         } else {
@@ -96,6 +96,7 @@ const usePlayer = () => {
 
     const updateSeek = () => {
         setCurrentTime(audioRef ? Math.floor(audioRef.currentTime) : 0);
+        console.log("Time Range Object: ", audioRef.buffered);
     }
 
     const seekTo = ( value ) => {

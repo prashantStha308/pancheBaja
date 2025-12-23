@@ -3,7 +3,7 @@ import React from 'react'
 import useUserStore from '../../store/user.store';
 // Components
 import ProfilePicture from '../../components/icons/ProfilePicture'
-import LoginError from '../../components/Error/LoginError';
+import LoginError from '../../pages/Error/LoginError';
 
 
 

@@ -49,7 +49,7 @@ const Section = ({ query, title, Tile }) => {
 				isPending || isLoading ?
 					<LoadingSection />
 				:
-					<motion.div initial="hidden" whileInView="visible" variants={containerVarient} viewport={{ amount: isMobile ? 0.5 : 0.1 }} className="flex flex-col isolate w-full justify-center" >
+					<motion.div initial="hidden" whileInView="visible" variants={containerVarient} viewport={{ amount: isMobile ? 0.5 : 0.1 }} className="flex flex-col gap-2 isolate w-full justify-center" >
 						
 						<h2 className="text-lg md:text-xl font-bold font-header" > {title} </h2>
 						

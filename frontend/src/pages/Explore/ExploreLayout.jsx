@@ -2,6 +2,9 @@ import transition from "../../utils/transition";
 import ExploreTile from "../../components/Tiles/ExploreTile.jsx";
 
 const SearchLayout = () => {
+
+
+	// Probably needs to be fetched through backend
 	const ExploreOptionExamples = [
 		{
 			name: "Pop",
@@ -26,6 +29,14 @@ const SearchLayout = () => {
 			_id: ''
 		},{
 			name: "Tanamg Selo",
+			imgSrc: '',
+			_id: ''
+		},{
+			name: "Rock",
+			imgSrc: '',
+			_id: ''
+		},{
+			name: "Alternative Rock",
 			imgSrc: '',
 			_id: ''
 		},

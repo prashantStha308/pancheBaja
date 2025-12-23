@@ -92,7 +92,7 @@ export const getUserDetails = async (req, res, next) => {
 
     res.status(200).json(new ApiResponse(200, "User Fetched Succesfully", {
         ...user,
-        userFollowingsAndSaves
+        ...userFollowingsAndSaves
     }));
 }
 

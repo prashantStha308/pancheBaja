@@ -1,6 +1,6 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, ObjectId } from "mongoose";
 import validator from 'validator';
-import {emptyError, enumError, maxCharError, minEleError, requiredError, urlError} from "../utils/errors.js";
+import {emptyError, enumError, maxCharError, requiredError, urlError} from "../utils/errors.js";
 
 const playlistType = ['singles','ep','album','playlist'];
 const visibilityType = ['public', 'private', 'unlisted'];
@@ -83,7 +83,7 @@ const PlaylistSchema = new Schema({
 });
 
 
-const updatePlaylist = async function (next){
+async function updatePlaylist (next){
     if (!this.isModified('trackList')) {
         return next();
     }
@@ -92,6 +92,8 @@ const updatePlaylist = async function (next){
 
         const allArtists = new Set();
         const allGenre = new Set();
+
+        // Add all genre and artists to set
         for (const track of tracks) {
             track.artists.forEach(artistId => {
                 allArtists.add(artistId.toString());
@@ -107,8 +109,7 @@ const updatePlaylist = async function (next){
         }, 0);
         
         this.totalDuration = updatedDuration;
-        console.log(this.totalDuration);
-        this.artists = Array.from(allArtists).map(id => new mongoose.Types.ObjectId(id));
+        this.artists = Array.from(allArtists).map(id => new ObjectId(id));
         this.genre = Array.from(allGenre);
         next();
     } catch (err) {

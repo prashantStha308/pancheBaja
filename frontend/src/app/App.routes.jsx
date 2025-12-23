@@ -1,7 +1,7 @@
 import { Routes , Route } from "react-router-dom"
 import HomeLayout from "../pages/HomeLayout"
 import ExploreLayout from "../pages/Explore/ExploreLayout.jsx"
-import LibraryLayout from "../pages/LibraryLayout"
+import LibraryLayout from "../pages//Library/LibraryLayout.jsx"
 import ProfileLayout from '../pages/ProfileLayout'
 import PlaylistLayout from "../pages/playlist/PlaylistLayout"
 import PublishLayout from "../pages/create/PublishLayout.jsx"
@@ -11,17 +11,19 @@ import Signup from "../pages/auth/Signup.jsx"
 import TrackLayout from "../pages/playlist/TrackLayout.jsx"
 import SelfProfilePage from "../pages/auth/SelfProfilePage.jsx"
 import PlayerLayout from "../pages/Player/PlayerLayout.jsx"
+import ConnectionError from "../pages/Error/ConnectionError.jsx"
 
 const AppRoutes = () => {
 	return (
 		<Routes>
 			{/* for test */}
-			<Route path="/test" element={ <Test /> } />
+			<Route path="/test" element={<Test />} />
+			<Route path="/cerror" element={ <ConnectionError /> } />
 
 			<Route path="/" element={ <HomeLayout /> } />
 			<Route path="/explore" element={ <ExploreLayout /> } />
 			<Route path="/library" element={<LibraryLayout />} />
-			<Route path="/player" element={<PlayerLayout />} />
+			<Route path="/player/:id?" element={<PlayerLayout />} />
 
 			{/* Auth */}
 			<Route path="/login" element={ <Login /> } />

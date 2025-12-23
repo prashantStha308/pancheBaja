@@ -21,20 +21,24 @@ const AppContent = () => {
 
 	// Filter where not to show player
 	const BtmPlayerBlackList = [ '/player' , '/login' , '/signup' ];
-	const dontShowPlayer = BtmPlayerBlackList.some( path => location.pathname.startsWith(path) );
+	const dontShowPlayer = BtmPlayerBlackList.some(path => location.pathname.startsWith(path));
+
+	const isBottomPlayerShown = (!dontShowPlayer && (isTrackLoaded || isPlaying));
 
 	return (
 		<main className="min-h-screen bg-black-primary flex flex-col gap-2" >
 
-			<NavbarPrimary />
+			{
+				![].some(path => location.pathname.startsWith(path)) && <NavbarPrimary />
+			}
 
-			<div className={`flex px-5 min-h-[calc( 100dvh - ${navbarRef && navbarRef.current !== null ? navbarRef?.current?.offsetHeight : 0}px)] max-w-screen z-10 md:px-18 `} >
+			<div className={`flex px-5 min-h-[calc( 100dvh - ${navbarRef && navbarRef.current !== null ? navbarRef?.current?.offsetHeight : 0}px)] max-w-screen z-10 md:px-18 ${isBottomPlayerShown && "pb-16"} `} >
 				<AppRoutes />
 			</div>
 
 
 			<div >
-				{(!dontShowPlayer && (isTrackLoaded || isPlaying))  && (
+				{isBottomPlayerShown  && (
 					<div id="bottom-player" className={`fixed bottom-0 left-0 right-0 ${ (isTrackLoaded || isPlaying) ? "opacity-100" : "opacity-0" } bg-black-secondary/55 backdrop-blur-3xl z-40 transition-all duration-200 ease-in-out `} >
 						<BottomPlayer />
 					</div>

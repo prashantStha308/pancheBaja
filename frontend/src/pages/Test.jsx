@@ -1,21 +1,24 @@
-import { Pause } from "lucide-react"
-import Play from "../components/icons/Play"
-import { useTrackByIdQuery } from "../queries/track.queries";
-import PlaylistTile from "../components/Tiles/PlaylistTile";
+import DefaultModel from "../components/Ui/DefaultModel";
+import { useState } from "react";
+import Toast from "../components/Ui/Toast";
+import ConnectionError from "./Error/ConnectionError";
 
 const Test = () => {
 
-	const { data, isPending, isLoading, isError, error } = useTrackByIdQuery("687ba9266569d4536c17f3a0");
+	const [isError, setIsError] = useState(false);
 
-	if(isLoading){
-		return <p> Loading... </p>
+	if (isError) {
+		return <ConnectionError />
 	}
 
-	console.log(data.data);
-
 	return (
-		<div className="bg-red-500 w-56 h-56 " >
-
+		<div className="h-screen w-screen flex flex-row justify-center items-center gap-10" >
+			<button
+				className="bg-black-secondary text-white text-sm px-4 py-3 rounded-md cursor-pointer hover:bg-black-tersery"
+				onClick={()=> setIsError(true)}
+			>
+				Cause Network Error
+			</button>
 		</div>
 	)
 }

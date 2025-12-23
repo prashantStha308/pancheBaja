@@ -1,6 +1,6 @@
 // Libraries
 import { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useMotionValue } from "motion/react";
 // Stores and Hooks
 import usePlayerStore from "../../../store/player.store.js";
 import usePlayer from "../../../hooks/usePlayer.jsx";
@@ -23,6 +23,7 @@ const Seeker = () => {
     const currentTime = usePlayerStore(state => state.currentTime);
     const currentTrack = usePlayerStore(state => state.currentTrack);
     const isPlaying = usePlayerStore(state => state.isPlaying);
+    const audioRef = usePlayerStore(state => state.audioRef);
     // Hooks
     const { seekTo, updateSeek } = usePlayer();
 
@@ -30,38 +31,25 @@ const Seeker = () => {
 
     // Functions
 
+    const getBufferedValue = () => audioRef ? audioRef.buffered.end(audioRef.buffered.length - 1) : 0;
+    
     const updateSliderBackground = (value) => {
         const seeker = seekerRef.current;
         if (!seeker) return;
 
         const min = parseFloat(seeker.min) || 0;
         const max = parseFloat(seeker.max) || 100;
+
         const percentage = ((value - min) / (max - min)) * 100;
         setGlowWidth(percentage);
 
-        seeker.style.background = `linear-gradient(to right, #FD4B4E 0%, #FD4B4E ${percentage}%, #ddd ${percentage}%, #ddd 100%)`;
+        seeker.style.background = `linear-gradient(to right, #FD4B4E 0%, #FD4B4E ${percentage}%,#ddd ${percentage}%, #ddd 100%)`;
         seeker.style.transition = "all 0.15s ease-in-out";
     }
-
+    
     const handleChange = e => {
         updateSliderBackground(parseInt(e.target.value));
         seekTo(e.target.value);
-    }
-
-
-    const movingDiv = (animate, transition, blur= false ) => {
-        
-        return (
-            <motion.div
-                style={{
-                    width: `${glowWidth}%`,
-                    transformOrigin: 'left'
-                }}
-                className={`absolute bg-white rounded-full h-1 pointer-events-none z-30 ${blur && "blur-sm"} `}
-                animate={animate}
-                transition={transition}
-            ></motion.div>
-        )
     }
 
     // Use Effects
@@ -72,7 +60,7 @@ const Seeker = () => {
 
     // Update the red bacground on every render
     useEffect(() => {
-        if(!isDragging) updateSliderBackground(currentTime);
+        if (!isDragging) updateSliderBackground(currentTime);
     }, [currentTime, isDragging])
 
     // Start/Stop setInterval
@@ -109,25 +97,38 @@ const Seeker = () => {
                     onInput={handleChange}
                 />
 
+                {/* <div
+                    id="buffer"
+                    className="absolute bg-red-800 h-1 w-full pointer-events-none z-20"
+                ></div> */}
+
                 {
                     // Render the moving divs
-                    [1, 2, 3, 4].map((item) => {
+                        [1, 2, 3, 4].map((item) => {
                         // apply blur to even valued elements only
                         const blur = item % 2 == 0;
-                        return movingDiv(
-                            {
-                                opacity: [0, 0.8, 0],
-                                scaleX: [ item < 2 ? 0 :0.2  , 0.9]
-                            },
-                            {
-                                duration: 1.5,
-                                repeat: Infinity,
-                                ease: "linear",
-                                repeatDelay: 0.15
-                            },
-                            blur
+                        return (
+                            <motion.div
+                                key={`${item} - ${isPlaying}`}
+                                style={{
+                                    width: `${glowWidth}%`,
+                                    transformOrigin: 'left'
+                                }}
+                                className={`absolute bg-white rounded-full h-1 pointer-events-none z-30 ${blur && "blur-sm"} `}
+                                animate={ {
+                                    opacity: isPlaying ? [0, 0.8, 0] : 0,
+                                    // scaleX: [ item <= 2 ? 0 : item <= 4 ? 0.1 : 0.2 , 0.9]
+                                    scaleX: isPlaying && (item <= 2 ? [0, 0.9] : [0.1, 0.9])
+                                }}
+                                transition={{
+                                    duration: isPlaying ? 1.5 : 0,
+                                    repeat: isPlaying ? Infinity : 0,
+                                    ease: "linear",
+                                    repeatDelay:isPlaying ? 0.15 : Infinity
+                                }}
+                            ></motion.div>
                         )
-                    } )
+                        } )
                 }
 
                 <div

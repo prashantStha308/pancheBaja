@@ -30,8 +30,8 @@
     --color-hover-primary: #1f1d1d;
     --color-hover-secondary: #1d1d1d;
 
-    --color-button-disabled: #262626;
-    --color-disabledtext: #737373;
+    --color-disabled-button: #262626;
+    --color-disabled-text: #737373;
 
     --color-green-glow: #83FF06;
     --color-green-standard: #93EA3D;

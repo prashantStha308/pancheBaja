@@ -50,7 +50,7 @@ const PlaylistLayout = () => {
 							<ListLayout tracks={data.data?.trackList } />
 						</section>
 
-						<Background src={data.data.coverArt.src} />
+						<Background src={data.data?.coverArt?.src} />
 					</>
 			}
 		</>

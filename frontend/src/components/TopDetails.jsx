@@ -12,7 +12,7 @@ const TopDetails = ({ visitingPage }) => {
 
     let duration = normalizeTime(visitingPage?.totalDuration);
 
-    const owner = visitingPage.type !== 'playlist' ? visitingPage?.primaryArtist || "Unknown Artist" : visitingPage?.createdBy || "Unknown user" ;
+    const owner = visitingPage?.type !== 'playlist' ? visitingPage?.primaryArtist || "Unknown Artist" : visitingPage?.createdBy || "Unknown user" ;
 
     return (
         <section className="flex flex-col gap-4 items-start w-full" >
@@ -23,9 +23,9 @@ const TopDetails = ({ visitingPage }) => {
                     {/* Image Section */}
                     <div className="flex justify-center md:block w-full md:w-auto " >
                         {/* image for medium to larger sclae */}
-                        <img src={visitingPage.coverArt.src} alt={ visitingPage.name || ""} width={190} height={190} className=" rounded-xs hidden md:block aspect-square object-cover shadow-md shadow-black" />
+                        <img src={visitingPage?.coverArt?.src} alt={ visitingPage?.name || ""} width={190} height={190} className=" rounded-xs hidden md:block aspect-square object-cover shadow-md shadow-black" />
                         {/* image for smaller scale */}
-                            <img src={visitingPage.coverArt.src} alt={ visitingPage.name || ""} width={170} height={170} className="md:hidden rounded-xs aspect-square object-cover shadow-md shadow-black" />
+                            <img src={visitingPage?.coverArt?.src} alt={ visitingPage?.name || ""} width={170} height={170} className="md:hidden rounded-xs aspect-square object-cover shadow-md shadow-black" />
                     </div>
 
                     {/* Track Details */}
@@ -51,7 +51,7 @@ const TopDetails = ({ visitingPage }) => {
                             
                             {/* Metadatas */}
                             <div className="flex items-center gap-2 md:gap-3 text-sm md:text-base" >
-                                <p> <span className="font-bold" >{visitingPage.type === "track" ? 1 : visitingPage?.trackList.length || 0 }</span> tracks </p>
+                                <p> <span className="font-bold" >{visitingPage?.type === "track" ? 1 : visitingPage?.trackList.length || 0 }</span> tracks </p>
                                 <p> <Dot size={5} /> </p>
                                 <p> <span className="font-bold" > {duration} </span> </p>
                                 <p> <Dot size={5} /> </p>

@@ -84,6 +84,20 @@ export const getPlaylistById = async (req, res, next) => {
         savedBy,
         saveCount: savedBy.length
     }));
+}
+
+export const getPlaylistByUserId = async (req, res) => {
+    checkValidationResult(req);
+    const { userId } = req.params;
+    validateMongoose(userId, "userId");
+
+    const playlist = await Playlist.find({createdBy: userId}).populate([
+        { path: 'artists', select: '_id username profilePicture' },
+        { path: 'createdBy', select: '_id username profilePicture' },
+        {path: 'trackList', select: '_id name coverArt audio artists totalDuration'}
+    ]).lean();
+
+    res.status(200).json(new ApiResponse(200, "Fetched Playlists Successfully", playlist));
 
 }
 

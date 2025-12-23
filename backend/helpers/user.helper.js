@@ -5,7 +5,7 @@ import User from "../models/user.model.js"
 import { deleteFromCloudinary } from "../services/cloudinary.services.js";
 // Helpers and Utils
 import { ApiError } from "../utils/ApiError.js";
-import { HelperError } from "../utils/Errors.js";
+import { HelperError } from "../utils/HelperErrors.js";
 import {
     getFollowers,
     getFollowings,
@@ -61,10 +61,13 @@ export const getCreatedTracksIfArtist = async (req) => {
 
 export const getUserFollowingAndFollowerData = async (userId) => {
     try {
+        console.log("Inside getUserFollowingAndFollowerData ");
         const [followers, followings] = await Promise.all([
             getFollowers(userId),
             getFollowings(userId)
         ])
+
+        console.log("Exiting getUserFollowingAndFollowerData ");
 
         return {
             followers,
@@ -79,10 +82,14 @@ export const getUserFollowingAndFollowerData = async (userId) => {
 
 export const getUserSavedTracksAndPlaylist = async (userId) => {
     try {
+        console.log("Inside getUserSavedTracksAndPlaylist ");
+
         const [savedTracks, savedPlaylist] = await Promise.all([
             getSavedTracks(userId),
             getSavedPlaylist(userId),
         ])
+
+        console.log("Exiting getUserSavedTracksAndPlaylist ");
 
         return {
             savedTracks,
@@ -97,10 +104,14 @@ export const getUserSavedTracksAndPlaylist = async (userId) => {
 
 export const getUserCreatedTracksAndPlaylist = async (userId) => {
     try {
+        console.log("Inside getUserCreatedTracksAndPlaylist ");
+
         const [createdPlaylists, createdTracks] = await Promise.all([
         getCreatedPlaylist(userId),
         getCreatedTracksIfArtist(userId)
-    ])
+        ])
+        
+        console.log("Exiting getUserCreatedTracksAndPlaylist ");
 
     return {
         createdPlaylists,
@@ -115,10 +126,11 @@ export const getUserCreatedTracksAndPlaylist = async (userId) => {
 
 export const getUserStats = async (userId) => {
     try {
+        console.log("UserId: ", userId);
         const [followingsMetaDataData, savedMetaData, creationMetaData ] = await Promise.all([
-            getUserFollowingAnfFollowerData(userId),
+            getUserFollowingAndFollowerData(userId),
             getUserSavedTracksAndPlaylist(userId),
-            getUserCreatedTracksAndPlaylist(userId),
+            getCreatedPlaylist(userId),
         ]);
 
         return {

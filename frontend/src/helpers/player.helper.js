@@ -22,3 +22,4 @@ export const initAudio = (audioRef, track ) => {
 
     console.log(audioRef);
 }
+
