@@ -13,6 +13,8 @@ import {
 } from "../helpers/following.helper.js";
 
 
+/* [POST] */
+
 export const toggleFollow = async (req, res, next) => {
     const userId = req.user.id;
     const { receiverId } = req.params;
@@ -34,6 +36,10 @@ export const toggleFollow = async (req, res, next) => {
     res.status(201).json(new ApiResponse(200, "Followed sucessfully", newFollow));
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+
+
+/* [GET] */
 export const getAllFollowings = async (req, res, next) => {
     const userId = req.user.id
     checkValidationResult(req);

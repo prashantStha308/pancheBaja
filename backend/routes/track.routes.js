@@ -17,24 +17,40 @@ import { sanitizeAndValidateTrackBody, sanitizeTrackQuery, sanitizeTrackParams }
 
 const trackRouter = express.Router();
 
+
+/* [POST] */
 // Create Track
 trackRouter.post('/', authorize(['artist' , 'admin']) , upload.fields([
     { name: 'coverArt', maxCount: 1 },
     { name: 'track', maxCount: 1 },
 ]), sanitizeAndValidateTrackBody ,createTrack);
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+/* [GET] */
 // Get All tracks
 trackRouter.get('/', sanitizeTrackQuery , getAllTracks);
+
 // Get tracks by Id
 trackRouter.get('/:trackId', sanitizeTrackParams , getTrackById);
-// Update Track
-trackRouter.patch('/:trackId', upload.single('profilePicture'), authorize(['artist', 'admin']), sanitizeTrackParams ,sanitizeAndValidateTrackBody, updateTrackById);
-// Delete Track
-trackRouter.delete('/:trackId', authorize(['artist' , 'admin']), sanitizeTrackParams ,deleteTrackById);
-
-trackRouter.patch('/playcount/:trackId', authorize(['artist' , 'admin']), sanitizeTrackParams , sanitizeAndValidateTrackBody ,  updatePlayCount);
 
 // stream
 // update the audio path in track.controller.js and change here
 trackRouter.get('/:publicId/stream', streamAudio);
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+/* [PUT/PATCH] */
+// Update Track
+trackRouter.patch('/:trackId', upload.single('profilePicture'), authorize(['artist', 'admin']), sanitizeTrackParams ,sanitizeAndValidateTrackBody, updateTrackById);
+
+// Update Playcount
+trackRouter.patch('/playcount/:trackId', authorize(['artist' , 'admin']), sanitizeTrackParams , sanitizeAndValidateTrackBody ,  updatePlayCount);
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+/* [DELETE] */
+// Delete Track
+trackRouter.delete('/:trackId', authorize(['artist' , 'admin']), sanitizeTrackParams ,deleteTrackById);
 
 export default trackRouter;

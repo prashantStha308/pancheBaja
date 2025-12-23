@@ -8,23 +8,8 @@ import Track from "../models/track.model.js";
 import SavedPlaylist from "../models/saves/playlistSave.model.js";
 import { validateExistance } from "../utils/validator.js";
 
-export const validateBodyTrackList = (body) => {
-    if (!Array.isArray(body.trackList) || body.trackList.length < 1) {
-        throw new ApiError(400, "body.trackList must be an array containing atleast 1 track._id");
-    }
-}
 
-export const getArtistsFromTrackList = async (trackList) => {
-    return Promise.all(
-        trackList.map(async (item) => {
-            const artist = await Track.findById(item).populate({
-                path: 'artists',
-                select: '_id'
-            });
-            return artist;
-        })
-    )
-}
+/* [Utils] */
 
 export const calculateTotalDuration = (trackList) => trackList.reduce((sum, track) => {
     return sum + (track.totalDuration);
@@ -38,8 +23,42 @@ export const safeDeleteCloudinary = async (id, type) => {
     }
 }
 
+export const reorderTracks = async (trackList) => {
+
+    if (!Array.isArray(trackList) || !trackList.every(item=> mongoose.Types.ObjectId.isValid(item)) ) {
+        throw new ApiError(400, "trackList must be an array of valid ObjectIds");
+    }
+
+    const tracks = await Track.find({ _id: { $in: trackList } });
+
+    const trackCopy = {};
+    tracks.forEach( ( item )=>(
+        trackCopy[item._id.toString()] = item
+    ));
+
+    const reorderedTrackList = trackList.map(id => trackCopy[id.toString()]);
+
+    return reorderedTrackList;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+
+/* [GET DATA] */
+export const getArtistsFromTrackList = async (trackList) => {
+    return Promise.all(
+        trackList.map(async (item) => {
+            const artist = await Track.findById(item).populate({
+                path: 'artists',
+                select: '_id'
+            });
+            return artist;
+        })
+    )
+}
+
 export const getQueryFilteredPlaylists = async (req) => {
-    const { page = 1, limit = 5, name, artist, sort } = req.query;
+    const { page = 1, limit = 5, name, artist, sort, genre: genres } = req.query;
     
     const queryObj = {};
     if (name) {
@@ -47,6 +66,11 @@ export const getQueryFilteredPlaylists = async (req) => {
     }
     if (artist) {
         queryObj['artists'] = artist;
+    }
+    if(genres){
+        queryObj['genre'] = {
+            $in: genres.split(",").map(g => g.trim().toLowerCase())
+        }
     }
 
     const select = '_id username role profilePicture';
@@ -113,13 +137,10 @@ export const getPlaylistSavedBy = async (id) => {
     return savedBy;
 }
 
-export const deleteAssociatedPlaylistSaves = async (playlistId) => {
-    const saves = await SavedPlaylist.find({ resource: playlistId })
-    saves.forEach(async(save) => {
-        await SavedPlaylist.findByIdAndDelete(save._id);
-    })
-}
+// ---------------------------------------------------------------------------------------------------------------------
 
+
+/* [Handle Data] */
 export const handleCoverArtUpdate = async (playlist , imageFile) => {
     if (imageFile) {
         const imgRes = await uploadToCloudinary(imageFile.buffer, 'image', 'image');
@@ -131,20 +152,13 @@ export const handleCoverArtUpdate = async (playlist , imageFile) => {
     }
 }
 
-export const reorderTracks = async (trackList) => {
+// ---------------------------------------------------------------------------------------------------------------------
 
-    if (!Array.isArray(trackList) || !trackList.every(item=> mongoose.Types.ObjectId.isValid(item)) ) {
-        throw new ApiError(400, "trackList must be an array of valid ObjectIds");
-    }
 
-    const tracks = await Track.find({ _id: { $in: trackList } });
-
-    const trackCopy = {};
-    tracks.forEach( ( item )=>(
-        trackCopy[item._id.toString()] = item
-    ));
-
-    const reorderedTrackList = trackList.map(id => trackCopy[id.toString()]);
-
-    return reorderedTrackList;
+/* [Delete Data] */
+export const deleteAssociatedPlaylistSaves = async (playlistId) => {
+    const saves = await SavedPlaylist.find({ resource: playlistId })
+    saves.forEach(async(save) => {
+        await SavedPlaylist.findByIdAndDelete(save._id);
+    })
 }

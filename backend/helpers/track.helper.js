@@ -14,6 +14,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { validateExistance } from "../utils/validator.js";
 
 // Functions
+
+// CLEANUPS
 export const cleanUpFailedUploads = async (audioId, imageId) => {
     await Promise.all([
         audioId && deleteFromCloudinary(audioId, 'video'),
@@ -21,8 +23,19 @@ export const cleanUpFailedUploads = async (audioId, imageId) => {
     ]);
 }
 
+export const cleanAffiliatedTrackData = async (track) => {
+    await Promise.all([
+        updateTrackAffiliatedArtists(track),
+        updateTrackAffiliatedPlaylists(track),
+        SavedTrack.deleteMany({ track: track._id })
+    ]);
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+// GET DATAS
 export const getQueryFilteredTracks = async (req) => {
-    const { page = 1, limit = 5, sort, artist, name } = req.query;
+    const { page = 1, limit = 5, sort, artist, name, genre:genres } = req.query;
     
     const queryObj = {};
     if (artist) {
@@ -30,6 +43,11 @@ export const getQueryFilteredTracks = async (req) => {
     }
     if (name) {
         queryObj['name'] = name;
+    }
+    if(genres){
+        queryObj['genre']= {
+            $in: genres.split(',').map(g => g.trim().toLowerCase())
+        }
     }
 
     const select = 'username profilePicture bio followerCount';
@@ -46,6 +64,7 @@ export const getQueryFilteredTracks = async (req) => {
         query = query.sort(sort);
     }
     const tracks = await query.lean();
+
     return tracks;
 }
 
@@ -72,14 +91,6 @@ export const removeTrackMediaFromCloudinary = async (track) => {
     ]);
 };
 
-export const cleanAffiliatedTrackData = async (track) => {
-    await Promise.all([
-        updateTrackAffiliatedArtists(track),
-        updateTrackAffiliatedPlaylists(track),
-        SavedTrack.deleteMany({ track: track._id })
-    ]);
-}
-
 export const getTrackSavedBy = async (trackId) => {
     const saves = await SavedTrack.find({ track: trackId }).select('savedBy').populate({
         path: 'savedBy',
@@ -87,6 +98,10 @@ export const getTrackSavedBy = async (trackId) => {
     }).lean();
     return saves;
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+// UPDATE DATA
 
 export const updateTrackCoverArt = async (track , imageFile) => {
     if (imageFile) {
@@ -108,7 +123,9 @@ export const updateTrackFields = (req, track) => {
     } = req.body;
 
     if (name) track.name = name;
-    if (artists) track.artists = Array.isArray(artists) ? artists : [artists];
+    if (artists) track.artists = [...artists];
     if (visibility) track.visibility = visibility;
-    if (genre) track.genre = Array.isArray(genre) ? genre : [genre];
+    if (genre) track.genre = genre.map(g => g.toLowerCase());
 }
+
+// ---------------------------------------------------------------------------------------------------------------------

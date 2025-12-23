@@ -46,6 +46,7 @@ export const sanitizeTrackQuery = [
     ...sanitizeBasicQuery,
     query('artist').escape().optional(),
     query('sort').isIn(["playCount", "durationPlayed", "-playCount", "-durationPlayed"]).optional(),
+    query('genre').escape().optional(),
 ]
 
 export const sanitizePlaylistQuery = [

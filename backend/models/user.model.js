@@ -118,7 +118,10 @@ const UserSchema = new Schema({
             message:  enumError('user.subscription' , subscriptionType)
         },
         default: 'standard'
-    }
+    },
+    genre:[{
+        type: String
+    }]
 },
 {
     timestamps: true

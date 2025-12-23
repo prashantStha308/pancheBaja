@@ -1,4 +1,4 @@
-// Necessaries
+// Libraries
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/env.config.js";
@@ -29,6 +29,8 @@ import {
     getUserFollowingAndFollowerData,
 } from "../helpers/user.helper.js";
 
+
+/* [POST] */
 
 export const createUser = async (req, res, next) => {
     let profilePictureId , coverArtId;
@@ -77,6 +79,10 @@ export const loginUser = async (req, res, next) => {
 
     return res.status(200).json(new ApiResponse(200, 'Logged In Successfully', { token }));
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+/* [GET] */
 
 // get details of logged in user
 export const getUserDetails = async (req, res, next) => {
@@ -150,21 +156,9 @@ export const getBulkUsersById = async (req, res, next) => {
     res.status(200).json(new ApiResponse(200, "Fetched Bulk users by ID successfully", completeUserObj));
 }
 
-export const deleteUser = async (req, res, next) => {
-    const userId = req.user.id;
-    validateMongoose(userId , "userId");
-    
-    const user = await User.findById(userId);
-    if (!user) {
-        throw new ApiError(404, 'User not found');
-    }
+// ---------------------------------------------------------------------------------------------------------------------
 
-    await deleteUserMediaUploads( user.profilePicture.publicId , user.coverArt.publicId );
-    const deletedUser = await User.findByIdAndDelete(userId);
-
-    res.status(200).json(new ApiResponse(200 , "User Deleted Successfully" , {id: deletedUser._id}))
-
-}
+/* [PUT/PATCH] */
 
 export const updateUser = async (req, res, next) => {
     let profilePictureId, coverArtId;
@@ -208,3 +202,24 @@ export const updateUser = async (req, res, next) => {
         next(error);
     }
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+/* [DELETE] */
+
+export const deleteUser = async (req, res, next) => {
+    const userId = req.user.id;
+    validateMongoose(userId , "userId");
+    
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, 'User not found');
+    }
+
+    await deleteUserMediaUploads( user.profilePicture.publicId , user.coverArt.publicId );
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    res.status(200).json(new ApiResponse(200 , "User Deleted Successfully" , {id: deletedUser._id}))
+
+}
+// ---------------------------------------------------------------------------------------------------------------------

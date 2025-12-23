@@ -15,7 +15,7 @@ import {
 } from "../utils/helper.js";
 
 
-// Functions
+/* [UTILS] */
 export const checkExistingUserByEmail = async (email) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -40,14 +40,9 @@ export const uploadUserMedias = async (files) => {
 
     return { profilePicture, coverArt };
 }
+// ---------------------------------------------------------------------------------------------------------------------
 
-export const deleteUserMediaUploads = async (profilePictureId , coverArtId) => {
-    await Promise.all([
-        profilePictureId && deleteFromCloudinary(profilePictureId, 'image'),
-        coverArtId && deleteFromCloudinary(coverArtId, 'image')
-    ]);
-}
-
+/* [GET DATA] */
 export const getCreatedTracksIfArtist = async (req) => {
     const role = req.user.role;
     const id = req.user.id;
@@ -164,4 +159,15 @@ export const getQueryFilteredUsers = async (req) => {
     const users = await query.lean();
     return users;
 
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+/* [DELETE ] */
+
+export const deleteUserMediaUploads = async (profilePictureId , coverArtId) => {
+    await Promise.all([
+        profilePictureId && deleteFromCloudinary(profilePictureId, 'image'),
+        coverArtId && deleteFromCloudinary(coverArtId, 'image')
+    ]);
 }

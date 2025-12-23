@@ -6,7 +6,6 @@ import { validationResult } from "express-validator";
 
 
 const isExistingSave = async (trackId, userId) => {
-    console.log("Is Existing hit");
     const user = await SavedTrack.findOne({ track: trackId, savedBy: userId });
 
     return user;

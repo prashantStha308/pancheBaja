@@ -34,6 +34,7 @@ playlistRouter.get('/:playlistId', sanitizePlaylistParams, getPlaylistById);
 // Get playlist by UserId
 playlistRouter.get('/user/:userId', sanitizeUserParams, authorize(['user', 'admin', 'artist']) , getPlaylistByUserId);
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 
 /* [POST] */
@@ -41,6 +42,7 @@ playlistRouter.get('/user/:userId', sanitizeUserParams, authorize(['user', 'admi
 // Create playlist
 playlistRouter.post('/', upload.single('coverArt'),authorize(['user', 'artist', 'admin']),sanitizeAndValidatePlaylistBody,createPlaylist);
 
+// ---------------------------------------------------------------------------------------------------------------------
 /* [PUT/ PATCH ] */
 
 // update playlist by Id

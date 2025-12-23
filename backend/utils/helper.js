@@ -15,6 +15,7 @@ import Track from "../models/track.model.js";
 import Playlist from "../models/playlist.model.js";
 import User from "../models/user.model.js";
 
+// HANDLE DATA
 export const handleFilesUploads = async ( files ) => {
     if (!files.coverArt) { throw new ApiError(400, 'Missing coverArt') };
     if (!files.track) { throw new ApiError(400, 'Missing Audio file') };
@@ -45,31 +46,34 @@ export const handleImageUploads = async (file) => {
     };    
     return img;
 }
+// ---------------------------------------------------------------------------------------------------------------------
 
+// GET DATA
+
+// [USER DATA]
 export const getFollowers = async (userId) => {
-    return await Following.find({ receiver: userId }).select('sender').populate({
+    return Following.find({ receiver: userId }).select('sender').populate({
         path: 'sender',
         select: '_id username role profilePicture'
     }).lean();
 }
 
 export const getFollowings = async (userId) => {
-    return await Following.find({ sender: userId }).select('receiver').populate({
+    return Following.find({ sender: userId }).select('receiver').populate({
         path: 'receiver',
         select: '_id username role profilePicture'
     }).lean();
 }
 
+// [AUDIO]
 export const getSavedTracks = async (userId) => {
-    console.log("Inside getSavedTracks");
-    return await SavedTrack.find({ savedBy: userId }).select('track').populate({
+    return SavedTrack.find({ savedBy: userId }).select('track').populate({
         path: 'track',
         select: "_id name primaryArtist coverArt genre coverArt "
     }).lean();
 }
 export const getSavedPlaylist = async (userId) => {
-    console.log("Inside gertSavedPplaylist");
-    return await SavedPlaylist.find({ savedBy: userId }).select('playlist').populate({
+    return SavedPlaylist.find({ savedBy: userId }).select('playlist').populate({
         path: 'playlist',
         math: { type: 'playlist' },
         select: "_id name type createdBy primaryArtist coverArt"
@@ -77,14 +81,22 @@ export const getSavedPlaylist = async (userId) => {
 }
 
 export const getCreatedPlaylist = async (userId) => {
-    console.log("Inside getCreatedPlaylist");
-
-    return await Playlist.find({ createdBy: userId }).populate({
+    return Playlist.find({ createdBy: userId }).populate({
         path: 'artists',
         select: '_id username role profilePicture'
     }).lean();
 }
 
+export const getDataByGenre = async( model, genres = [] ) => {
+
+    return model.find({genre: {$in: genres}}).populate({
+        path: 'artists',
+        select: '_id username role profilePicture'
+    }).lean();
+}
+// ---------------------------------------------------------------------------------------------------------------------
+
+// UPDATE DATA
 export const updateImageFile = async (doc, key = "coverArt", imageFile) => {
     let publicID;
     if (imageFile) {
@@ -125,3 +137,4 @@ export const updateTrackAffiliatedArtists = async (trackId) => {
         await artist.save();
     }
 }
+// ---------------------------------------------------------------------------------------------------------------------

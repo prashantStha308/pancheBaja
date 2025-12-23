@@ -4,7 +4,8 @@ import Track from "../models/track.model.js";
 // Helpers and Utils
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {
-    handleFilesUploads
+    handleFilesUploads,
+    getDataByGenre
 } from "../utils/helper.js";
 import {
     checkValidationResult,
@@ -22,6 +23,7 @@ import {
 } from "../helpers/track.helper.js";
 
 
+/* [POST] */
 export const createTrack = async (req, res, next) => {
     let audioId, coverId;
     try {
@@ -61,15 +63,14 @@ export const createTrack = async (req, res, next) => {
     }
 }
 
-export const getAllTracks = async (req, res, next) => {
-    try {
-        checkValidationResult(req);
-        const trackRes = await getQueryFilteredTracks(req);
+// ---------------------------------------------------------------------------------------------------------------------
 
-        res.status(200).json(new ApiResponse(200, 'Successfully fetched tracks', trackRes));
-    } catch (error) {
-        next(error);
-    }
+/* [GET] */
+export const getAllTracks = async (req, res, next) => {
+    checkValidationResult(req);
+    const trackRes = await getQueryFilteredTracks(req);
+
+    res.status(200).json(new ApiResponse(200, 'Successfully fetched tracks', trackRes));
 }
 
 export const getTrackById = async (req, res, next) => {
@@ -88,19 +89,9 @@ export const getTrackById = async (req, res, next) => {
     }));
 }
 
-export const deleteTrackById = async (req, res, next) => {
-    checkValidationResult(req);
-    let { trackId } = req.params;
-    validateMongoose(trackId);
+// ---------------------------------------------------------------------------------------------------------------------
 
-    const track = await Track.findByIdAndDelete(trackId);
-    validateExistance(track);
-
-    await Promise.all([removeTrackMediaFromCloudinary(track), cleanAffiliatedTrackData(track)]);
-
-    res.status(200).json(new ApiResponse(200, "Deleted Track Successfully", { id: trackId }));
-}
-
+/* [PUT/PATCH] */
 export const updateTrackById = async (req, res, next) => {
     try {
         const userId = req.user.id;
@@ -146,4 +137,20 @@ export const updatePlayCount = async (req, res) => {
     await track.save();
 
     res.status(200).json(new ApiResponse(200, "playcount++"));
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+/* [DELETE] */
+export const deleteTrackById = async (req, res, next) => {
+    checkValidationResult(req);
+    let { trackId } = req.params;
+    validateMongoose(trackId);
+
+    const track = await Track.findByIdAndDelete(trackId);
+    validateExistance(track);
+
+    await Promise.all([removeTrackMediaFromCloudinary(track), cleanAffiliatedTrackData(track)]);
+
+    res.status(200).json(new ApiResponse(200, "Deleted Track Successfully", { id: trackId }));
 }

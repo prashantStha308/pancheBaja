@@ -29,6 +29,12 @@ userRouter.post('/',upload.fields([
 
 // Login
 userRouter.post('/login' , sanitizeLogin , loginUser);
+// ---------------------------------------------------------------------------------------------------------------------
+
+/* [GET] */
+
+// Get user by ID
+userRouter.get('/:userId', sanitizeUserParams , userDetailsById);
 
 // Get bulk users by id
 // sanitize this
@@ -40,8 +46,9 @@ userRouter.get('/me', authorize(['user', 'artist', 'admin']), getUserDetails);
 // Get All users
 userRouter.get('/', sanitizeUserQuery , getAllUsers);
 
-// Delete logged in user
-userRouter.delete('/me/delete', authorize(['user' , 'artist' , 'admin']), deleteUser);
+// ---------------------------------------------------------------------------------------------------------------------
+
+/* [PATCH/PUT] [UPDATE] */
 
 // update logged in user
 userRouter.patch('/me/update', authorize(['user' , 'artist' , 'admin']), upload.fields([
@@ -49,8 +56,13 @@ userRouter.patch('/me/update', authorize(['user' , 'artist' , 'admin']), upload.
     { name: 'coverArt', maxCount: 1 }
 ]), sanitizeAndValidateUserBody , updateUser);
 
-// Dynamic Links
-// Get user by ID
-userRouter.get('/:userId', sanitizeUserParams , userDetailsById);
+// ---------------------------------------------------------------------------------------------------------------------
+
+/* [DELETE] */
+
+// Delete logged in user
+userRouter.delete('/me/delete', authorize(['user' , 'artist' , 'admin']), deleteUser);
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 export default userRouter;
