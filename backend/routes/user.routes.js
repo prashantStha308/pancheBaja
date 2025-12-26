@@ -10,7 +10,8 @@ import {
     getUserDetails,
     loginUser,
     updateUser,
-    userDetailsById
+    userDetailsById,
+    getAllArtists
 } from "../controllers/user.controller.js";
 // Middlewares
 import { authorize } from "../middleware/authorize.js";
@@ -32,10 +33,6 @@ userRouter.post('/login' , sanitizeLogin , loginUser);
 // ---------------------------------------------------------------------------------------------------------------------
 
 /* [GET] */
-
-// Get user by ID
-userRouter.get('/:userId', sanitizeUserParams , userDetailsById);
-
 // Get bulk users by id
 // sanitize this
 userRouter.post('/bulk' , getBulkUsersById);
@@ -43,8 +40,12 @@ userRouter.post('/bulk' , getBulkUsersById);
 // Get logged in user's data
 userRouter.get('/me', authorize(['user', 'artist', 'admin']), getUserDetails);
 
+// Get Artists
+userRouter.get('/artists', sanitizeUserQuery, getAllArtists);
+
 // Get All users
 userRouter.get('/', sanitizeUserQuery , getAllUsers);
+
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -64,5 +65,12 @@ userRouter.patch('/me/update', authorize(['user' , 'artist' , 'admin']), upload.
 userRouter.delete('/me/delete', authorize(['user' , 'artist' , 'admin']), deleteUser);
 
 // ---------------------------------------------------------------------------------------------------------------------
+
+// PARAMETERIZED END-POINTS
+
+/* [GET] */
+// Get user by ID
+userRouter.get('/:userId', sanitizeUserParams , userDetailsById);
+
 
 export default userRouter;

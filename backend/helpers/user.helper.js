@@ -139,18 +139,24 @@ export const getUserStats = async (userId) => {
 }
 
 export const getQueryFilteredUsers = async (req) => {
-    let { limit = 10, page = 1 , role, name, city, country, sort } = req.query;
+    let { limit = 10, page = 1 , role, name, city, country, sort, genre } = req.query;
+
+    limit = Number(limit);
+    page = Number(page);
 
     const queryObj = {};
-    const queryKeys = [ 'role', 'username', 'location.city', 'location.country'];
+    const queryKeys = [ 'role', 'username', 'location.city', 'location.country', 'associatedGenre'];
 
-    [role, name, city, country].forEach((query , index) => {
+    [role, name, city, country, genre].forEach((query , index) => {
         if (query) {
             queryObj[queryKeys[index]] = query;
         }
     })
 
-    let query = User.find(queryObj).select('-password -location -dob -subscription -trackList -playLists').skip((page - 1) * limit).limit(limit);
+    let query = User.find(queryObj)
+    .select('-password -location -dob -subscription -trackList -playLists')
+    .skip((page - 1) * limit)
+    .limit(limit);
 
     if (sort) {
         query = query.sort(sort);

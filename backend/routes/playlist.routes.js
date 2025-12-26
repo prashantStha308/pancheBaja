@@ -12,7 +12,8 @@ import {
     updatePlayCount,
     deletePlaylistById,
     updateTotalPlayDuration,
-    getPlaylistByUserId
+    getPlaylistByUserId,
+    getLoggedInUserCreatedPlaylists
 } from "../controllers/playlist.controller.js";
 // Middlewares
 import { authorize } from "../middleware/authorize.js";
@@ -28,12 +29,14 @@ const playlistRouter = express.Router();
 // Get All playlist
 playlistRouter.get('/', sanitizePlaylistQuery, getAllPlaylist);
 
+// Get playlists by logged in user
+playlistRouter.get('/me', authorize(['user', 'admin', 'artist']) ,getLoggedInUserCreatedPlaylists)
+
 // Get playlist by Id
 playlistRouter.get('/:playlistId', sanitizePlaylistParams, getPlaylistById);
 
 // Get playlist by UserId
 playlistRouter.get('/user/:userId', sanitizeUserParams, authorize(['user', 'admin', 'artist']) , getPlaylistByUserId);
-
 
 // ---------------------------------------------------------------------------------------------------------------------
 

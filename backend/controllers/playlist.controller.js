@@ -7,7 +7,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {
     handleImageUploads,
-    getDataByGenre
+    getCreatedPlaylist
 } from "../utils/helper.js";
 import {
     checkValidationResult,
@@ -31,7 +31,7 @@ import {
 export const createPlaylist = async (req, res , next) => {
     let coverArtId;
     try {
-        const userId = req.user.id;
+        const user = req.user;
         const body = req.body;
 
         checkValidationResult(req);
@@ -50,12 +50,12 @@ export const createPlaylist = async (req, res , next) => {
 
         const newPlaylist = await Playlist.create({
             ...body,
-            createdBy: userId,
+            createdBy: user._id,
             trackList: reorderedTrackList,
             artists,
             coverArt,
             totalDuration
-        });
+        }).exec();
 
         if (!newPlaylist) {
             throw new ApiError(500, "Some Error occured while creating playlist");
@@ -81,13 +81,15 @@ export const getAllPlaylist = async (req, res, next) => {
     res.status(200).json(new ApiResponse(200, 'Fetched Playlists successfully', playlists));
 }
 
+// Get a playlist by its id
 export const getPlaylistById = async (req, res, next) => {
+
     checkValidationResult(req);
+
     const { playlistId } = req.params;
     validateMongoose(playlistId , "playlistId");
 
     const playlist = await getIdPlaylist(playlistId);
-
     const savedBy = await getPlaylistSavedBy(playlistId);
 
     res.status(200).json(new ApiResponse(200, "Fetched Playlist Successfully", {
@@ -98,30 +100,32 @@ export const getPlaylistById = async (req, res, next) => {
     }));
 }
 
-// Get Playlists Created by a User by using their _id
+
+// Get All Playlists Created by a user using their userId
 export const getPlaylistByUserId = async (req, res) => {
+
     checkValidationResult(req);
     const { userId } = req.params;
+
     validateMongoose(userId, "userId");
 
     const playlist = await Playlist.find({createdBy: userId}).populate([
         { path: 'artists', select: '_id username profilePicture' },
         { path: 'createdBy', select: '_id username profilePicture' },
         {path: 'trackList', select: '_id name coverArt audio artists totalDuration'}
-    ]).lean();
+    ]).lean().exec();
 
     res.status(200).json(new ApiResponse(200, "Fetched Playlists Successfully", playlist));
 }
 
-export async function getPlaylistsByGenre(req, res, next){
-    checkValidationResult(req);
+// Get All Playlists Created by the logged in user
+export const getLoggedInUserCreatedPlaylists = async (req, res)=>{
 
-    let {genre} = req.params;
-    genre = genre.split(",").map(g => g.trim());
+    const user = req.user;
 
-    const similarSongs = await getDataByGenre(Playlist, genre);
+    const createdPlaylist = await getCreatedPlaylist(user._id);
 
-    res.status(200).json(new ApiResponse(200, "Fetched tracks associated with the genres", similarSongs));
+    res.status(200).json(new ApiResponse(200, "Fetched playlists created by user", createdPlaylist));
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -130,8 +134,10 @@ export async function getPlaylistsByGenre(req, res, next){
 
 // Add a Track to an existing playlist. Playlist's id is passed via params
 export const addTrackToPlaylist = async (req, res, next) => {
-    const userId = req.user.id;
+
+    const user = req.user;
     checkValidationResult(req);
+
     const { playlistId } = req.params;
     const { trackId } = req.body;
 
@@ -139,7 +145,7 @@ export const addTrackToPlaylist = async (req, res, next) => {
     validateMongoose(trackId , "trackId");
 
     const playlist = await getRawPlaylistById(playlistId);
-    validatePermission(playlist.createdBy , userId);
+    validatePermission(playlist.createdBy , user._id);
 
     if (playlist.trackList.includes(trackId)) {
         return res.status(200).json(new ApiResponse(200, "Track is already saved"));
@@ -153,8 +159,10 @@ export const addTrackToPlaylist = async (req, res, next) => {
 
 // Remove a track from the playlist that has the id passed via params
 export const removeTrackFromPlaylist = async (req, res, next) => {
-    const userId = req.user.id;
+
+    const user = req.user;
     checkValidationResult(req);
+
     const { playlistId } = req.params;
     const { trackId } = req.body;
 
@@ -162,7 +170,7 @@ export const removeTrackFromPlaylist = async (req, res, next) => {
     validateMongoose(trackId, "trackId");
     
     const playlist = await getRawPlaylistById(playlistId);
-    validatePermission(playlist.createdBy, userId);
+    validatePermission(playlist.createdBy, user._id);
 
     const targetIndex = playlist.trackList.indexOf(trackId);
     if (targetIndex === -1) {
@@ -177,12 +185,15 @@ export const removeTrackFromPlaylist = async (req, res, next) => {
 
 // Update the playcount of the playlist(will probably be unused)
 export const updatePlayCount = async (req, res) => {
+
     checkValidationResult(req);
+
     const { playlistId } = req.params;
     validateMongoose(playlistId);
 
     const playlist = await getIdPlaylist(playlistId);
     playlist.playCount++;
+
     await playlist.save();
 
     res.status(200).json(new ApiResponse(200, "playcount++"));
@@ -195,7 +206,7 @@ export const updateTotalPlayDuration = async (req, res, next) => {
 // Update the properties of a Playlist. Playlist._id is required via params
 export const updatePlaylistById = async (req, res, next) => {
     try {
-        const userId = req.user.id;
+        const user = req.user;
         checkValidationResult(req);
 
         const { playlistId } = req.params;
@@ -209,7 +220,7 @@ export const updatePlaylistById = async (req, res, next) => {
         validateMongoose(playlistId);
 
         const playlist = await getRawPlaylistById(playlistId);
-        validatePermission(playlist.createdBy , userId);
+        validatePermission(playlist.createdBy , user._id);
 
         if (name) playlist.name = name;
         if (visibility) playlist.visibility = visibility;
@@ -239,15 +250,17 @@ export const updatePlaylistById = async (req, res, next) => {
 /* [DELETE] */
 // Delete the Playlist
 export const deletePlaylistById = async (req, res) => {
-    const userId = req.user.id;
+
+    const user = req.user;
     checkValidationResult(req);
+    
     const { playlistId } = req.params;
     validateMongoose(playlistId , "playlistId");
 
     const playlist = await getIdPlaylist(playlistId);
-    validatePermission(playlist.createdBy._id, userId)
+    validatePermission(playlist.createdBy._id, user._id)
     
-    await Playlist.findByIdAndDelete(playlistId);
+    await Playlist.findByIdAndDelete(playlistId).exec();
     await deleteAssociatedPlaylistSaves(playlistId);
 
     if (playlist.coverArt?.publicId && playlist.coverArt?.publicId !== ""  ) {

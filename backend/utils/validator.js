@@ -9,7 +9,8 @@ import User from "../models/user.model.js";
 export const checkValidationResult = (req) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        throw new ApiError(400 , "Validation Error: " + errors.array());
+        console.log(errors);
+        throw new ApiError(400 , "Validation Error: " + errors.array().toString());
     }
 }
 

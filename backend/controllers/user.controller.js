@@ -4,11 +4,6 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/env.config.js";
 // Models
 import User from "../models/user.model.js";
-// Cloudinary services
-import {
-    deleteFromCloudinary,
-    uploadToCloudinary
-} from "../services/cloudinary.services.js";
 // Helper functions
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -40,6 +35,8 @@ export const createUser = async (req, res, next) => {
         const files = req.files;
 
         await checkExistingUserByEmail(body.email);
+
+        
         const hashedPassword = await bcrypt.hash(body.password, 10);
 
         const { profilePicture, coverArt } = await uploadUserMedias(files);
@@ -51,9 +48,9 @@ export const createUser = async (req, res, next) => {
             password: hashedPassword,
             profilePicture,
             coverArt,
-        })
+        }).exec();
 
-        return res.status(201).json(new ApiResponse(201, 'User Created Successfully', { id: user._id }));
+        res.status(201).json(new ApiResponse(201, 'User Created Successfully', { id: user._id }));
 
     } catch (error) {
         await deleteUserMediaUploads(profilePictureId , coverArtId);
@@ -62,12 +59,12 @@ export const createUser = async (req, res, next) => {
     }
 }
 
-export const loginUser = async (req, res, next) => {
+export const loginUser = async (req, res) => {
     checkValidationResult(req);
     const body = req.body;
     const email = body.email;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).exec();
     if (!user) {
         throw new ApiError(404, 'Unregistered Email');
     }
@@ -77,7 +74,7 @@ export const loginUser = async (req, res, next) => {
         expiresIn: '30d',
     });
 
-    return res.status(200).json(new ApiResponse(200, 'Logged In Successfully', { token }));
+    res.status(200).json(new ApiResponse(200, 'Logged In Successfully', { token }));
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -85,16 +82,10 @@ export const loginUser = async (req, res, next) => {
 /* [GET] */
 
 // get details of logged in user
-export const getUserDetails = async (req, res, next) => {
-    const userId = req.user.id;
-    validateMongoose(userId);
+export const getUserDetails = async (req, res) => {
+    const user = req.user;
 
-    const user = await User.findById(userId).select('-password').lean();
-    if (!user) {
-        throw new ApiError(400, "User not found");
-    }
-
-    const userFollowingsAndSaves = await getUserStats(userId);
+    const userFollowingsAndSaves = await getUserStats(user._id);
 
     res.status(200).json(new ApiResponse(200, "User Fetched Succesfully", {
         ...user,
@@ -104,18 +95,19 @@ export const getUserDetails = async (req, res, next) => {
 
 // user detail by ID
 export const userDetailsById = async (req, res, next) => {
+
     checkValidationResult(req);
     const { userId } = req.params;
 
     validateMongoose(userId);
 
-    const user = await User.findById(userId).select('-password -email -location -dob -subscription').lean();
+    const user = await User.findById(userId).select('-password -email -location -dob -subscription').lean().exec();
 
     if (!user) {
         throw new ApiError(404, 'User not found');
     }
 
-    const followerFollowingData = await getUserFollowingAndFollowerData(userId);
+    const followerFollowingData = await getUserFollowingAndFollowerData(userId) ;
 
     res.status(200).json(new ApiResponse(200, 'User found', {
         ...user,
@@ -124,7 +116,7 @@ export const userDetailsById = async (req, res, next) => {
 
 }
 
-export const getAllUsers = async (req, res, next) => {
+export const getAllUsers = async (req, res) => {
     checkValidationResult(req);
 
     const users = await getQueryFilteredUsers(req);
@@ -132,12 +124,25 @@ export const getAllUsers = async (req, res, next) => {
     res.status(200).json(new ApiResponse(200, "Fetched Users successfully", users));
 }
 
+// Get All the artists. 
+export const getAllArtists = async (req, res) => {
+
+    checkValidationResult(req);
+
+    // Add a role property and assign it the value of "artist";
+    req.query.role = "artist";
+
+    const artists = await getQueryFilteredUsers(req);
+
+    res.status(200).json(new ApiResponse(200, "Fetched Artists Successfully", artists ));
+}
+
 export const getBulkUsersById = async (req, res, next) => {
     checkValidationResult(req);
     const { ids } = req.body;
     validateMongoose(ids);
 
-    const users = await User.find({ _id: {$in: ids} }).select('-password -email -location -dob -subscription').lean();
+    const users = await User.find({ _id: {$in: ids} }).select('-password -email -location -dob -subscription').lean().exec();
 
     if (users.length === 0) {
         throw new ApiError(404, "No matching users associated with the ids");
@@ -165,7 +170,7 @@ export const updateUser = async (req, res, next) => {
     try {
         checkValidationResult(req);
 
-        const userId = req.user.id;
+        const user = req.user;
         const {
             username,
             email,
@@ -173,13 +178,6 @@ export const updateUser = async (req, res, next) => {
             password
         } = req.body;
         const files = req.files;
-
-        validateMongoose(userId);
-
-        const user = await User.findById(userId);
-        if (!user) {
-            throw new ApiError(404, "User not found");
-        }
 
         if (username) user.username = username;
         if (email) user.email = email;
@@ -195,7 +193,7 @@ export const updateUser = async (req, res, next) => {
 
         await user.save();
     
-        res.status(200).json(new ApiResponse(200, "User updated successfully", { id: userId }));
+        res.status(200).json(new ApiResponse(200, "User updated successfully", { id: user._id }));
 
     } catch (error) {
         await deleteUserMediaUploads(profilePictureId , coverArtId);
@@ -208,16 +206,10 @@ export const updateUser = async (req, res, next) => {
 /* [DELETE] */
 
 export const deleteUser = async (req, res, next) => {
-    const userId = req.user.id;
-    validateMongoose(userId , "userId");
-    
-    const user = await User.findById(userId);
-    if (!user) {
-        throw new ApiError(404, 'User not found');
-    }
+    const user = req.user;
 
     await deleteUserMediaUploads( user.profilePicture.publicId , user.coverArt.publicId );
-    const deletedUser = await User.findByIdAndDelete(userId);
+    const deletedUser = await User.findByIdAndDelete(user._id).exec();
 
     res.status(200).json(new ApiResponse(200 , "User Deleted Successfully" , {id: deletedUser._id}))
 

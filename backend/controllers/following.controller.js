@@ -16,20 +16,20 @@ import {
 /* [POST] */
 
 export const toggleFollow = async (req, res, next) => {
-    const userId = req.user.id;
+    const user = req.user;
     const { receiverId } = req.params;
 
     checkValidationResult(req);
     validateMongoose(receiverId);
 
-    const follow = await isExistingFollow(userId, receiverId);
+    const follow = await isExistingFollow(user._id, receiverId);
     if (follow) {
-        await Following.deleteOne({ sender: userId, receiver: receiverId });
+        await Following.deleteOne({ sender: user._id, receiver: receiverId }.exec());
         return res.status(200).json(new ApiResponse(200, "Removed Following"));
     }
 
     const newFollow = await Following.create({
-        sender: userId,
+        sender: user._id,
         receiver: receiverId
     });
 
@@ -41,10 +41,10 @@ export const toggleFollow = async (req, res, next) => {
 
 /* [GET] */
 export const getAllFollowings = async (req, res, next) => {
-    const userId = req.user.id
+    const user = req.user;
     checkValidationResult(req);
 
-    const queryObj = { sender: userId };
+    const queryObj = { sender: user._id };
     const followings = await getAssociate(queryObj, 'receiver' , req.params);
     const totalFollowings = await getFollowFollowingCount(queryObj);
 
@@ -55,10 +55,10 @@ export const getAllFollowings = async (req, res, next) => {
 }
 
 export const getAllFollowers = async (req, res, next) => {
-    const userId = req.user.id;
+    const user = req.user;
     checkValidationResult(req);
 
-    const queryObj = { receiver: userId };
+    const queryObj = { receiver: user._id };
     const followers = await getAssociate(queryObj, 'sender', req.params);
     const totalFollowers = await getFollowFollowingCount(queryObj);
 

@@ -27,12 +27,12 @@ import {
 export const createTrack = async (req, res, next) => {
     let audioId, coverId;
     try {
-        const userId = req.user.id;
+        const user = req.user;
         checkValidationResult(req);
         let { name, visibility, artists = [], genre = [] } = req.body;
 
         if (!Array.isArray(artists) || artists.length === 0) {
-            artists = [userId];
+            artists = [user._id];
         }
 
         const { audioRes, coverArt } = await handleFilesUploads(req.files);
@@ -42,7 +42,7 @@ export const createTrack = async (req, res, next) => {
 
         const track = await Track.create({
             name,
-            primaryArtist: userId,
+            primaryArtist: user._id,
             artists,
             coverArt,
             audio: {
@@ -53,7 +53,8 @@ export const createTrack = async (req, res, next) => {
             visibility,
             totalDuration,
             genre
-        })
+        }).exec();
+
         res.status(201).json(new ApiResponse(201, 'Track Created Successfully', {id: track._id}));
 
     } catch (error) {
@@ -94,15 +95,15 @@ export const getTrackById = async (req, res, next) => {
 /* [PUT/PATCH] */
 export const updateTrackById = async (req, res, next) => {
     try {
-        const userId = req.user.id;
+        const user = req.user;
         checkValidationResult(req);
         const { trackId } = req.params;
         const imageFile = req.file;
         
-        const track = await Track.findById(trackId);
+        const track = await Track.findById(trackId).exec();
         validateExistance(track);
 
-        validatePermission(track.primaryArtist, userId);
+        validatePermission(track.primaryArtist, user._id);
         
         updateTrackFields(req , track);
         await updateTrackCoverArt(track , imageFile);
@@ -130,7 +131,7 @@ export const updatePlayCount = async (req, res) => {
 
     validateMongoose(trackId);
 
-    const track = await Track.findById(trackId);
+    const track = await Track.findById(trackId).exec();
     validateExistance(track);
 
     track.playCount++;
@@ -147,7 +148,7 @@ export const deleteTrackById = async (req, res, next) => {
     let { trackId } = req.params;
     validateMongoose(trackId);
 
-    const track = await Track.findByIdAndDelete(trackId);
+    const track = await Track.findByIdAndDelete(trackId).exec();
     validateExistance(track);
 
     await Promise.all([removeTrackMediaFromCloudinary(track), cleanAffiliatedTrackData(track)]);
