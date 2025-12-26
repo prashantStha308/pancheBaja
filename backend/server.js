@@ -12,6 +12,7 @@ import playlistRouter from "./routes/playlist.routes.js";
 import trackSaveRouter from "./routes/saves/trackSave.routes.js";
 import playlistSaveRouter from "./routes/saves/playlistSave.routes.js";
 import followingRouter from "./routes/following.routes.js";
+import recommendationRouter from "./routes/recommendation.routes.js";
 
 // app
 const app = express();
@@ -31,7 +32,8 @@ app.use('/api/user', userRouter);
 app.use('/api/playlist', playlistRouter);
 app.use('/api/save/track', trackSaveRouter);
 app.use('/api/save/playlist', playlistSaveRouter);
-app.use('/api/following' , followingRouter)
+app.use('/api/following' , followingRouter);
+app.use('/api/recommendation', recommendationRouter);
 
 // production setup for serving frontend build
 if(process.env.NODE_ENV === "production"){

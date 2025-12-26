@@ -78,21 +78,11 @@ const UserSchema = new Schema({
             lowercase: true,
             required: [true,  requiredError('user.location.country')]
         },
-        state: {
-            type: String,
-            trim: true,
-            lowercase: true,
-        },
         province: {
             type: String,
             trim: true,
             lowercase: true,
         },
-        city: {
-            type: String,
-            trim: true,
-            lowercase: true,
-        }
     },
     dob: {
         type: Date,
@@ -119,9 +109,8 @@ const UserSchema = new Schema({
         },
         default: 'standard'
     },
-    genre:[{
-        type: String
-    }]
+    associatedGenre:[{ type: String }],
+    favouriteGenre: [{type: String}]
 },
 {
     timestamps: true
