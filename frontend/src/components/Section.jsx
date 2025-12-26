@@ -8,32 +8,32 @@ import useBreakpoint from "../hooks/useBreakpoint.jsx";
 import LoadingSection from "./Loaders/LoadingSection.jsx";
 
 
+// Motion variables
+const containerVarient = {
+	hidden: {
+		opacity: 0.25,
+	},
+	visible: {
+		opacity: 1,
+		transition: {
+		staggerChildren: 0.065,
+		type: spring,
+		stiffness: 120,
+		damping: 8
+	},
+	},
+};
+
+const childVarient = {
+	hidden: { opacity: 0, y: 20 },
+	visible: { opacity: 1, y: 0 },
+};
+
 const Section = ({ query, title, Tile }) => {
 	// Hooks and queries
 	const sectRef = useRef(null);
 	const isMobile = useBreakpoint(640)
 	const { data, isPending, isLoading, isError, error } = query;
-
-	// Motion variables
-	const containerVarient = {
-		hidden: {
-			opacity: 0.25,
-		},
-		visible: {
-			opacity: 1,
-			transition: {
-			staggerChildren: 0.065,
-			type: spring,
-			stiffness: 120,
-			damping: 8
-		},
-		},
-	};
-
-	const childVarient = {
-		hidden: { opacity: 0, y: 20 },
-		visible: { opacity: 1, y: 0 },
-	};
 
 	if (isError) {
 		return (
@@ -43,6 +43,7 @@ const Section = ({ query, title, Tile }) => {
 		)
 	}
 
+	
 	return (
 		<>
 			{
@@ -57,7 +58,7 @@ const Section = ({ query, title, Tile }) => {
 							<MoveLeft scrollRef={sectRef} />
 							
 							{
-								data?.data?.map((item, index) => (
+								data?.map((item, index) => (
 									<motion.div key={index} variants={childVarient} >
 										<Tile item={item} />
 									</motion.div>

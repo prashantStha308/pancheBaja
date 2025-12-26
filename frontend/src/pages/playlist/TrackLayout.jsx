@@ -48,11 +48,11 @@ const TrackLayout = () => {
                     <>
                         <section className="flex flex-col w-full mt-8 gap-2 z-40" >
                             {/* Top */}
-                            <TopDetails visitingPage={data.data} />
-                            <ListLayout tracks={ [data.data] } />
+                            <TopDetails visitingPage={data} />
+                            <ListLayout tracks={ [data] } />
                         </section>
 
-                        <Background src={data?.data?.coverArt?.src} gradientPercent={50} />
+                        <Background src={data.coverArt?.src} gradientPercent={50} />
                     </>
             }
 		</>

@@ -46,11 +46,11 @@ const PlaylistLayout = () => {
 					<>
 						<section className="flex flex-col w-full mt-8 gap-2 z-40" >
 							{/* Top */}
-							<TopDetails visitingPage={data.data} />
-							<ListLayout tracks={data.data?.trackList } />
+							<TopDetails visitingPage={data} />
+							<ListLayout tracks={data?.trackList } />
 						</section>
 
-						<Background src={data.data?.coverArt?.src} />
+						<Background src={data?.coverArt?.src} />
 					</>
 			}
 		</>

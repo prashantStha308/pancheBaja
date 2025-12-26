@@ -3,30 +3,31 @@ import {motion, spring} from "motion/react"
 import useBreakpoint from "../../hooks/useBreakpoint.jsx";
 import LoadingTile from './LoadingTile';
 
-const LoadingSection = () => {
+
+const containerVarient = {
+hidden: {
+    opacity: 0.25,
+},
+visible: {
+    opacity: 1,
+    transition: {
+    staggerChildren: 0.065,
+    type: spring,
+    stiffness: 2000,
+    damping: 20
+    },
+},
+};
+
+const childVarient = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+};
+
+const LoadingSection = React.memo(() => {
 
     const sectRef = React.useRef(null);
     const isMobile = useBreakpoint(640)
-
-    const containerVarient = {
-    hidden: {
-        opacity: 0.25,
-    },
-    visible: {
-        opacity: 1,
-        transition: {
-        staggerChildren: 0.065,
-        type: spring,
-        stiffness: 2000,
-        damping: 20
-        },
-    },
-    };
-
-    const childVarient = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 },
-    };
     
     return (
         <motion.section initial="hidden" whileInView="visible" variants={containerVarient} viewport={{ amount: isMobile ? 0.5 : 0.1 }} className="flex flex-col isolate w-full justify-center gap-2 " >
@@ -59,6 +60,6 @@ const LoadingSection = () => {
             </article>
         </motion.section>
     )
-}
+})
 
 export default LoadingSection

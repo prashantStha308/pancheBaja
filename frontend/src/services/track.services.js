@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setError, setSuccess } from "../utils/utils.services.js";
+import { setError } from "../utils/utils.services.js";
 
 
 export const uploadTrack = async ( formData ) => {
@@ -13,7 +13,7 @@ export const uploadTrack = async ( formData ) => {
         if( !res.data.success ){
             throw new Error(res?.message);
         }
-        return setSuccess(res.data);
+        return res.data.data
     } catch (error) {
         return setError(error);
     }
@@ -25,7 +25,7 @@ export const getAllTracks = async( page = 1 , limit = 10 )=>{
         if( !res.data.success ){
             throw new Error(res.data.message); 
         }
-        return setSuccess(res.data);
+        return res.data.data;
     } catch (error) {
         return setError(error);
     }
@@ -37,7 +37,7 @@ export const getTrackById = async( id ) => {
         if( !res.data.success ){
             throw new Error(res.data.message);
         }
-        return setSuccess(res.data);
+        return res.data.data;
     } catch (error) {
         return setError(error);
     }
@@ -67,7 +67,7 @@ export const getTrackByQuery = async ( queryObj = {} , page = 1 , limit = 10 ) =
         if( !res.data.success ){
             throw new Error(res.data.message);
         }
-        return setSuccess(res.data);
+        return res.data.data;
 
     } catch (error) {
         return setError(error);
