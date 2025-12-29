@@ -20,8 +20,9 @@ const NavbarPrimary = () => {
 
     useEffect( ()=>{
         const path = location.pathname.substring(1).split('/')[0] || "home";
+
         setCurrentPage(path);
-        setIsSearchActive(currentPage === 'explore');
+        setIsSearchActive(currentPage === 'explore' && location.pathname.substring(1).split('/').length === 1 );
 
     }, [location, currentPage])
 

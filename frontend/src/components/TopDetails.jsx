@@ -1,3 +1,5 @@
+// Lib
+import {Link} from "react-router-dom"
 // Helpers
 import { normalizeTime } from "../helpers/player.helper.js";
 // Components
@@ -34,6 +36,22 @@ const TopDetails = ({ visitingPage }) => {
 
                         {/* Name of playlist / track */}
                         <p className="capitalize text-[clamp(1.25rem,4vw,2.75rem)] font-extrabold w-fit break-words" > {visitingPage?.name} </p>
+
+                        <div className="flex gap-2">
+                            {visitingPage.genre.slice(0, 6).map((item, index) => (
+                                <span
+                                    key={index}
+                                    className="text-xs text-neutral-200 px-2 py-1 bg-neutral-900/55 rounded-full hover:bg-red-primary/55 cursor-pointer transition-colors duration-100 ease-in-out"
+                                >
+                                    <Link to="/explore">
+                                        #{item}
+                                    </Link>
+                                    {index === 5 && visitingPage.genre.length > 6 && (
+                                        <span className="ml-1">+{visitingPage.genre.length - 6}</span>
+                                    )}
+                                </span>
+                            ))}
+                        </div>
                         
                         <div className="flex md:flex-col items-center md:items-start gap-2" >
                             {/* User pfp */}

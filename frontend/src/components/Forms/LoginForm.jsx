@@ -41,12 +41,14 @@ const LoginForm = () => {
 	const isFilledValid = isFilled && isValidEmail;
 
 	return (
-		<section id="login-form" className=" -mt-6 py-8 md:py-14 px-8 md:px-24 flex flex-col gap-4 bg-black-secondary/40 backdrop-blur-3xl border border-black-tersery rounded-md shadow-md shadow-black " >
+		<section id="login-form" className=" -mt-6 py-8 md:py-14 px-8 md:px-24 flex flex-col gap-4  " >
 
 			{/* Logo */}
-			<div className="flex flex-col gap-4 justify-center items-center" >
+			<div className="flex flex-col gap-8 justify-center items-center" >
 				<LogoNoRect size={80} fill="#fff" />
-				<h1 className="text-white-secondary font-header text-3xl text-center font-black capitalize" > LOG IN </h1>
+				<h1 className="text-white-secondary font-header text-3xl text-center font-black capitalize" >
+					WELCOME BACK
+				</h1>
 			</div>
 
 			{/* Form */}

@@ -29,7 +29,7 @@ const AppContent = () => {
 		<main className="min-h-screen bg-black-primary flex flex-col gap-2" >
 
 			{
-				![].some(path => location.pathname.startsWith(path)) && <NavbarPrimary />
+				!["/login", "/signup"].some(path => location.pathname.startsWith(path)) && <NavbarPrimary />
 			}
 
 			<div className={`flex px-5 min-h-[calc( 100dvh - ${navbarRef && navbarRef.current !== null ? navbarRef?.current?.offsetHeight : 0}px)] max-w-screen z-10 md:px-18 ${isBottomPlayerShown && "pb-16"} `} >

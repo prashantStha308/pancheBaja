@@ -8,44 +8,6 @@ const SearchLayout = () => {
 
 	const { data, isPending, isLoading, isError, error } = useGetAllGenreQuery();
 
-	// Probably needs to be fetched through backend
-	const ExploreOptionExamples = [
-		{
-			name: "Pop",
-			imgSrc: '',
-			_id: ''
-		},
-		{
-			name: "Hip-Hop",
-			imgSrc: '',
-			_id: ''
-		},{
-			name: "Rap",
-			imgSrc: '',
-			_id: ''
-		},{
-			name: "Old is Gold",
-			imgSrc: '',
-			_id: ''
-		},{
-			name: "Newari Bhasa",
-			imgSrc: '',
-			_id: ''
-		},{
-			name: "Tanamg Selo",
-			imgSrc: '',
-			_id: ''
-		},{
-			name: "Rock",
-			imgSrc: '',
-			_id: ''
-		},{
-			name: "Alternative Rock",
-			imgSrc: '',
-			_id: ''
-		},
-	]
-
 	if(isLoading || isPending){
 		return "Loading";
 	}
