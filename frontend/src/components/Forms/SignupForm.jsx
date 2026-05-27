@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom"
 import { CountrySelect } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
+import {
+    register
+} from "../../api/auth.api.js";
 
 const SignupForm = () => {
     // React Hooks
@@ -61,6 +64,15 @@ const SignupForm = () => {
         },
     }
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log("Submitting")
+
+        console.log(formData);
+        register(formData);
+
+    }
+
     const childVarient = {
         hidden: { opacity: 0, y: 40 },
         visible: { opacity: 1, y: 0 },
@@ -81,7 +93,10 @@ const SignupForm = () => {
             <h1 className="text-5xl xl:text-6xl font-extrabold font-header" >
                 Elevate your Music Experience
             </h1>
-            <motion.form initial="hidden" animate="visible" viewport={{ amount: 0.5}} variants={containerVarient} className="flex flex-col gap-4 text-xs font-text" >
+            <motion.form
+                initial="hidden" animate="visible" viewport={{ amount: 0.5 }} variants={containerVarient} className="flex flex-col gap-4 text-xs font-text"
+                onSubmit={handleSubmit}
+            >
 
                 {/* inputs */}
                 <motion.div initial="hidden" animate="visible" viewport={{ amount: 0.5}} variants={{container: containerVarient , child: childVarient}} ref={inputRef} className="flex flex-col gap-8" >

@@ -13,12 +13,12 @@ const TrackSchema = new Schema({
         minlength: [1, emptyError('track.name')],
         maxlength: [50 , maxCharError('track.name' , 50)]
     },
-    primaryArtist: {
+    artist: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: [true ,requiredError('track.primaryArtist')]
     },
-    artists: [{
+    collaborators: [{
         type: Schema.Types.ObjectId,
         ref: 'User',
     }],
@@ -64,7 +64,8 @@ const TrackSchema = new Schema({
         default: 'public'
     },
     genre: [{
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Genre'
     }],
     playCount: {
         type: Number,

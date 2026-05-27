@@ -12,9 +12,13 @@ import Dot from "./icons/Dot";
 
 const TopDetails = ({ visitingPage }) => {
 
+    console.log(visitingPage);
+    console.log(visitingPage);
+    if (!visitingPage) return null;
+
     let duration = normalizeTime(visitingPage?.totalDuration);
 
-    const owner = visitingPage?.type !== 'playlist' ? visitingPage?.primaryArtist || "Unknown Artist" : visitingPage?.createdBy || "Unknown user" ;
+    const owner = visitingPage?.type !== 'playlist' ? visitingPage?.artist || "Unknown Artist" : visitingPage?.createdBy || "Unknown user" ;
 
     return (
         <section className="flex flex-col gap-4 items-start w-full" >
@@ -38,7 +42,7 @@ const TopDetails = ({ visitingPage }) => {
                         <p className="capitalize text-[clamp(1.25rem,4vw,2.75rem)] font-extrabold w-fit break-words" > {visitingPage?.name} </p>
 
                         <div className="flex gap-2">
-                            {visitingPage.genre.slice(0, 6).map((item, index) => (
+                            {(visitingPage?.genre ?? []).slice(0, 6).map((item, index) => (
                                 <span
                                     key={index}
                                     className="text-xs text-neutral-200 px-2 py-1 bg-neutral-900/55 rounded-full hover:bg-red-primary/55 cursor-pointer transition-colors duration-100 ease-in-out"
@@ -69,7 +73,7 @@ const TopDetails = ({ visitingPage }) => {
                             
                             {/* Metadatas */}
                             <div className="flex items-center gap-2 md:gap-3 text-sm md:text-base" >
-                                <p> <span className="font-bold" >{visitingPage?.type === "track" ? 1 : visitingPage?.trackList.length || 0 }</span> tracks </p>
+                                <p> <span className="font-bold" >{visitingPage?.type === "track" ? 1 : visitingPage?.trackList?.length || 0 }</span> tracks </p>
                                 <p> <Dot size={5} /> </p>
                                 <p> <span className="font-bold" > {duration} </span> </p>
                                 <p> <Dot size={5} /> </p>

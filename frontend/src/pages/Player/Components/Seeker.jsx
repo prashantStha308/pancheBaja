@@ -33,6 +33,10 @@ const Seeker = () => {
 
     const getBufferedValue = () => audioRef ? audioRef.buffered.end(audioRef.buffered.length - 1) : 0;
     
+    // for test
+    const red = "#FD4B4E";
+    const green = "#93EA3D";
+
     const updateSliderBackground = (value) => {
         const seeker = seekerRef.current;
         if (!seeker) return;
@@ -43,7 +47,7 @@ const Seeker = () => {
         const percentage = ((value - min) / (max - min)) * 100;
         setGlowWidth(percentage);
 
-        seeker.style.background = `linear-gradient(to right, #FD4B4E 0%, #FD4B4E ${percentage}%,#ddd ${percentage}%, #ddd 100%)`;
+        seeker.style.background = `linear-gradient(to right, ${red} 0%, ${red} ${percentage}%,#ddd ${percentage}%, #ddd 100%)`;
         seeker.style.transition = "all 0.15s ease-in-out";
     }
     

@@ -76,9 +76,9 @@ export const getQueryFilteredPlaylists = async (req) => {
     const select = '_id username role profilePicture';
     const trackList = {
         path: 'trackList',
-        select: '_id name createdBy artists audio coverArt totalDuration',
+        select: '_id name createdBy artist audio coverArt totalDuration',
         populate: {
-            path: 'artists',
+            path: 'artist',
             select
         }
     }

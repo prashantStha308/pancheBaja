@@ -12,6 +12,9 @@ import {
 } from "../utils/helper.js";
 import { ApiError } from "../utils/ApiError.js";
 import { validateExistance } from "../utils/validator.js";
+import {
+    findGenresFromNames
+} from "../utils/helper.js";
 
 // Functions
 
@@ -37,23 +40,25 @@ export const cleanAffiliatedTrackData = async (track) => {
 export const getQueryFilteredTracks = async (req) => {
     const { page = 1, limit = 5, sort, artist, name, genre:genres } = req.query;
     
-    const queryObj = {};
+    let queryObj = {};
+
     if (artist) {
-        queryObj['artist'] = artist;
+        queryObj.$or = [
+            { artist },
+            { collaborators: artist }
+        ];
     }
     if (name) {
-        queryObj['name'] = name;
+        queryObj.name = name;
     }
     if(genres){
-        queryObj['genre']= {
-            $in: genres.split(',').map(g => g.trim().toLowerCase())
-        }
+        queryObj.genre= await findGenresFromNames(genres, '_id');
     }
 
     const select = 'username profilePicture bio followerCount';
     const populateOptions = [
-        { path: 'primaryArtist', select },
-        { path: 'artists', select }
+        { path: 'artist', select },
+        { path: 'collaborators', select }
     ]
     let query = Track.find(queryObj)
     .skip((page - 1) * limit)
@@ -71,8 +76,8 @@ export const getQueryFilteredTracks = async (req) => {
 export const getIdTrack = async (id) => {
     const select = '_id username profilePicture'
     const track = await Track.findById(id).populate([
-        { path: 'artists', select },
-        { path: 'primaryArtist', select }
+        { path: 'artist', select },
+        { path: 'collaborators', select },
     ]).lean();
 
     validateExistance(track);

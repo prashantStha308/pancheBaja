@@ -23,12 +23,6 @@ const GenreSchema = new mongoose.Schema({
 		lowercase: true,
 		trim: true
 	},
-	description: {
-		type: String,
-		trim: true,
-		maxlength: [500, maxCharError('genre.description', 500)],
-		default: ""
-	},
 	coverArt:{
         src:{
             type: String,
@@ -64,7 +58,27 @@ const GenreSchema = new mongoose.Schema({
 	timstamps: true
 })
 
-GenreSchema.index({name: 'text'});
+async function resolveAffiliatedsOnDeletion(next){
+	try{
+		if(!this.isModified())
+			return
+
+		await Promise.allSettled([
+			mongoose.model('Track').updateMany(
+				{genre: this._id},
+				{$pull: {genre: this._id} }
+			),
+			mongoose.model('Playlist').updateMany(
+				{genre: this._id},
+				{$pull: {genre: this._id} }
+			)
+		])
+
+		next();
+	}catch(err){
+		next(err);
+	}
+}
 
 GenreSchema.pre('save', function (next){
 	if(this.isModified('name')){
@@ -73,6 +87,9 @@ GenreSchema.pre('save', function (next){
 
 	next();
 })
+
+GenreSchema.pre('deleteOne',  resolveAffiliatedsOnDeletion);
+GenreSchema.pre('findOneAndDelete', resolveAffiliatedsOnDeletion);
 
 
 const Genre = mongoose.model('Genre', GenreSchema);

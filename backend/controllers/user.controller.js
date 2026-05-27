@@ -28,7 +28,8 @@ import {
 /* [POST] */
 
 export const createUser = async (req, res, next) => {
-    let profilePictureId , coverArtId;
+    console.log(req.body)
+    let profilePictureId, coverArtId;
     try {
         checkValidationResult(req);
         const body = req.body;
@@ -48,7 +49,7 @@ export const createUser = async (req, res, next) => {
             password: hashedPassword,
             profilePicture,
             coverArt,
-        }).exec();
+        });
 
         res.status(201).json(new ApiResponse(201, 'User Created Successfully', { id: user._id }));
 
@@ -61,21 +62,25 @@ export const createUser = async (req, res, next) => {
 
 export const loginUser = async (req, res) => {
     checkValidationResult(req);
-    const body = req.body;
-    const email = body.email;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).exec();
-    if (!user) {
-        throw new ApiError(404, 'Unregistered Email');
-    }
+    const user = await User.findOne({ email });
+    if (!user) throw new ApiError(404, "Unregistered email");
 
-    await validatePassword(body.password , user.password);
-    const token = jwt.sign({ id: user._id , role: user.role }, JWT_SECRET, {
-        expiresIn: '30d',
+    await validatePassword(password, user.password);
+    
+    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
+        expiresIn: "30d",
     });
 
-    res.status(200).json(new ApiResponse(200, 'Logged In Successfully', { token }));
-}
+    res.cookie("panche-token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json(new ApiResponse(200, "Logged in successfully", { user }));
+};
 
 // ---------------------------------------------------------------------------------------------------------------------
 

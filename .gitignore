@@ -1,2 +1,4 @@
 node_modules
-.env
+*.env
+attribution_for_music.txt
+.vscode

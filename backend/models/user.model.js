@@ -1,6 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 import validator from "validator";
 import { enumError, maxCharError, minCharError, requiredError, urlError} from "../utils/errors.js";
+// Models
+import Track from "./track.model.js";
 
 const subscriptionType = ['premium', 'student', 'standard']
 const userTypes = ['user', 'artist' , 'admin'];
@@ -109,12 +111,28 @@ const UserSchema = new Schema({
         },
         default: 'standard'
     },
-    associatedGenre:[{ type: String }],
-    favouriteGenre: [{type: String}]
+    associatedGenre:[{
+        type: Schema.Types.ObjectId,
+        ref: 'Genre'
+    }],
+    favouriteGenre: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Genre'
+    }]
 },
 {
     timestamps: true
 })
+
+// function updateUser(next){
+//     if(!this.isModified)
+//         next();
+
+//     const tracks = await Track.find({ collabulator: {$in: this._id}, artist: this._id });
+
+//     const genreSet = new Set();
+// }
+
 
 const User = mongoose.model('User', UserSchema);
 

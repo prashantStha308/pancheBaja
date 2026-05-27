@@ -4,9 +4,9 @@ import Heart from "../../../components/icons/Heart";
 
 const TrackDetails = ({ track }) => {
 
-	const artists = track?.artists.map((item, index) => {
+	const artists = track?.collaborators?.map((item, index) => {
 		if (index < 4) return item.username;
-	});
+	}).join(', ');
 	console.log("Artist's usernames: ", artists);
 
 	return (
@@ -16,7 +16,7 @@ const TrackDetails = ({ track }) => {
 					{track?.name || "Unknown Track"}
 				</span>
 				<span className='text-white-tersery text-[0.65rem] md:text-[0.7rem] line-clamp-1' >
-					{ artists || "Unknown Artist" }
+					{ track.artist.username || "Unknown Artist" }
 				</span>
 			</div>
 

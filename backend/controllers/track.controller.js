@@ -21,6 +21,9 @@ import {
     getAudioDuration,
     getIdTrack
 } from "../helpers/track.helper.js";
+import {
+    findGenresFromNames
+} from "../helpers/genre.helper.js";
 
 
 /* [POST] */
@@ -35,25 +38,33 @@ export const createTrack = async (req, res, next) => {
             artists = [user._id];
         }
 
-        const { audioRes, coverArt } = await handleFilesUploads(req.files);
-        audioId = audioRes.publicId;
-        coverId = coverArt.publicId;
-        const totalDuration = await getAudioDuration(req.files.track[0]);
+        genre = await findGenresFromNames(genre, '_id');
+
+        const [
+            {audioRes, coverArt},
+            totalDuration,
+        ] = await Promise.all([
+            handleFilesUploads(req.files),
+            getAudioDuration(req.files.track[0]),
+        ]);
 
         const track = await Track.create({
-            name,
-            primaryArtist: user._id,
-            artists,
-            coverArt,
-            audio: {
-                // update the route path in track.route.js and change here
-                streamUrl: `/api/track/${audioRes.publicId.split('/')[1]}/stream`,
-                publicId: audioRes.publicId.split('/')[1]
-            },
-            visibility,
-            totalDuration,
-            genre
-        }).exec();
+                name,
+                artist: user._id,
+                collaborator: artists,
+                coverArt,
+                audio: {
+                    // update the route path in track.route.js and change here
+                    streamUrl: `/api/track/${audioRes.publicId.split('/')[1]}/stream`,
+                    publicId: audioRes.publicId.split('/')[1]
+                },
+                visibility,
+                totalDuration,
+                genre
+            })
+
+        audioId = audioRes.publicId;
+        coverId = coverArt.publicId;
 
         res.status(201).json(new ApiResponse(201, 'Track Created Successfully', {id: track._id}));
 
@@ -80,8 +91,13 @@ export const getTrackById = async (req, res, next) => {
     const { trackId } = req.params;
     validateMongoose(trackId);
 
-    const track = await getIdTrack(trackId);
-    const savedBy = await getTrackSavedBy(trackId);
+    const [
+        track,
+        savedBy
+    ] = await Promise.all([
+        getIdTrack(trackId),
+        getTrackSavedBy(trackId)
+    ]);
 
     res.status(200).json(new ApiResponse(200, "Fetched Track Successfully", {
         ...track,
@@ -103,7 +119,7 @@ export const updateTrackById = async (req, res, next) => {
         const track = await Track.findById(trackId).exec();
         validateExistance(track);
 
-        validatePermission(track.primaryArtist, user._id);
+        validatePermission(track.artist, user._id);
         
         updateTrackFields(req , track);
         await updateTrackCoverArt(track , imageFile);
@@ -151,7 +167,7 @@ export const deleteTrackById = async (req, res, next) => {
     const track = await Track.findByIdAndDelete(trackId).exec();
     validateExistance(track);
 
-    await Promise.all([removeTrackMediaFromCloudinary(track), cleanAffiliatedTrackData(track)]);
+    await Promise.allSettled([removeTrackMediaFromCloudinary(track), cleanAffiliatedTrackData(track)]);
 
     res.status(200).json(new ApiResponse(200, "Deleted Track Successfully", { id: trackId }));
 }

@@ -14,6 +14,7 @@ import Following from "../models/following.model.js"
 import Track from "../models/track.model.js";
 import Playlist from "../models/playlist.model.js";
 import User from "../models/user.model.js";
+import Genre from "../models/genre.model.js";
 
 // HANDLE DATA
 export const handleFilesUploads = async ( files ) => {
@@ -94,6 +95,23 @@ export const getDataByGenre = async( model, genres = [] ) => {
         select: '_id username role profilePicture'
     }).lean();
 }
+
+/* [Genre] */
+
+export const findGenresFromNames = async(list) => {
+    if(!name)
+        return;
+
+    const slugs = list.map( g => g.toLowerCase().split(' ').join('-') );
+
+    const genres = await Genre.find({
+        slug: { $in: slugs}
+    }).lean().exec();
+
+    return genres;
+}
+
+
 // ---------------------------------------------------------------------------------------------------------------------
 
 // UPDATE DATA
